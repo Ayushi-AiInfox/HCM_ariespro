@@ -114,7 +114,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'workforcemanagement',
         'USER': 'root',
-        'PASSWORD': 'root@123',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306'
         },
