@@ -1,0 +1,192 @@
+{% extends 'header.html' %}
+{% block addr%}Project List{% endblock addr%}
+{% block user %}Welcome, {{request.session.name}}{% endblock %}
+{% block style %}
+<title>WFM :: EMPLOYEE PROJECT LIST</title>
+<link rel="stylesheet" href="../static/plugins/select2/select2.min.css">
+<script src="../static/js/jquery-3.5.1.min.js"></script>
+<style>
+    a.EmpProjectTaskColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.EmpProjectTaskColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .form-control {
+        height: 40px;
+    }
+
+    .color-change::placeholder {
+        color: #09697b;
+        font-style: italic;
+    }
+
+    tr:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .nameclick {
+        color: rgb(49, 46, 46);
+        background-color: white;
+        border-style: none;
+        width: 300px;
+        border-radius: 7px;
+    }
+
+    .nameclick:hover {
+        color: black;
+        background-color: white;
+        border-style: none;
+        width: 300px;
+        /* font-weight: 550; */
+    }
+
+    .bolding {
+        font-weight: 650;
+    }
+
+    .table-responsive {
+        white-space: nowrap;
+        height: 77.5vh !important;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.8rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .card-title {
+        color: #333;
+        position: relative;
+        left: 10px;
+    }
+
+    @media only screen and (max-width: 991px) {
+
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+
+        .sidebar.sidebar-user {
+            position: relative;
+            top: 15px;
+        }
+
+        .logo a img {
+            width: 200px;
+            border-radius: 10px;
+            padding: 0px;
+            position: relative;
+            top: 8px !important;
+        }
+
+        .user-card.card.shadow-sm.bg-white.text-center.ctm-border-radius {
+            margin-top: -15px;
+        }
+    }
+
+    @media only screen and (max-width: 575px) {
+        .card.ctm-border-radius.shadow-sm {
+            margin-bottom: 30px;
+        }
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+{% endblock style %}
+
+{% block body %}
+
+<div class="col-xl-9 col-lg-8 col-md-12 emptaskpro" id="search_para">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card ctm-border-radius shadow-sm grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Project List</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {%csrf_token%}
+                        <div class="employee-office-table">
+                            <div class="table-responsive modalHeight">
+                                <table class="table custom-table mb-0" id="myTable">
+                                    <thead style="position: sticky;
+                                    top: 0;
+                                    z-index: 1;">
+                                        <tr class="thcolor">
+                                            <th>S.No.</th>
+                                            <th>Project</th>
+                                            <th>Tasks</th>
+                                            <th>Assign Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i,pending,development,completed,assigned_date in projects %}
+                                        <tr>
+                                            <td>{{forloop.counter}}</td>
+                                            <td><button name="project_name" class="nameclick"
+                                                    value="{{i}}">{{i}}</button></td>
+                                            <td>T: <b class="bolding">{{pending}}</b>, D: <b
+                                                    class="bolding">{{development}}</b>, C: <b
+                                                    class="bolding">{{completed}}</b></button></td>
+                                            <td>{{assigned_date}}</td>
+                                        </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--  Ends Here   -->
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".emptaskpro").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if ($(window).width() > 991 && $(window).width() < 1200) {
+                $(".emptaskpro").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+            $(".emptaskpro").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+{% endblock body %}

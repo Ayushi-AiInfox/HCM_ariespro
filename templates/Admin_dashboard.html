@@ -1,0 +1,1602 @@
+{% extends 'Admin_header.html' %}
+{% block addr %}Dashboard {% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: ADMIN DASHBOARD</title>
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+<script src="../static/js/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+
+    /* The slider */
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    input:checked + .slider {
+    background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+
+    .slider.round:before {
+    border-radius: 50%;
+    }
+    .form-control {
+        height: calc(1.2em + .75rem + 2px) !important;
+    }
+
+
+    #bx {
+        background-color: black;
+    }
+
+    .dataTables_wrapper .row:nth-child(2) {
+        width: 100%;
+    }
+
+
+    .dataTables_length label,
+    .dataTables_filter label {
+        display: flex;
+    }
+
+    .nav-item {
+        width: 100%;
+        max-width: 124px;
+        text-align: center;
+    }
+
+    .sub-tab-item {
+        width: 100%;
+        max-width: 178px;
+        text-align: center;
+    }
+
+    .chart-container {
+        max-width: 350px;
+        margin: auto;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    .HRupcomingLeaves hr {
+        margin: 0 0;
+    }
+
+    .dash-card-container {
+        justify-content: space-between;
+    }
+
+    h6.HRDateText {
+        color: #333;
+    }
+
+    .card-body.leavesHr-applied {
+        padding: 10px 20px;
+    }
+
+    span.statusBtn {
+        color: #333;
+    }
+
+    .upcomingLeavesHR {
+        padding: 10px 1.25rem;
+    }
+
+    /* .table-responsive.listofUsers {
+        height: 350px;
+    } */
+
+    a.adminDashboardColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.adminDashboardColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+    .grow {
+        animation: bounce-in-right 3s ease;
+        overflow: auto;
+    }
+
+    @media only screen and (max-width: 425px) {
+        h6.HRDateText {
+            font-size: 14px;
+            display: inline-block;
+            width: 100px;
+        }
+    }
+
+    @media (min-width:535px) and (max-width:1300px) {
+        .top-count-columns {
+            -ms-flex: 0 0 33.333333%;
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+
+        .top-last-count-columns {
+            -ms-flex: 0 0 50%;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (min-width:1301px) and (max-width:1420px) {
+        .top-card-title {
+            font-size: 15px !important;
+        }
+
+        .card.ctm-border-radius.shadow-sm.flex-fill.grow.top-card-box {
+            height: 194px !important;
+        }
+    }
+</style>
+<style>
+    .star_icon {
+        font-size: 40px;
+        color: orange;
+        margin: 6px 10px;
+        cursor: pointer;
+    }
+
+    .lnr-icon {
+        /* background: rgba(9, 121, 107, 0.2);
+        padding: 6px; */
+        font-weight: 500;
+    }
+
+    .h2-top-title {
+        padding-top: 20px;
+        font-weight: 600;
+    }
+
+    .card.ctm-border-radius.shadow-sm.flex-fill.grow.top-card-box {
+        height: 177px;
+    }
+
+    .top5-name ul li {
+        list-style-type: disc;
+        font-weight: 500;
+    }
+
+    .top5-name ul {
+        list-style-type: disc;
+        padding-left: 12px;
+    }
+
+    .card-body.top-card-body {
+        text-align: center;
+        padding: 10px 15px;
+    }
+
+    .top5-name {
+        font-size: 12px;
+    }
+
+    .card-header.top-card-header {
+        padding: 12px;
+    }
+
+    .top-card-title {
+        font-size: 16px;
+        padding: 0px;
+        font-weight: 700;
+    }
+
+    .chart-labels {
+        padding: 6px 6px;
+        font-weight: 600;
+        max-width: 138px;
+        width: 100%;
+        margin-right: 10px;
+    }
+
+    .chart-label-1 {
+        background: rgb(227, 66, 52, 0.7);
+    }
+
+    .chart-label-2 {
+        background: rgb(250, 160, 160, 0.5);
+    }
+
+    .chart-label-3 {
+        background: rgb(218, 112, 214, 0.5);
+    }
+
+    .chart-label-4 {
+        background: rgb(135, 206, 235);
+    }
+
+    .chart-label-5 {
+        background: rgb(147, 197, 114, 0.7);
+    }
+
+    #preview {
+        /* background: #f5f5f5; */
+        position: relative;
+        color: #fff;
+        float: right;
+        /* width: 350px; */
+        height: 200px;
+        margin: 0;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        right: 10vw;
+    }
+
+    #foo,
+    #chat_1 {
+        width: 350px !important;
+        height: 175px !important;
+        top: 10px;
+        position: relative;
+        left: 0px;
+    }
+
+    #preview-textfield {
+        position: absolute;
+        bottom: 31px;
+        left: calc(50% - 50px);
+        right: 0;
+        text-align: center;
+        color: #333;
+        font-weight: bold;
+        font-size: 22px;
+        font-family: Arial, Helvetica, sans-serif;
+        z-index: 9;
+        width: 100px;
+        height: 50px;
+        background: #ddd;
+        border-top-right-radius: 60px;
+        border-top-left-radius: 60px;
+    }
+
+    #preview-textfield span {
+        position: relative;
+        top: 15px !important;
+    }
+
+    .truncate p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
+    }
+
+    .chng {
+        color: rgb(34, 33, 33);
+        background: transparent !important;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .drkclick {
+        background-color: rgb(202, 178, 178) !important;
+    }
+
+    .nameclick {
+        background-color: white;
+        border-radius: 7px;
+        border-style: none;
+        color: black;
+        width: 173px;
+    }
+
+    .form-inline {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        height: 560px;
+    }
+
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        height: 385px;
+    }
+
+    .fc-left {
+        margin-right: 30px;
+    }
+
+    .datset {
+        text-align: end;
+        font-weight: 610;
+        position: relative;
+        left: 130px;
+    }
+    .firsttop {
+      padding: 0.8rem;
+    }
+    .card-header {
+      background: none;
+      padding: 0.7rem;
+      border-bottom: 1px solid #ededed;
+    }
+    .tabletitle {
+      position: relative;
+      left: 10px;
+    }
+    .fc-prev-button.fc-button.fc-state-default.fc-corner-left,
+        .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+            height: 2rem !important;
+        }
+    .pageinationAdj {
+        position: relative;
+        top: 0px;
+    }
+    .chart-label-box.vj {
+        display: inline-block;
+    }
+    @media only screen and (max-width: 1300px){
+        .top5-name {
+            font-size: 13px;
+            position: absolute;
+            left: 80px;
+        }
+    }
+    @media only screen and (max-width: 1199px){
+        .datset {
+            text-align: end;
+            font-weight: 610;
+            position: relative;
+            left: 90px;
+        }
+        .card-title.mb-0.tabletitle {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        label, .form-control, #myTable6_info {
+            font-size: 13px;
+        }
+        .thcolor {
+            font-size: 14px;
+        }
+        .tdcolor.odd, .tdcolor.even, .pagination {
+            font-size: 12px;
+        }
+        #preview {
+            float: right;
+            position: relative;
+            right: 0vw;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        #preview {
+            position: relative;
+            right: 10vw;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .top5-name {
+            position: absolute;
+            left: 55px;
+        }
+        .chart-label-box {
+            display: inline-block;
+        }
+        #preview {
+            float: right;
+            position: relative;
+            right: 0vw;
+        }
+        .datset {
+            text-align: end;
+            font-weight: 610;
+            position: absolute;
+            right: 130px;
+        }
+        .card-title.mb-0.tabletitle {
+            position: absolute;
+        }
+        .fc-left {
+            margin-right: 0px;
+        }
+        .settinghead {
+            height: 45px;
+        }
+        .pageinationAdj {
+            display: flow-root;
+        }
+    }
+    @media only screen and (max-width: 669px){
+        #foo, #chat_1 {
+            width: 300px !important;
+        }
+    }
+    @media only screen and (max-width: 575px){
+        .top5-name {
+            position: absolute;
+            left: 25px;
+        }
+    }
+    @media only screen and (max-width: 495px){
+        .pageinationAdj {
+            display: inline-block;
+        }
+    }
+    @media only screen and (max-width: 480px){
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 0px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block notify %}
+<div class="user-info align-right dropdown d-inline-block header-dropdown">
+    <a href="javascript:void(0)" data-toggle="dropdown" class=" menu-style dropdown-toggle">
+        <div class="user-avatar d-inline-block">
+            <i class="fa fa-comments notify"></i><span class="badge" id="badge">{{notify}}</span>
+        </div>
+    </a>
+    <div class="dropdown-menu notification-dropdown-menu shadow-lg border-0 m-0 dropdown-menu-right"
+        style="min-width: 23rem;">
+        <div class="cont">
+            {% for i in noti %}
+            <div class="sec new">
+                <div class="profCont">
+                    <img class="profile" src="../static/img/profiles/img-2.jpg">
+                </div>
+                <div class="txt messages messages{{forloop.counter}}" id="messages">{{i.message}}</div>
+            </div>
+            {%endfor%}
+
+            <div class="sec new" style="border-bottom: none;">
+                <div class="text-center sub"><a href="Admin_notification">View All
+                        Notifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock notify %}
+{% block body %}
+<input type="hidden" id="pythn" name="pythn" value='{{pythn}}' />
+<div class="col-xl-9 col-lg-8  col-md-12 dashboardbody">
+    <div class="quicklink-sidebar-menu ctm-border-radius shadow-sm grow bg-white card">
+        <!-- hr, manager -->
+        <div class="card-body align-center firsttop">
+            <ul class="nav flex-row nav-pills" role="tablist">
+                <li class="nav-item mr-2">
+                    <a class="nav-link active mb-2" data-toggle="pill" href="#pills-performanceReport" role="tab"
+                        aria-controls="pills-home" aria-selected="true">Performance</a>
+                </li>
+                <!-- <li class="nav-item mr-2">
+                    <a class="nav-link" name="project_report" data-toggle="pill" href="#pills-projectReport" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Projects</a>
+                </li> -->
+                <li class="nav-item mr-2">
+                    <a class="nav-link" name="team_report" data-toggle="pill" href="#pills-teamReport" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Team</a>
+                </li>
+                <li class="nav-item mr-2">
+                    <a class="nav-link" name="emp_report" data-toggle="pill" href="#pills-empReport" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Employee</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" name="timesheet_report" data-toggle="pill" href="#pills-timesheetReport"
+                        role="tab" aria-controls="pills-profile" aria-selected="false">Timesheet</a>
+                </li> -->
+            </ul>
+        </div>
+        <!-- End Here -->
+    </div>
+    <div class="card-body align-center" style="padding: unset;">
+        <div class="tab-content">
+            <!-- Performance Section -->
+            <div class="tab-pane fade show active" id="pills-performanceReport" role="tabpanel"
+                aria-labelledby="pills-home-tab">
+                <div class="row">
+                    <div class="col top-count-columns">
+                        <div class="card ctm-border-radius shadow-sm flex-fill grow top-card-box">
+                            <div class="card-header top-card-header d-flex justify-content-around align-items-center">
+                                <h4 class="card-title mb-0 top-card-title">Total Projects</h4>
+                                <!-- <i class="fa fa-user" style="color: #09796b;"></i> -->
+                                <span class="lnr lnr-briefcase lnr-icon" style="color: #09796b;"></span>
+                            </div>
+                            <div class="card-body top-card-body">
+                                <div>
+                                    <h2 class="fw-bold h2-top-title">34</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col top-count-columns">
+                        <div class="card ctm-border-radius shadow-sm flex-fill grow top-card-box">
+                            <div class="card-header top-card-header d-flex justify-content-around align-items-center">
+                                <h4 class="card-title mb-0 top-card-title">Last Month (Hrs)</h4>
+                                <span class="lnr lnr-calendar-full lnr-icon" style="color: #09796b;"></span>
+                            </div>
+                            <div class="card-body top-card-body">
+                                <div>
+                                    <h2 class="fw-bold h2-top-title">38</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col top-count-columns">
+                        <div class="card ctm-border-radius shadow-sm flex-fill grow top-card-box">
+                            <div class="card-header top-card-header d-flex justify-content-around align-items-center">
+                                <h4 class="card-title mb-0 top-card-title">This Month (Hrs)</h4>
+                                <span class="lnr lnr-calendar-full lnr-icon" style="color: #09796b;"></span>
+                            </div>
+                            <div class="card-body top-card-body">
+                                <div>
+                                    <h2 class="fw-bold h2-top-title">42</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col top-last-count-columns">
+                        <div class="card ctm-border-radius shadow-sm flex-fill grow top-card-box">
+                            <div class="card-header top-card-header d-flex justify-content-around align-items-center">
+                                <h4 class="card-title mb-0 top-card-title">Top 5 Performer</h4>
+                                <span class="lnr lnr-users lnr-icon" style="color: #09796b;"></span>
+                            </div>
+                            <div class="card-body top-card-body" style="text-align: left;">
+                                <div class="top5-name">
+                                    <ul>{% for i in top %}
+                                        <li>
+                                            <span>{{i.F_NAME}} {{i.L_NAME}}</span>
+                                        </li>
+                                        {% endfor %}
+                                        <!-- <li>
+                                            <span>Aishwarya Jadhav</span>
+                                        </li>
+                                        <li>
+                                            <span>Madhubala Thakur</span>
+                                        </li>
+                                        <li>
+                                            <span>Dharmnath Thakur</span>
+                                        </li>
+                                        <li>
+                                            <span>Karan Rana</span>
+                                        </li> -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col top-last-count-columns">
+                        <div class="card ctm-border-radius shadow-sm flex-fill grow top-card-box">
+                            <div class="card-header top-card-header d-flex justify-content-around align-items-center">
+                                <h4 class="card-title mb-0 top-card-title">Poor 5 Performer</h4>
+                                <span class="lnr lnr-users lnr-icon" style="color: #09796b;"></span>
+                            </div>
+                            <div class="card-body top-card-body" style="text-align: left;">
+                                <div class="top5-name">
+                                    <ul>
+                                        {% for i in poor %}
+                                        <li>
+                                            <span>{{i.F_NAME}} {{i.L_NAME}}</span>
+                                        </li>
+                                        {% endfor %}
+                                        <!-- <li>
+                                            <span>Aishwarya Jadhav</span>
+                                        </li>
+                                        <li>
+                                            <span>Madhubala Thakur</span>
+                                        </li>
+                                        <li>
+                                            <span>Dharmnath Thakur</span>
+                                        </li>
+                                        <li>
+                                            <span>Karan Rana</span>
+                                        </li> -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 d-flex">
+                        <div class="card ctm-border-radius shadow-sm flex-fill grow performtble">
+                            <div class="card-header settinghead">
+                                <h4 class="card-title mb-0 tabletitle">Performance</h4>
+                            </div>
+                            <div class="card-body">
+                                <!-- <div id="pieChart"></div> -->
+                                <!-- <div class="chart-container" style="position: relative; width:100%">
+                                    <canvas id=""></canvas>
+                                </div> -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="chart-label-box vj">
+                                            <div class="d-flex align-items-center">
+                                                <div class="chart-label-1 chart-labels">Between 0-20</div><span>Below
+                                                    Par</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="chart-label-2 chart-labels">Between 20-40</div>
+                                                <span>Bad</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="chart-label-3 chart-labels">Between 40-60</div>
+                                                <span>Normal</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="chart-label-4 chart-labels">Between 60-80</div>
+                                                <span>Good</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="chart-label-5 chart-labels">Between 80-100</div>
+                                                <span>Exceptional</span>
+                                            </div>
+                                        </div>
+                                        <div id="preview">
+                                            <canvas id="chat_1"></canvas>
+                                            <div id="preview-textfield" class="reset"><span>{{average}}%</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-0">
+                                        <!-- <div id="preview">
+                                            <canvas id="chat_1"></canvas>
+                                            <div id="preview-textfield" class="reset"><span>{{average}}%</span></div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 d-flex">
+                        <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                            <div class="card-header">
+                                <div class="row align-items-center ">
+                                    <div class="col-md-3">
+                                        <h4 class="card-title mb-0 tabletitle">Total</h4>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <b>
+                                            <h5 class="datset">Year : {{chart_year}}</h5>
+                                            <!-- <div class="col-md-6"
+                                                style="display: flex; padding: unset; justify-content: end; margin-left: 29px;">
+                                                <div class="monthbox" style="padding: unset;">
+                                                    <input type="hidden" name="month" value="{{chart_year}}" class="month"
+                                                        readonly style="padding: unset;">
+                                                    <input type="text" name="" id="month" value="" class="month"
+                                                        readonly style="padding: unset;">
+                                                </div>
+                                                <div class="yearbox" style="padding: unset;">
+                                                    <input type="text" name="year" value="{{year}}" class="year"
+                                                        readonly style="padding: unset;">
+                                                </div>
+                                            </div> -->
+                                        </b>
+                                    </div>
+                                    <!-- <h5 >Year : 2024</h5> -->
+                                    <div class="col-md-4 text-right">
+                                        <div class="fc-left">
+                                            <div class="fc-button-group">
+                                                <form method="post">
+                                                    {%csrf_token%}
+
+                                                    <button name='prev' value="prev"
+                                                        class="fc-prev-button fc-button fc-state-default fc-corner-left"
+                                                        title="previous">
+                                                        <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                                    </button>
+                                                    <button name='next' value="next"
+                                                        class="fc-next-button fc-button fc-state-default fc-corner-right"
+                                                        title="next">
+                                                        <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-right" hidden>
+                                        <select name="" id="" class="form-control">
+                                            <option value="0">--Select Duration--</option>
+                                            <option value="weekly">Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                            <option value="yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-line" id="raj" style="position: relative;">
+                                    <div id="lineChart">
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12 d-flex">
+                            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                                <div class="card-header settinghead">
+                                    <h4 class="card-title mb-0 tabletitle">Employees Performance Table</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row pageinationAdj">
+                                        <div class="col-md-6 data_drop6"></div>
+                                        <div class="col-md-6 data_search6"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="employee-office-table paginate-table6">
+                                                <div class="table-responsive listofUsers">
+                                                    <table class="table custom-table myTable1" id="myTable6">
+                                                        <thead style="position: sticky; top: 0; z-index: 1;">
+                                                            <tr class="thcolor">
+                                                                <th>Serial No.</th>
+                                                                <th>Name</th>
+                                                                <th>ID</th>
+                                                                <th>Designation</th>
+                                                                <th>Project Name</th>
+                                                                <th>Manager</th>
+                                                                <th>Performance</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for i in performance %}
+                                                            <tr class="tdcolor">
+                                                                <td>{{forloop.counter}}</td>
+                                                                <td><button name="emp_details" class="nameclick"
+                                                                        value="{{i.emp_id}}" href="">{{i.F_NAME}}
+                                                                        {{i.L_NAME}}</button></td>
+                                                                <td>{{i.emp_id}}</td>
+                                                                <td>{{i.designations}}</td>
+                                                                <!-- <td class="truncate">{{i.ProjectNames}}</td> -->
+                                                                <td class="truncate">
+                                                                    <p title="{{i.ProjectNames}}">{{i.ProjectNames}}</p>
+                                                                </td>
+                                                                <td>{{i.managers}}</td>
+                                                                <td>{{i.rating}}</td>
+                                                            </tr>
+                                                            {%endfor%}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- <script>
+                $(document).ready(function(){
+                    $(".chng").mouseenter(function(){
+                        $(this).css({'background-color':"rgb(223, 220, 220)",
+                                    'color':'black','border-radius':'5%'
+                        });
+                    });
+                    $(".chng").mouseleave(function(){
+                        $(this).css({'background-color':'white',
+                                    'color':"rgb(34, 33, 33)",'border-radius':'5%'});
+                    });
+                   $(".chng").click(function(){
+                    $(this).css({'color':"rgb(37, 3, 102)"});
+                   });
+                });
+            </script> -->
+            <!-- Employee Section -->
+            <div class="tab-pane fade" id="pills-empReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="col-md-12 d-flex">
+                    <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                        <div class="card-header settinghead">
+                            <h4 class="card-title mb-0 tabletitle">List of Employees</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row pageinationAdj">
+                                <div class="col-md-6 data_drop1"></div>
+                                <div class="col-md-6 data_search1"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="employee-office-table paginate-table1">
+                                            <div class="table-responsive listofUsers">
+                                                <table class="table custom-table myTable1" id="myTable1">
+                                                    <thead style="position: sticky; top: 0; z-index: 1;">
+                                                        <tr class="thcolor">
+                                                            <th>Serial No.</th>
+                                                            <th>Name</th>
+                                                            <th>ID</th>
+                                                            <th>Designation</th>
+                                                            <th>Manager</th>
+                                                            <th>Leave Taken</th>
+                                                            <th>Leave Remaining</th>
+                                                            <th>Activation</th>
+                                                            <th>Reset Password</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        {% for i in EmpDesk %}
+                                                        <tr class="tdcolor">
+                                                            <td>{{forloop.counter}}</td>
+                                                            <td><button name="emp_details" class="nameclick"
+                                                                    value="{{i.login_id}}" href="">{{i.f_name}}
+                                                                    {{i.l_name}}</button> </td>
+                                                            <td>{{i.login_id}}</td>
+                                                            <td>{{i.designations}}</td>
+                                                            <td>{{i.managers}}</td>
+                                                            <td>{{i.leave_taken}}</td>
+                                                            <td>{{i.leave_remaining}}</td>
+                                                            <!-- <td>
+                                                                <label class="switch">
+                                                                  <input type="checkbox"    {% if i.activation == 'Active' %} checked {% endif %} >
+                                                                  <span class="slider round"></span>
+                                                                </label> </td> -->
+                                                            <td><!-- Rounded switch -->
+                                                                <label class="switch">
+                                                                    <input id="toggleSwitch{{i.login_id}}" type="checkbox" {% if i.activation == 'Active' %} checked {% endif %}>
+                                                                    <span class="slider round"></span>
+                                                                </label>
+                                                            </td>
+
+                                                            <td><button name="reset" 
+                                                                value="{{i.login_id}}" href="">Reset</button> </td>
+                                                        </tr>
+                                                        <script>
+                                                            document.addEventListener('DOMContentLoaded', function () {
+                                                            var toggleSwitch = document.getElementById('toggleSwitch{{i.login_id}}');
+
+                                                            toggleSwitch.addEventListener('change', function () {
+                                                                        var isChecked = this.checked; // Get the current state of the toggle switch
+                                                                        var valueToSend = isChecked ? 'Active' : 'Deactive'; // Determine the value to send based on the state
+
+                                                                        // Send AJAX request
+                                                                        var xhr = new XMLHttpRequest();
+                                                                        xhr.open('GET', 'change_activation?value=' + encodeURIComponent(valueToSend) + '&emp_id={{i.login_id}}', true);
+                                                                        xhr.onreadystatechange = function () {
+                                                                            if (xhr.readyState === XMLHttpRequest.DONE) {
+                                                                                if (xhr.status === 200) {
+                                                                                    // Request successful
+                                                                                    console.log('Request successful');
+                                                                                } else {
+                                                                                    // Request failed
+                                                                                    console.error('Request failed');
+                                                                                }
+                                                                            }
+                                                                        };
+                                                                        xhr.send();
+                                                                    });
+                                                                });
+
+                                                        </script>
+                                                        {%endfor%}
+                                                    </tbody>
+                                                </table>
+                                               
+
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Section -->
+            <div class="tab-pane fade" id="pills-projectReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="col-md-12 d-flex p-0">
+                    <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">List Of Projects</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 data_drop2"></div>
+                                <div class="col-md-6 data_search2"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="employee-office-table paginate-table2">
+                                        <div class="table-responsive listofUsers">
+                                            <table class="table custom-table" id="myTable2">
+                                                <thead style="position: sticky; top: 0; z-index: 1;">
+                                                    <tr class="thcolor">
+                                                        <th>Serial No.</th>
+                                                        <th>Title</th>
+                                                        <th>Manager</th>
+                                                        <th>Start Date</th>
+                                                        <th>Status</th>
+                                                        <th>End Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {%for project in projects%}
+                                                    <tr class="tdcolor">
+                                                        <td>{{forloop.counter}}</td>
+                                                        <td>{{project.project_name}}</td>
+                                                        <td>{{project.manager}}</td>
+                                                        <td>{{project.start_date}}</td>
+                                                        <td>{{project.status}}</td>
+                                                        <td>{{project.end_date}}</td>
+                                                    </tr>
+                                                    {%endfor%}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timesheet Section -->
+            <div class="tab-pane fade" id="pills-timesheetReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                <!-- <div class="card shadow-sm grow ctm-border-radius">
+                    <div class="card-body align-center">
+                        <ul class="nav flex-row nav-pills" id="pills-tab" role="tablist">
+                            <li class="nav-item mr-2 sub-tab-item">
+                                <a class="nav-link active mb-2" id="pills-home-tab" data-toggle="pill"
+                                    href="#pills-pendingTimesheet" role="tab" aria-controls="pills-home"
+                                    aria-selected="true">Pending Timesheet</a>
+                            </li>
+                            <li class="nav-item sub-tab-item">
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
+                                    role="tab" aria-controls="pills-profile" aria-selected="false">Approved
+                                    Timesheet</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div> -->
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-pendingTimesheet" role="tabpanel"
+                        aria-labelledby="pills-home-tab">
+                        <!-- <div class="row">
+                            <div class="col-md-12 d-flex">
+                                <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                                    <div class="card-header">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <h4 class="card-title mb-0">Weekly Report</h4>
+                                            </div>
+                                            <div class="col-md-6" style="text-align: right;">
+                                                <div class="fc-left">
+                                                    <div class="fc-button-group">
+                                                        <form method="post">
+                                                            {%csrf_token%}
+                                                            <button type="submit" name='prev' value="prev"
+                                                                class="fc-prev-button fc-button fc-state-default fc-corner-left">
+                                                                <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                                            </button>
+                                                            <button type="submit" name='next' value="next"
+                                                                class="fc-next-button fc-button fc-state-default fc-corner-right">
+                                                                <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="card-header weekNo" style="border-bottom: unset;padding-top: 2px;">
+                                            <h4 class="card-title mb-0 text-center weekStartEndDate">
+                                                <span>Week Start Date : <b>{{start_date}}</b></span>
+                                                <span>Week End Date : <b>{{end_date}}</b></span>
+                                            </h4>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 data_drop3"></div>
+                                            <div class="col-md-6 data_search3"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="employee-office-table paginate-table3">
+                                                    <div class="table-responsive">
+                                                        <table class="table custom-table table1Pending" id="myTable3">
+                                                            <thead style="position: sticky; top: 0; z-index: 1;">
+                                                                <tr>
+                                                                    <th style="width: 11%;">Serial No.</th>
+                                                                    <th>Name</th>
+                                                                    <th>ID</th>
+                                                                    <th>Designation</th>
+                                                                    <th>Total Week Hours</th>
+                                                                    <th>HR Status</th>
+                                                                    <th>Manager Status</th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>{{i.name}}</td>
+                                                                    <td>{{i.id}}</td>
+                                                                    <td>{{i.designation}}</td>
+                                                                    <td>{{i.total}}</td>
+                                                                    <td><button id="pending-btn" value="{{i.id}}"
+                                                                            name="pending" data-toggle="modal"
+                                                                            data-target="#star_ratings"
+                                                                            class="btn btn-theme button-1 text-white ctm-border-radius btn-block rep_btn pendingSheetBtn">Pending</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <div class="row">
+                            <div class="col-md-12 d-flex">
+                                <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                                    <div class="card-header">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <h4 class="card-title mb-0">Weekly Report</h4>
+                                            </div>
+                                            <div class="col-md-6" style="text-align: right;">
+                                                <div class="fc-left">
+                                                    <div class="fc-button-group">
+                                                        <form method="post">
+                                                            {%csrf_token%}
+                                                            <button type="submit" name='prev' value="prev"
+                                                                class="fc-prev-button fc-button fc-state-default fc-corner-left">
+                                                                <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                                            </button>
+                                                            <button type="submit" name='next' value="next"
+                                                                class="fc-next-button fc-button fc-state-default fc-corner-right">
+                                                                <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="card-header weekNo" style="border-bottom: unset; padding-top: 2px;">
+                                            <h4 class="card-title mb-0 text-center weekStartEndDate">
+                                                <span>Week Start Date : <b>{{start_date}}</b></span>
+                                                <span>Week End Date : <b>{{end_date}}</b></span>
+                                            </h4>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 data_drop4"></div>
+                                            <div class="col-md-6 data_search4"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div id="bx" class="employee-office-table paginate-table4">
+                                                    <div class="table-responsive">
+                                                        <table class="table custom-table" id="myTable4">
+                                                            <thead style="position: sticky; top: 0; z-index: 1;">
+                                                                <tr class="thcolor">
+                                                                    <th style="width: 11%;">Serial No.</th>
+                                                                    <th>Name</th>
+                                                                    <th>ID</th>
+                                                                    <th>Designation</th>
+                                                                    <th style="width: 100px;">Total Week Hours</th>
+                                                                    <th>Report</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr class="tdcolor">
+                                                                    <td></td>
+                                                                    <td>{{i.name}}</td>
+                                                                    <td>{{i.id}}</td>
+                                                                    <td>{{i.designation}}</td>
+                                                                    <td>{{i.total}}</td>
+                                                                    <td><button id="pending1"
+                                                                            value="{{i.id}}|{{start_date}}|{{end_date}}"
+                                                                            class="btn btn-theme ctm-border-radius text-white btn-sm PendingtoAorD"
+                                                                            name="approve">Approved</button></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Team Section -->
+            <div class="tab-pane fade" id="pills-teamReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="col-md-12 d-flex">
+                    <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                        <div class="card-header settinghead">
+                            <h4 class="card-title mb-0 tabletitle">Teams</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row pageinationAdj">
+                                <div class="col-md-6 data_drop5"></div>
+                                <div class="col-md-6 data_search5"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="employee-office-table paginate-table5">
+                                        <div class="table-responsive HRteamTableHeight">
+                                            <table class="table custom-table" id="myTable5">
+                                                <thead style="position: sticky; top: 0; z-index: 1;">
+                                                    <tr class="thcolor">
+                                                        <th>Project</th>
+                                                        <th>Team</th>
+                                                        <th>Manager</th>
+                                                        <th>Employee Name</th>
+                                                        <th>ID</th>
+                                                        <th>Designation</th>
+                                                        <!-- <th>Action</th> -->
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    {% for i in Project_team %}
+                                                    <tr class="tdcolor">
+                                                        <td>{{i.project}}</td>
+                                                        <td>{{i.team}}</td>
+                                                        <td>{{i.manager}}</td>
+                                                        <td>{{i.employee_name}}</td>
+                                                        <td>{{i.employee_id}}</td>
+                                                        <td>{{i.designation}}</td>
+                                                        <!-- <td>
+                                                            <div class="table-action">
+                                                                <button name="remove"
+                                                                    class="btn btn-sm btn-outline-success"
+                                                                    id="id{{forloop.counter}}" value="{{j.employee_id}}"
+                                                                    style="padding: unset;border: unset;"><img
+                                                                        class="trashIconImg"
+                                                                        src="../static/img/remove.png"
+                                                                        style="width:30px;" />
+                                                                </button>
+                                                            </div>
+                                                        </td> -->
+                                                    </tr>
+
+                                                    {% endfor %}
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Change Password</h1>
+                <button type="button" style="font-size: 14px;" class="btn-close" id="closeModal"
+                    aria-label="Close"></button>
+            </div>
+            <form method="post">
+                {%csrf_token%}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="current-pass" class="col-form-label" style="font-size:16px;">Current
+                            Password:</label>
+                        <input type="password" name="old_pwd" class="form-control w-100" id="old_pwd" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new-pass" class="col-form-label" style="font-size:16px;">New
+                            Password:</label>
+                        <input type="password" name="new_pwd" class="form-control w-100" id="new_pwd" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm-pass" class="col-form-label" style="font-size:16px;">Confirm
+                            Password:</label>
+                        <input type="password" name="confirm_pwd" class="form-control w-100" id="confirm_pwd" required>
+                        <span class="text-danger errorMsgSpan" id="matchpass"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="cancelModal">Cancel</button>
+                    <button name="save" class="btn btn-success" id="DataSave">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="status" value="{{passwordstatus}}">
+<script>
+    $(document).ready(function () {
+        var input = document.getElementById('status').value;
+        // alert(input);
+        if (input == '0') {
+            $("#exampleModal").show();
+        } else if (input != '0') {
+            $("#exampleModal").hide();
+        }
+        $("#closeModal, #cancelModal").click(function () {
+            $("#exampleModal").hide();
+        });
+    });
+</script>
+<script>
+    $("#DataSave").click(function () {
+        var pass = document.getElementById('new_pwd').value;
+        var conpass = document.getElementById('confirm_pwd').value;
+        if (pass != conpass) {
+            $('#matchpass').show();
+            return false;
+        }
+    });
+    $("#confirm_pwd").keyup(function () {
+        var pass = document.getElementById('new_pwd').value;
+        var conpass = document.getElementById('confirm_pwd').value;
+        if (pass != conpass) {
+            $('#matchpass').show();
+            return false;
+        } else {
+            $('#matchpass').hide();
+        }
+    });
+</script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['one', 'two', 'three', 'four', 'five'],
+            datasets: [{
+                label: 'No of Employees',
+                data: [6, 9, 8, 3, 5],
+                backgroundColor: [
+                    'rgba(255, 103, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255,1)',
+                    'rgba(154, 200, 64, 1)',
+                    'rgba(154, 171, 154, 1)',
+                    'rgba(255, 156, 132, 1)',
+                    'rgba(110, 23, 65, 1)',
+                    'rgba(189, 568, 89, 1)',
+                    'rgba(175, 19, 0, 1)',
+                    'rgba(155, 153, 255,1)',
+                    'rgba(156, 206, 64, 1)',
+                    'rgba(153, 204, 255, 1)',
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+
+                    labels: {
+                        // This more specific font property overrides the global property
+                        font: {
+                            size: 14
+                        },
+                        boxWidth: 9,
+                        boxHeight: 9,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% block paginate %}
+<script src="../static/js/jquery.dataTables.min.js"></script>
+<script src="../static/js/dataTables.bootstrap.min.js"></script>
+{% endblock paginate %}
+<script>
+    $(document).ready(function () {
+        $("#myTable1").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable1_paginate, #myTable1_info').appendTo('.paginate-table1');
+                $('#myTable1_length').appendTo('.data_drop1');
+                $('#myTable1_filter').appendTo('.data_search1');
+            },
+        });
+        $("#myTable5").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable5_paginate, #myTable5_info').appendTo('.paginate-table5');
+                $('#myTable5_length').appendTo('.data_drop5');
+                $('#myTable5_filter').appendTo('.data_search5');
+            },
+        });
+        $("#myTable6").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable6_paginate, #myTable6_info').appendTo('.paginate-table6');
+                $('#myTable6_length').appendTo('.data_drop6');
+                $('#myTable6_filter').appendTo('.data_search6');
+            },
+        });
+    });
+</script>
+<script src="../static/js/gauge.js"></script>
+<!-- <script src="path/to/gauge-library.js"></script> -->
+<script>
+    var opts = {
+        angle: 0, // The span of the gauge arc// kiểu rẻ quạt: -0.5 <-> 0.5
+        lineWidth: 0.33, // The line thickness: độ dài kim
+        radiusScale: 1, // Relative radius
+        pointer: {
+            length: 0.68, // // Relative to gauge radius
+            strokeWidth: 0.026, // The thickness: độ dày kim
+            color: '#000' // Fill color: màu của kim
+        },
+        limitMax: false,     // If false, max value increases automatically if value > maxValue
+        limitMin: false,     // If true, the min value of the gauge will be fixed
+        colorStart: '#6FADCF',   // Colors
+        colorStop: '#8FC0DA',    // just experiment with them
+        strokeColor: '#E0E0E0',  // to see which ones work best for you
+        generateGradient: true,
+        highDpiSupport: false,     // High resolution support
+
+        staticZones: [
+            { strokeStyle: "rgb(227, 66, 52, 0.7)", min: 0, max: 20 }, // Red //height: 2.4 ->tạo sự nổi bậc
+            { strokeStyle: "rgb(250, 160, 160,0.5)", min: 20, max: 40 }, // Red light
+            { strokeStyle: "rgb(218, 112, 214, 0.5)", min: 40, max: 60 }, // Yellow
+            { strokeStyle: "rgb(135, 206, 235)", min: 60, max: 80 }, // Green light
+            { strokeStyle: "rgb(147, 197, 114,0.7)", min: 80, max: 100 }  // Green
+        ],
+        staticLabels: {
+            font: "12px sans-serif",  // Specifies font
+            labels: [0, 20, 40, 60, 80, 100],  // Print labels at these values
+            color: "#000000",  // Optional: Label text color
+            fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+        }
+    };
+
+    // draw chart 1
+    var target = document.getElementById('chat_1'); // your canvas element
+    var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+    gauge.maxValue = 100; // set max gauge value
+    gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+    gauge.animationSpeed = 32; // set animation speed (32 is default value)
+    gauge.set({{ average_maped }}); // set actual value
+</script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['Task', {% for i in employees %} '{{i|safe}}', {% endfor %}],
+    ['January', {% for i in month1 %} {{ i | safe }}, {% endfor %} ],
+    ['February', {% for i in month2 %} {{ i | safe}}, {% endfor %} ],
+    ['March', {% for i in month3 %} {{ i | safe }}, {% endfor %} ],
+    ['April', {% for i in month4 %} {{ i | safe }}, {% endfor %} ],
+    ['May', {% for i in month5 %} {{ i | safe }}, {% endfor %} ],
+    ['June', {% for i in month6 %} {{ i | safe }}, {% endfor %} ],
+    ['July', {% for i in month7 %} {{ i | safe }}, {% endfor %} ],
+    ['August', {% for i in month8 %} {{ i | safe }}, {% endfor %} ],
+    ['September', {% for i in month9 %} {{ i | safe }} , {% endfor %} ],
+    ['Octomber', {% for i in month10 %} {{ i | safe }}, {% endfor %} ],
+    ['November', {% for i in month11 %} {{ i | safe }}, {% endfor %} ],
+    ['December', {% for i in month12 %} {{ i | safe }}, {% endfor %} ],
+        ]);
+
+    var options = {
+        legend: { position: 'top', maxLines: 3 },
+        bar: { groupWidth: '90%' },
+        height: 300,
+        chartArea: { left: 50, bottom: 60, top: 40, right: 25 },
+        vAxis: {
+            format: 'decimal'
+        },
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('lineChart'));
+
+    chart.draw(data, options);
+    }
+</script>
+<script>
+    // Get all star elements and add click event listeners
+    const stars = document.querySelectorAll('.star_icon');
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const rating = star.getAttribute('data-rating');
+
+            // Toggle star class (empty/filled) for the clicked star
+            if (star.classList.contains('fa-star-o')) {
+                star.classList.remove('fa-star-o');
+                star.classList.add('fa-star');
+            } else {
+                star.classList.remove('fa-star');
+                star.classList.add('fa-star-o');
+            }
+        });
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $(".chng").mouseenter(function () {
+            $(this).css({
+                'background-color': "rgb(223, 220, 220)",
+                'color': 'rgb(1, 1, 68)', 'border-radius': '5%'
+            });
+        });
+        $(".chng").mouseleave(function () {
+            $(this).css({
+                'background-color': 'white',
+                'color': "rgb(34, 33, 33)", 'border-radius': '5%'
+            });
+        });
+        $(".chng").click(function () {
+            $(this).css({ 'color': "rgb(37, 3, 102)" });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Handle row clicks
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("drkclick");
+        });
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("tdcolor");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            $("#raj").css({ "margin-left": "140px" });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".dashboardbody").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            $("#raj").css({ "margin-left": "0px" });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#fullscreen").click(function () {
+            $("#raj").css({ "width": "135%" });
+        });
+        $("#showsidebar").click(function () {
+            $("#raj").css({ "width": "auto" });
+        });
+    });
+</script>
+{% endblock body %}

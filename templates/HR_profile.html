@@ -1,0 +1,230 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Profile{% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: HR PROFILE</title>
+<style>
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .our-team {
+        padding: 30px 0 40px;
+        margin-bottom: 30px;
+        background-color: #d5f3ef;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .our-team .picture {
+        display: inline-block;
+        height: 130px;
+        width: 130px;
+        margin-bottom: 10px;
+        z-index: 1;
+        position: relative;
+    }
+
+    .our-team .picture::before {
+        content: "";
+        width: 100%;
+        height: 0;
+        border-radius: 50%;
+        background-color: #09796b;
+        position: absolute;
+        bottom: 135%;
+        right: 0;
+        left: 0;
+        opacity: 0.9;
+        transform: scale(3);
+        transition: all 0.3s linear 0s;
+    }
+
+    .our-team:hover .picture::before {
+        height: 100%;
+    }
+
+    .our-team .picture::after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #09796b;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+
+    .our-team .picture img {
+        width: 100%;
+        /* height: auto; */
+        height: 130px;
+        border-radius: 50%;
+        transform: scale(1);
+        transition: all 0.9s ease 0s;
+    }
+
+    .our-team:hover .picture img {
+        box-shadow: 0 0 0 14px #f7f5ec;
+        transform: scale(0.7);
+    }
+
+    .our-team .title {
+        display: block;
+        font-size: 15px;
+        color: #4e5052;
+        /* text-transform: capitalize; */
+    }
+
+    .our-team .social {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        background-color: #09796b;
+        position: absolute;
+        bottom: -100px;
+        left: 0;
+        transition: all 0.5s ease 0s;
+    }
+
+    .our-team:hover .social {
+        bottom: 0;
+    }
+
+    .our-team .team-content .name {
+        font-weight: bold;
+        font-size: 24px;
+        color: #09796b;
+        margin-bottom: 10px;
+    }
+
+    .our-team .picture .name {
+        font-weight: bold;
+        font-size: 24px;
+        color: #09796b;
+        margin-bottom: 10px;
+    }
+
+    .our-team .team-content .title {
+        font-size: 17px;
+        color: #09796b;
+        margin-bottom: 10px;
+    }
+
+    .id-details {
+        text-align: left;
+        margin: 15px;
+    }
+
+    .our-team .team-content span {
+        margin: 25px;
+    }
+
+    hr.line-id {
+        border-top: 1px solid #09796b;
+        margin-bottom: 50px;
+    }
+    @media only screen and (max-width: 991px){  
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .middlebox {
+            margin-top: 30px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12 hrpro">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card recent-acti flex-fill shadow-sm grow middlebox">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="our-team ourTeamProfilePage">
+                        <div class="picture">
+                            <img class="img-fluid" src="../{{request.session.profile_pic}}">
+                        </div>
+                        <div class="team-content">
+                            <h2 class="name">{{name}}</h2>
+                            <h4 class="title">Human Resources</h4>
+                            <hr class="line-id">
+                            <div class="id-details">
+                                <h4 class="title"><i class="fa fa-user"
+                                        aria-hidden="true"></i><span>{{profileData.login_id}}</span></h4>
+                                <h4 class="title"><i class="fa fa-envelope" aria-hidden="true"
+                                        style="font-size: 14px;"></i><span>{{profileData.email}}</span></h4>
+                                <h4 class="title"><i class="fa fa-phone"
+                                        aria-hidden="true"></i><span>{{profileData.mobile}}</span></h4>
+                                <h4 class="title"><i class="fa fa-map-marker"
+                                        aria-hidden="true"></i><span>{{profileData.address}}</span></h4>
+                            </div>
+                        </div>
+                        <div class="social">
+                            <a href="HR_EditProfile" class="btn btn-danger text-white ctm-border-radius"
+                                style="margin: 10px 0;">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".hrpro").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".hrpro").css({ "max-width": "66.6%", "flex": "0 0 66.6%" });
+            }
+            else{
+                $(".hrpro").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $(".ourTeamProfilePage").mouseenter(function(){
+            $(".id-details").css({"margin-left":"15px","margin-top":"15px","margin-right":"15px","margin-bottom":"30px"});
+        });
+        $(".ourTeamProfilePage").mouseleave(function(){
+            $(".id-details").css({"margin-left":"15px","margin-top":"15px","margin-right":"15px","margin-bottom":"15px"});
+        });
+    });
+</script>
+{% endblock body %}

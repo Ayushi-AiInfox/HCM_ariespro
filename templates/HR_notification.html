@@ -1,0 +1,100 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Notification{% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: HR NOTIFICATIONS</title>
+<style>
+    .notification-details {
+        overflow: auto;
+        height: 500px;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+    @media only screen and (max-width: 991px){  
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .txt {
+            vertical-align: top;
+            font-size: 13px;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .card-title.mb-0.d-inline-block {
+            font-size: 18px;
+            font-weight: 600;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12 hrnoti">
+    <form method="post">
+        {%csrf_token%}
+        <div class="card shadow-sm ctm-border-radius grow">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h4 class="card-title mb-0 d-inline-block">Notifications</h4>
+                <button name="clear" class="btn btn-theme button-1 ctm-border-radius text-white float-right">
+                    Clear All</button>
+            </div>
+            <div class="card-body align-center">
+                <div class="notification-details">
+                    {% for i,j in notif %}
+                    <div class="sec new">
+                        <div class="profCont">
+                            <img class="profile" src="../{{j}}">
+                        </div>
+                        <div class="txt">{{i.message}}</div>
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".hrnoti").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".hrnoti").css({ "max-width": "66.6%", "flex": "0 0 66.6%" });
+            }
+            else{
+                $(".hrnoti").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+{% endblock body %}

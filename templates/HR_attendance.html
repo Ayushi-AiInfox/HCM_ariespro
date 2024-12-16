@@ -1,0 +1,1918 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Attendance{% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: HR ATTENDANCE</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+    </script>
+
+<!-- jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    a.hrattendanceTimeColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+
+    a.hrattendanceTimeColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .fc-prev-button,
+    .fc-next-button {
+        padding: 7px 8px !important;
+    }
+
+    td:first-child {
+        text-align: left;
+    }
+
+    .label {
+        display: flex;
+        align-items: center;
+        padding-right: 12px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .legends {
+        display: flex;
+        align-items: center;
+    }
+
+    .dashline {
+        border: 6px solid;
+        width: 10px;
+        text-align: left;
+        float: left;
+        margin: unset;
+    }
+
+    .month,
+    .year {
+        border: unset;
+        max-width: 123px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+        text-align: center;
+        padding: 6px !important;
+        margin-right: 10px;
+        font-weight: 600;
+    }
+
+    .btn-popup {
+        background: #5F9EA0;
+        color: #fff;
+        width: 100%;
+    }
+
+    .btn-popup:hover {
+        background: #5F9EA0;
+        color: #fff;
+    }
+
+    /* Popup container - can be anything you want */
+    .popup {
+        position: relative !important;
+        display: inline-block;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        width: 2vw;
+    }
+
+    /* The actual popup */
+    .popuptext {
+        width: 100px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        background-color: #fff;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 0px 0;
+        position:absolute;
+        z-index: 1 !important;
+        top: 95%;
+        /* left: 10%; */
+        margin-left: 0px;
+    }
+
+    tr:last-of-type .popuptext {
+        width: 100px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        background-color: #fff;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 0px 0;
+        position: absolute;
+        z-index: 1;
+        /* top: -306%; */
+        /* margin-top: -130%; */
+        /* left: 160%; */
+        /* margin-left: -80px; */
+    }
+
+    /* Popup arrow */
+    .popuptext::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        /* changed top to bottom */
+        left: 10%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent #555 transparent;
+        /* changed border botom color instead of top*/
+    }
+
+    tr:last-of-type .popuptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: 0px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+        transform: translate(-50%, 0);
+    }
+
+    /* Toggle this class - hide and show the popup */
+    .popup .show {
+        visibility: visible;
+        -webkit-animation: fadeIn 1s;
+        animation: fadeIn 1s;
+    }
+    #flatt{
+        width: 20vw;
+    }
+    
+
+    /* Add animation (fade in the popup) */
+    @-webkit-keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    table td {
+        border: 1px solid #ccc;
+    }
+
+    th {
+        background-color: #001f3f;
+        color: #fff;
+        padding: 0.5em 1em;
+    }
+
+    thead {
+        border-left: 1px solid #001f3f;
+        border-right: 1px solid #001f3f;
+    }
+
+    .employee-office-table {
+        box-shadow: none;
+    }
+
+    .table {
+        color: #000;
+        border: 1px solid #f0f0f0;
+    }
+
+    .custom-table tr {
+        background-color: #fff;
+        box-shadow: 0 0 3px #e5e5e5;
+    }
+
+    .table.custom-table>tbody>tr>td,
+    .table.custom-table>tbody>tr>th,
+    .table.custom-table>tfoot>tr>td,
+    .table.custom-table>tfoot>tr>th,
+    .table.custom-table>thead>tr>td,
+    .table.custom-table>thead>tr>th {
+        padding: 10px 8px;
+        vertical-align: middle;
+    }
+
+    .table-striped>tbody>tr:nth-of-type(2n + 1) {
+        background-color: #f6f6f6;
+    }
+
+    .card-body.leavesHr-applied {
+        padding: 10px 20px;
+    }
+
+    .table-responsive.listofUsers {
+        height: 700px;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(160, 183, 226) !important;
+        /* background-color: #9ddbdd !important; */
+    }
+
+    .drkclick {
+        background-color: rgb(23, 73, 167) !important;
+        color: white !important;
+    }
+
+    .fc-button-group,
+    .fc-icon {
+        display: table;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ededed;
+        margin-bottom: -28px;
+    }
+    .card-title {
+  color: #333;
+  position: relative;
+  top: 6px;
+  left: 12px;
+}
+.fc-prev-button.fc-button.fc-state-default.fc-corner-left,
+    .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+        height: 2rem !important;
+    }
+    .row.topset {
+        margin-bottom: -11px;
+    }
+
+    .table th,
+    .table td {
+        text-align: center;
+        margin-right: 0px;
+        margin-bottom: -1px;
+    }
+    .col-md-6.middledate {
+        position: absolute;
+        left: 5vw;
+    }
+
+    @media (min-width:992px) and (max-width:1100px) {
+        .label {
+            display: flex;
+            align-items: center;
+            padding-right: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .legends-box {
+            padding: unset;
+        }
+
+        .legend-container {
+            white-space: nowrap;
+        }
+
+        .dashline {
+            border: 4px solid;
+            width: 0px;
+            text-align: left;
+            float: left;
+            margin: unset;
+            margin-right: 2px;
+        }
+    }
+
+    @media (min-width:1100px) and (max-width:1200px) {
+        .label {
+            display: flex;
+            align-items: center;
+            padding-right: 6px;
+            font-size: 13.8px;
+            font-weight: 600;
+        }
+
+        .legends-box {
+            padding: unset;
+        }
+
+        .legend-container {
+            white-space: nowrap;
+        }
+
+        .dashline {
+            border: 5px solid;
+            width: 0px;
+            text-align: left;
+            float: left;
+            margin: unset;
+            margin-right: 2px;
+        }
+
+        #export-btn {
+            font-size: 14px;
+        }
+    }
+
+    @media (min-width:1200px) and (max-width:1300px) {
+        .label {
+            display: flex;
+            align-items: center;
+            padding-right: 8px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .legend-container {
+            white-space: nowrap;
+        }
+
+        .dashline {
+            border: 5px solid;
+            width: 5px;
+            text-align: left;
+            float: left;
+            margin: unset;
+            margin-right: 3px;
+        }
+    }
+    @media only screen and (max-width: 1199px){
+        .card-title.mb-0 {
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .col-md-6.middledate {
+            position: absolute;
+            left: 5vw;
+        }
+        .monthbox, .yearbox, .tdcolor, .label {
+            font-size: 12px !important;
+        }
+        .fc-button-group {
+            font-size: 10px;
+        }
+        .atthead {
+            font-size: 13px;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .col-md-6.middledate {
+            position: absolute;
+            left: 0vw;
+            top: 0.8vw;
+        }
+        .fc-button-group {
+            font-size: 8px;
+        }
+        .fc-prev-button.fc-button.fc-state-default.fc-corner-left, 
+        .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+            height: 1.5rem !important;
+            position: relative;
+            top: 15px;
+            margin-bottom: 15px !important;
+        }
+        .legends {
+            display: block;
+        }
+        #export-btn {
+            position: absolute;
+            top: 6vw;
+            width: 25vw !important;
+        }
+        @media only screen and (max-width: 575px){
+            .col-md-6.middledate {
+                position: absolute;
+                top: 1.4vw;
+            }
+            #export-btn {
+                position: absolute;
+                top: 8vw;
+            }
+        }
+        @media only screen and (max-width: 480px){
+            .col-md-6.middledate {
+                position: absolute;
+                top: 2vw;
+            }
+            #export-btn {
+                position: absolute;
+                top: 10vw;
+            }
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8 col-md-12 dashboardbody">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4 class="card-title mb-0">Attendance of Employees</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-6 middledate"
+                                    style="display: flex; padding: unset; justify-content: end;">
+                                    <div class="monthbox" style="padding: unset;">
+                                        <input type="hidden" name="month" value="{{month}}" class="month" readonly
+                                        style="padding: unset;">
+                                    <input type="text" name="" id="month" value="" class="month" readonly
+                                        style="padding: unset;">
+                                    </div>
+                                    <div class="yearbox" style="padding: unset;">
+                                        <input type="text" name="year" value="{{year}}" class="year" readonly
+                                            style="padding: unset;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <!-- <form method="post">
+                                {% csrf_token %} -->
+                                <div class="fc-left" style="position: sticky;">
+
+                                    <div class="fc-button-group">
+                                        <button type="submit" name='prev' value="prev"
+                                            class="fc-prev-button fc-button fc-state-default fc-corner-left"
+                                            title="previous">
+                                            <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                        </button>
+                                        <button type="submit" name='next' value="next"
+                                            class="fc-next-button fc-button fc-state-default fc-corner-right"
+                                            title="next">
+                                            <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                        </button>
+                                    </div>
+
+                                </div>
+                                <!-- </form> -->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="card-body">
+                    <form method="post">
+                        {%csrf_token%}
+                        <div class="col-md-12 mb-4" style="display: flex; align-items: center;">
+                            <div class="col-md-6" style="padding: unset;">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-md-12 mb-2 legends-box" style="display: flex; align-items: center;">
+                        <div class="col-md-11 legend-container" style="padding: unset;">
+                            <div class="legends">
+                                <div class="label">
+                                    <hr class="dashline" style="border-color: #4CBB17; margin-right:5px;"></span>Present
+                                </div>
+                                <div class="label">
+                                    <hr class="dashline" style="border-color: #EE4B2B; margin-right:5px;"></span>Absent
+                                </div>
+                                <div class="label">
+                                    <hr class="dashline" style="border-color: #ffc107; margin-right:5px;"></span>Half
+                                    Day
+                                </div>
+                                <div class="label">
+                                    <hr class="dashline" style="border-color: #A9A9A9; margin-right:5px;"></span>Holiday
+                                </div>
+                                <div class="label">
+                                    <hr class="dashline" style="border-color: rgb(255, 94, 20); margin-right:5px;">
+                                    </span>Paid Leave
+                                </div>
+                                <div class="label">
+                                    <hr class="dashline" style="border-color: #8a4d4d; margin-right:5px;"></span>Unpaid
+                                    Leave
+                                </div>
+                                <div class="label">
+                                    <hr class="dashline" style="border-color: #4682B4; margin-right:5px;"></span>Sick
+                                    Leave
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1" style="display: flex;justify-content: flex-end;padding: unset;">
+                            <a href="javascript:void(0);" id="export-btn" class="btn btn-success" style="width: 65px;
+                            padding: 3px 5px;">Print</a>
+                        </div>
+                    </div>
+
+                    <form id="post-form">
+                        {%csrf_token%}
+                        <div class="employee-office-table" id="emptable">
+                            <div class="table-responsive listofUsers">
+                                <table class="table table-striped custom-table mb-0" id="my-table">
+                                    <thead style="position: sticky;
+                                top: 0;
+                                z-index: 1;">
+                                        <tr class="atthead">
+                                            <th>Emp. Name</th>
+                                            <th colspan="31" style="overflow: hidden;">Days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {%for i in attendance%}
+                                        <tr class="tdcolor">
+                                            <td id="flatt">{{i.name}}</td>
+                                            <td class="popup daysa{{forloop.counter}}" style="background: 
+                                            {% if i.day1 == 'A' %}
+                                                #EE4B2B
+                                            {% elif i.day1 == 'P' %}
+                                                #4CBB17
+                                            {% elif i.day1 == 'HF' %}
+                                                #ffc107
+                                            {% elif i.day1 == 'HL' or i.day1 == 'H' %}
+                                                #A9A9A9
+                                            {% elif i.day1 == 'PL' %}
+                                                rgb(255, 94, 20)
+                                            {% elif i.day1 == 'UL' %}
+                                                #8a4d4d
+                                            {% elif i.day1 == 'SL' %}
+                                                #4682B4
+                                            {% endif %};" onclick="myFunction('a{{forloop.counter}}')">
+                                                1
+                                                <div class="popuptext" id="myPopupa{{forloop.counter}}">
+                                                    <button name="absent" class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('a{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;"
+                                                        value="{{i.user}},day1,A">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('a{{forloop.counter}}', '#ffc107')"
+                                                        class="btn btn-popup halfday" style="margin-bottom: 1px;"
+                                                        value="{{i.user}},day1,HF">Half Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('a{{forloop.counter}}', '#A9A9A9')"
+                                                        class="btn btn-popup holiday" style="margin-bottom: 1px;"
+                                                        style="margin-bottom: 1px;"
+                                                        value="{{i.user}},day1,H">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('a{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day1,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysb{{forloop.counter}}" style="background: {% if i.day2 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day2 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day2 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day2 == 'HL' or i.day2 == 'H' %}
+                                       #A9A9A9
+                                   {% elif i.day2 == 'PL' %}
+                                        rgb(255, 94, 20)
+                                   {% elif i.day2 == 'UL' %}
+                                        #8a4d4d
+                                    {% elif i.day2 == 'SL' %}
+                                        #4682B4    
+                                        {% endif %};" onclick="myFunction('b{{forloop.counter}}')">2
+                                                <div class="popuptext" id="myPopupb{{forloop.counter}}">
+                                                    <button id="absent2{{forloop.counter}}" name="absent"
+                                                        value="{{i.user}},day2,A" class="btn btn-popup absent absent"
+                                                        onclick="changeBackgroundColor('b{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('b{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day2,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;"> Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('b{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day2,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('b{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day2,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysc{{forloop.counter}}" style="background: 
+                                        {% if i.day3 == 'A' %}
+                                            #EE4B2B
+                                   {% elif i.day3 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day3 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day3 == 'HL' or i.day3 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day3 == 'PL' %}
+                                        rgb(255, 94, 20)
+                                   {% elif i.day3 == 'UL' %}
+                                        #8a4d4d
+                                    {% elif i.day3 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('c{{forloop.counter}}')">3
+                                                <div class="popuptext" id="myPopupc{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day3,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('c{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('c{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day3,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('c{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day3,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('c{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day3,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysd{{forloop.counter}}" style="background:  {% if i.day4 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day4 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day4 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day4 == 'HL' or i.day4 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day4 == 'PL' %}
+                                        rgb(255, 94, 20)
+                                        
+                                   {% elif i.day4 == 'UL' %}
+                                        #8a4d4d
+                                    {% elif i.day4 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('d{{forloop.counter}}')">4
+                                                <div class="popuptext" id="myPopupd{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day4,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('d{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('d{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day4,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;"> Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('d{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day4,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('d{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day4,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup dayse{{forloop.counter}}" style="background: {% if i.day5 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day5 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day5 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day5 == 'HL' or i.day5 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day5 == 'PL' %}
+                                        rgb(255, 94, 20)
+                                   {% elif i.day5 == 'UL' %}
+                                       #8a4d4d
+                                    {% elif i.day5 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('e{{forloop.counter}}')">5
+                                                <div class="popuptext" id="myPopupe{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day5,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('e{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('e{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day5,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;"> Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('e{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day5,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('e{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day5,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysf{{forloop.counter}}" style="background: {% if i.day6 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day6 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day6 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day6 == 'HL' or i.day6 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day6 == 'PL' %}
+                                        rgb(255, 94, 20)
+                                   {% elif i.day6 == 'UL' %}
+                                        #8a4d4d
+                                    {% elif i.day6 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('f{{forloop.counter}}')">6
+                                                <div class="popuptext" id="myPopupf{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day6,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('f{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('f{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day6,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;"> Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('f{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day6,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('f{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day6,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysg{{forloop.counter}}" style="background: {% if i.day7 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day7 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day7 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day7 == 'HL' or i.day7 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day7 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day7 == 'UL' %}
+                                        #8a4d4d
+                                    {% elif i.day7 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('g{{forloop.counter}}')">7
+                                                <div class="popuptext" id="myPopupg{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day7,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('g{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('g{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day7,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;"> Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('g{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day7,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('g{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day7,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysh{{forloop.counter}}" style="background: {% if i.day8 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day8 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day8 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day8 == 'HL' or i.day8 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day8 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day8 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day8 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('h{{forloop.counter}}')">8
+                                                <div class="popuptext" id="myPopuph{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day8,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('h{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('h{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day8,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;"> Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('h{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day8,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('h{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day8,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysi{{forloop.counter}}" style="background: {% if i.day9 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day9 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day9 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day9 == 'HL' or i.day9 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day9 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day9 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day9 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('i{{forloop.counter}}')">9
+                                                <div class="popuptext" id="myPopupi{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day9,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('i{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('i{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day9,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;"> Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('i{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day9,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('i{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day9,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysj{{forloop.counter}}" style="background: {% if i.day10 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day10 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day10 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day10 == 'HL' or i.day10 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day10 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day10 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day10 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('j{{forloop.counter}}')">10<div
+                                                    class="popuptext" id="myPopupj{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day10,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('j{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('j{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day10,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('j{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day10,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('j{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day10,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysk{{forloop.counter}}" style="background: {% if i.day11 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day11 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day11 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day11 == 'HL' or i.day11 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day11 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day11 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day11 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('k{{forloop.counter}}')">11<div
+                                                    class="popuptext" id="myPopupk{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day11,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('k{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('k{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day11,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('k{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day11,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('k{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day11,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysl{{forloop.counter}}" style="background: {% if i.day12 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day12 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day12 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day12 == 'HL' or i.day12 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day12 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day12 == 'UL' %}
+                                             #8a4d4d
+                                   {% elif i.day12 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('l{{forloop.counter}}')">12<div
+                                                    class="popuptext" id="myPopupl{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day12,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('l{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('l{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day12,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('l{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day12,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('l{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day12,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysm{{forloop.counter}}" style="background: {% if i.day13 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day13 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day13 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day13 == 'HL' or i.day13 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day13 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day13 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day13 == 'SL' %}
+                                       #4682B4 
+                                        {% endif %};" onclick="myFunction('m{{forloop.counter}}')">13<div
+                                                    class="popuptext" id="myPopupm{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day13,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('m{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('m{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day13,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('m{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day13,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('m{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day13,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysn{{forloop.counter}}" style="background: {% if i.day14 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day14 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day14 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day14 == 'HL' or i.day14 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day14 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day14 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day14 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('n{{forloop.counter}}')">14<div
+                                                    class="popuptext" id="myPopupn{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day14,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('n{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('n{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day14,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('n{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day14,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('n{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day14,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup dayso{{forloop.counter}}" style="background: {% if i.day15 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day15 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day15 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day15 == 'HL' or i.day15 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day15 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day15 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day15 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('o{{forloop.counter}}')">15<div
+                                                    class="popuptext" id="myPopupo{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day15,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('o{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('o{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day15,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('o{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day15,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('o{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day15,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysp{{forloop.counter}}" style="background: {% if i.day16 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day16 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day16 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day16 == 'HL' or i.day16 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day16 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day16 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day16 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('p{{forloop.counter}}')">16<div
+                                                    class="popuptext" id="myPopupp{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day16,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('p{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('p{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day16,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('p{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day16,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('p{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day16,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysr{{forloop.counter}}" style="background: {% if i.day17 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day17 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day17 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day17 == 'HL' or i.day17 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day17 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day17 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day17 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('r{{forloop.counter}}')">17<div
+                                                    class="popuptext" id="myPopupr{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day17,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('r{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('r{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day17,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('r{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day17,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('r{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day17,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup dayss{{forloop.counter}}" style="background: {% if i.day18 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day18 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day18 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day18 == 'HL' or i.day18 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day18 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day18 == 'UL' %}
+                                             #8a4d4d
+                                   {% elif i.day18 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('s{{forloop.counter}}')">18<div
+                                                    class="popuptext" id="myPopups{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day18,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('s{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('s{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day18,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('s{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day18,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('s{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day18,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup dayst{{forloop.counter}}" style="background: {% if i.day19 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day19 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day19 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day19 == 'HL' or i.day19 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day19 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day19 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day19 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('t{{forloop.counter}}')">19<div
+                                                    class="popuptext" id="myPopupt{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day19,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('t{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('t{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day19,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('t{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day19,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('t{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day19,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysu{{forloop.counter}}" style="background: {% if i.day20 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day20 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day20 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day20 == 'HL' or i.day20 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day20 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day20 == 'UL' %}
+                                             #8a4d4d
+                                   {% elif i.day20 == 'SL' %}
+                                       #4682B4 
+                                        {% endif %};" onclick="myFunction('u{{forloop.counter}}')">20<div
+                                                    class="popuptext" id="myPopupu{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day20,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('u{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('u{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day20,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('u{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day20,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('u{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day20,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysv{{forloop.counter}}" style="background: {% if i.day21 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day21 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day21 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day21 == 'HL' or i.day21 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day21 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day21 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day21 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('v{{forloop.counter}}')">21<div
+                                                    class="popuptext" id="myPopupv{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day21,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('v{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('v{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day21,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('v{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day21,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('v{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day21,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysw{{forloop.counter}}" style="background: {% if i.day22 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day22 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day22 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day22 == 'HL' or i.day22 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day22 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day22 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day22 == 'SL' %}
+                                       #4682B4 
+                                        {% endif %};" onclick="myFunction('w{{forloop.counter}}')">22<div
+                                                    class="popuptext" id="myPopupw{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day22,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('w{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('w{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day22,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('w{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day22,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('w{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day22,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysx{{forloop.counter}}" style="background: {% if i.day23 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day23 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day23 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day23 == 'HL' or i.day23 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day23 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day23 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day23 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('x{{forloop.counter}}')">23<div
+                                                    class="popuptext" id="myPopupx{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day23,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('x{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('x{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day23,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('x{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day23,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('x{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day23,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysy{{forloop.counter}}" style="background: {% if i.day24 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day24 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day24 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day24 == 'HL' or i.day24 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day24 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day24 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day24 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('y{{forloop.counter}}')">24<div
+                                                    class="popuptext" id="myPopupy{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day24,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('y{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('y{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day24,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('y{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day24,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('y{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day24,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysz{{forloop.counter}}" style="background: {% if i.day25 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day25 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day25 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day25 == 'HL' or i.day25 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day25 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day25 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day25 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('z{{forloop.counter}}')">25<div
+                                                    class="popuptext" id="myPopupz{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day25,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('z{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('z{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day25,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('z{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day25,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('z{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day25,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysab{{forloop.counter}}" style="background: {% if i.day26 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day26 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day26 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day26 == 'HL' or i.day26 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day26 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day26 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day26 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('ab{{forloop.counter}}')">26<div
+                                                    class="popuptext" id="myPopupab{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day26,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('ab{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('ab{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day26,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('ab{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day26,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('ab{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day26,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup dayscd{{forloop.counter}}" style="background: {% if i.day27 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day27 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day27 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day27 == 'HL' or i.day27 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day27 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day27 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day27 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('cd{{forloop.counter}}')">27<div
+                                                    class="popuptext" id="myPopupcd{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day27,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('cd{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('cd{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day27,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('cd{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day27,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('cd{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day27,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysef{{forloop.counter}}" style="background: {% if i.day28 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day28 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day28 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day28 == 'HL' or i.day28 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day28 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day28 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day28 == 'SL' %}
+                                       #4682B4 
+                                        {% endif %};" onclick="myFunction('ef{{forloop.counter}}')">28<div
+                                                    class="popuptext" id="myPopupef{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day28,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('ef{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('ef{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day28,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('ef{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day28,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('ef{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day28,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysgh{{forloop.counter}}" style="background: {% if i.day29 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day29 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day29 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day29 == 'HL' or i.day29 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day29 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day29 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day29 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('gh{{forloop.counter}}')">29<div
+                                                    class="popuptext" id="myPopupgh{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day29,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('gh{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('gh{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day29,HF" class="btn btn-popu halfdayp"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('gh{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day29,H"
+                                                        class="btn btn-popu holidayp">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('gh{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day29,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup daysij{{forloop.counter}}" style="background: {% if i.day30 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day30 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day30 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day30 == 'HL' or i.day30 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day30 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day30 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day30 == 'SL' %}
+                                       #4682B4 
+                                        {% endif %};" onclick="myFunction('ij{{forloop.counter}}')">30<div
+                                                    class="popuptext" id="myPopupij{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day30,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('ij{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('ij{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day30,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('ij{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day30,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('ij{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day30,P">Present</button>
+                                                </div>
+                                            </td>
+                                            <td class="popup dayskl{{forloop.counter}}" style="background: {% if i.day31 == 'A' %}
+                                        #EE4B2B
+                                   {% elif i.day31 == 'P' %}
+                                       #4CBB17
+                                   {% elif i.day31 == 'HF' %}
+                                       #ffc107
+                                   {% elif i.day31 == 'HL' or i.day31 == 'H' %}
+                                       #A9A9A9
+                                   
+                                   {% elif i.day31 == 'PL' %}
+                                   rgb(255, 94, 20)
+                                   {% elif i.day31 == 'UL' %}
+                                             #8a4d4d
+                                    {% elif i.day31 == 'SL' %}
+                                        #4682B4 
+                                        {% endif %};" onclick="myFunction('kl{{forloop.counter}}')">31<div
+                                                    class="popuptext" id="myPopupkl{{forloop.counter}}">
+                                                    <button name="absent" value="{{i.user}},day31,A"
+                                                        class="btn btn-popup absent"
+                                                        onclick="changeBackgroundColor('kl{{forloop.counter}}', '#EE4B2B')"
+                                                        style="border-bottom: unset; margin-bottom: 1px;">Absent</button><br>
+                                                    <button name="halfday"
+                                                        onclick="changeBackgroundColor1('kl{{forloop.counter}}', '#ffc107')"
+                                                        value="{{i.user}},day31,HF" class="btn btn-popup halfday"
+                                                        style="margin-bottom: 1px;">Half
+                                                        Day</button><br>
+                                                    <button name="holiday"
+                                                        onclick="changeBackgroundColor2('kl{{forloop.counter}}', '#A9A9A9')"
+                                                        value="{{i.user}},day31,H" class="btn btn-popup holiday"
+                                                        style="margin-bottom: 1px;">Holiday</button><br>
+                                                    <button name="present"
+                                                        onclick="changeBackgroundColor3('kl{{forloop.counter}}', '#4CBB17')"
+                                                        class="btn btn-popup present"
+                                                        value="{{i.user}},day31,P">Present</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <script>
+
+                                            if ('{{month}}' == 1) {
+                                                document.getElementById('month').value = "January";
+                                            }
+                                            if ('{{month}}' == 2) {
+                                                document.getElementById('month').value = "February";
+                                                if ('{{leapyear}}' == 0) {
+                                                    $(".days29{{forloop.counter}}").hide();
+                                                    $(".days30{{forloop.counter}}").hide();
+                                                    $(".days31{{forloop.counter}}").hide();
+                                                } else if ('{{leapyear}}' == 1) {
+                                                    $(".days30{{forloop.counter}}").hide();
+                                                    $(".days31{{forloop.counter}}").hide();
+                                                }
+                                            }
+                                            if ('{{month}}' == 3) {
+                                                document.getElementById('month').value = "March";
+                                            }
+                                            if ('{{month}}' == 4) {
+                                                document.getElementById('month').value = "April";
+                                                $(".days31{{forloop.counter}}").hide();
+                                            }
+                                            if ('{{month}}' == 5) {
+                                                document.getElementById('month').value = "May";
+                                            }
+                                            if ('{{month}}' == 6) {
+                                                document.getElementById('month').value = "June";
+                                                $(".days31{{forloop.counter}}").hide();
+                                            }
+                                            if ('{{month}}' == 7) {
+                                                document.getElementById('month').value = "July";
+                                            }
+                                            if ('{{month}}' == 8) {
+                                                document.getElementById('month').value = "August";
+                                            }
+                                            if ('{{month}}' == 9) {
+
+                                                document.getElementById('month').value = "September";
+                                                $(".days31{{forloop.counter}}").hide();
+                                            }
+                                            if ('{{month}}' == 10) {
+                                                document.getElementById('month').value = "October";
+                                            }
+                                            if ('{{month}}' == 11) {
+                                                document.getElementById('month').value = "November";
+                                                $(".days31{{forloop.counter}}").hide();
+                                            }
+                                            if ('{{month}}' == 12) {
+                                                document.getElementById('month').value = "December";
+                                            }
+                                        </script>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <input type="hidden" id="values">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(".popuptext").hide();
+    function myFunction(myval) {
+        // Get a reference to the popup element
+        var popup = $("#myPopup" + myval);
+
+        // Check if the popup is visible
+        if (popup.is(":visible")) {
+            // If the popup is already visible, hide it
+            popup.hide();
+        } else {
+            // Otherwise, hide all other popups and show the clicked popup
+            $(".popuptext").hide();
+            popup.show();
+        }
+    }
+
+</script>
+<!-- <img src="../static/img/logo.png" alt=""> -->
+<script>
+    $(document).ready(function () {
+        window.jsPDF = window.jspdf.jsPDF;
+        $('#export-btn').click(function () {
+            var doc = new jsPDF('p', 'mm', 'a4');
+
+            // Add the company logo and title to the PDF
+            var imgData = '../static/img/logo.png';
+            var title = 'Attendance of Employees';
+            var imgWidth = 30; // Adjust the width as needed
+            var imgHeight = 8; // Adjust the height ratio as needed
+
+            // Set the image on the right side
+            doc.addImage(imgData, 'PNG', doc.internal.pageSize.getWidth() - imgWidth - 10, 5, imgWidth, imgHeight);
+
+            // Set the title on the left side
+            doc.setFontSize(12);
+            doc.text(title, 10, 10);
+
+            // Add the table content to the PDF
+            var table = $('#my-table')[0];
+            html2canvas(table).then(function (canvas) {
+                var imgData = canvas.toDataURL('image/png');
+                var imgWidth = doc.internal.pageSize.getWidth();
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+
+                doc.addImage(imgData, 'PNG', 10, 18, imgWidth - 20, imgHeight);
+                doc.save('Attendance_sheet.pdf');
+            });
+        });
+
+    });
+</script>
+<script>
+    function changeBackgroundColor(tdNumber, color) {
+        var tdElement = document.querySelector('.days' + tdNumber);
+        tdElement.style.background = color;
+    }
+    function changeBackgroundColor1(tdNumber, color) {
+        var tdElement = document.querySelector('.days' + tdNumber);
+        tdElement.style.background = color;
+    }
+    function changeBackgroundColor2(tdNumber, color) {
+        var tdElement = document.querySelector('.days' + tdNumber);
+        tdElement.style.background = color;
+    }
+    function changeBackgroundColor3(tdNumber, color) {
+        var tdElement = document.querySelector('.days' + tdNumber);
+        tdElement.style.background = color;
+    }
+    $(".absent").click(function () {
+        var buttonValue = $(this).val();
+        $("#values").val(buttonValue + ',' + '{{month}}' + ',' + '{{year}}');
+    });
+    $(".holiday").click(function () {
+        var buttonValue = $(this).val();
+        $("#values").val(buttonValue + ',' + '{{month}}' + ',' + '{{year}}');
+        console.log(buttonValue); // Output the value of the clicked button
+    });
+    $(".halfday").click(function () {
+        var buttonValue = $(this).val();
+        $("#values").val(buttonValue + ',' + '{{month}}' + ',' + '{{year}}');
+        console.log(buttonValue); // Output the value of the clicked button
+    });
+    $(".present").click(function () {
+        var buttonValue = $(this).val();
+        $("#values").val(buttonValue + ',' + '{{month}}' + ',' + '{{year}}');
+    });
+</script>
+<script>
+    $(document).on('submit', '#post-form', function (e) {
+        // alert("form")
+        e.preventDefault();
+        // Get the CSRF token from the cookie
+        var csrftoken = getCookie('csrftoken');
+
+        $.ajax({
+            type: 'POST',
+            url: '../hr/attendance_test_create',
+
+            data: {
+                absent: $('#values').val(),
+                csrfmiddlewaretoken: csrftoken,
+            },
+            success: function () {
+                // alert("form submited")
+                // Handle the success response
+            }
+
+        });
+
+    });
+
+    // Function to retrieve the CSRF token from the cookie
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        // Handle row clicks
+        $("table").on("click", "tbody tr td:first-child", function () {
+            $(this).closest("tr").toggleClass("drkclick");
+
+        });
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("tdcolor");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            $("#flatt").css({ "width": "40vw" });     // width of names only
+            //$(".fc-left").css({ "margin-left": "53px" });
+            //$(".popup").css({"width":"2vw"});
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".dashboardbody").css({ "max-width": "66.6%", "flex": "0 0 66.6%" });
+            }
+            else{
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            $("#flatt").css({ "width": "20vw" });
+            //$(".fc-left").css({ "margin-left": "-12px" });
+            //$(".popup").css({"width":"2vw"});
+        });
+    });
+</script>
+{% endblock body %}

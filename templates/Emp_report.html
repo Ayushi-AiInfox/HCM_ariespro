@@ -1,0 +1,266 @@
+{% extends 'header.html' %}
+{% block user %}Welcome, {{name}}{% endblock %}
+{% block style %}
+<title>WFM :: EMPLOYEE REPORT</title>
+<link rel="stylesheet" href="../static/plugins/select2/select2.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .table-responsive.reportsTableHeight {
+        height: 390px;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .chart-container.myChartPie {
+        max-width: 350px;
+        margin: auto;
+
+    }
+
+    .card-body.recent-activ.admin-activ.graph.chart-container {
+        box-shadow: 0 5px 10px #6a6a6a;
+    }
+
+    a.EmpReportColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.EmpReportColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .color-change::placeholder {
+        color: #09697b;
+        font-style: italic;
+    }
+
+    tr:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.8rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .card-title {
+        color: #333;
+        position: relative;
+        left: 10px;
+    }
+
+    @media only screen and (max-width: 991px) {
+
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+
+        .sidebar.sidebar-user {
+            position: relative;
+            top: 15px;
+        }
+
+        .logo a img {
+            width: 200px;
+            border-radius: 10px;
+            padding: 0px;
+            position: relative;
+            top: 8px !important;
+        }
+
+        .user-card.card.shadow-sm.bg-white.text-center.ctm-border-radius {
+            margin-top: -15px;
+        }
+    }
+
+    @media only screen and (max-width:576px) {
+        .pieChartProjects {
+            margin-top: 25px;
+        }
+
+        .card {
+            margin-bottom: 30px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block addr %}Report{% endblock addr %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12 empreport" id="search_para">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card recent-acti flex-fill shadow-sm grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 d-inline-block">Reports</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-body recent-activ admin-activ graph chart-container"
+                        style="position: relative; width:100%">
+                        <div id="barChart"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm ctm-border-radius grow">
+        <div class="card-body align-center">
+            <div class="row">
+                <div class="col-xl-7 col-sm-7">
+                    <div class="employee-office-table">
+                        <div class="table-responsive reportsTableHeight">
+                            <table class="table custom-table">
+                                <thead style="position: sticky;
+                                top: 0;
+                                z-index: 1;">
+                                    <tr class="thcolor">
+                                        <th>Serial No.</th>
+                                        <th>Title</th>
+                                        <th>Duration(Hrs)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for key,value in dlist%}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{key}}</td>
+                                        <td>{{value}}</td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-5 col-sm-5">
+                    <!-- <div class="card-body recent-activ admin-activ graph" id='pie-chart'></div> -->
+                    <div class="card-body recent-activ admin-activ graph pieChartProjects"
+                        style="box-shadow: 0 5px 10px #6a6a6a;">
+                        <div class="chart-container myChartPie" style="position: relative; width:100%">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Script to Stacked Graph -->
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [{% for i in label %} '{{i}}', {% endfor %}],
+    datasets: [{
+        label: 'Hours',
+        data: [{% for j in data %} {{ j }}, {% endfor %}],
+        backgroundColor: [
+            'rgba(220, 57, 18, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(755, 192, 192, 1)',
+            'rgba(153, 102, 255,1)',
+            'rgba(154, 200, 64, 1)',
+            'rgba(110, 23, 65, 1)',
+            'rgba(154, 225, 255, 1)',
+            'rgba(168, 153, 0, 1)',
+            'rgba(153, 204, 255, 1)'
+        ]
+            }]
+        },
+    options: {
+        responsive: true,
+            plugins: {
+            legend: {
+                position: 'bottom',
+
+                    labels: {
+                    boxWidth: 8,
+                        boxHeight: 8,
+                            usePointStyle: true,
+                                pointStyle: 'circle',
+                    }
+            }
+        }
+    }
+    });
+</script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(drawStacked1);
+
+    function drawStacked1() {
+        var data = google.visualization.arrayToDataTable([
+            ['abc', 'Hours'],
+            {% for i,j in emp_dash_ %}
+
+                ['{{i}}',{{j}}],
+        
+            {% endfor %}
+            
+        ]);
+        
+        
+    var options = {
+        legend: { position: 'none', maxLines: 3 },
+        colors: ['#DA70D6', '#E4D00A', '#4F7942', '#DC143C', "#673147", "orange"],
+        bar: { groupWidth: '70%' },
+        // isStacked: true,
+        vAxis: {
+            format: 'decimal'
+        },
+        height: 250
+    };
+
+    var chart = new google.visualization.ColumnChart(document.getElementById("barChart"));
+    chart.draw(data, options);
+}
+
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".empreport").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            $("#barChart").css({ "margin-left": "180px" });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if ($(window).width() > 991 && $(window).width() < 1200) {
+                $(".empreport").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".empreport").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            $("#barChart").css({ "margin-left": "" });
+        });
+    });
+</script>
+{% endblock body %}

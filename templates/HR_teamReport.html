@@ -1,0 +1,610 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Team Report{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock user %}
+{% block style %}
+<title>WFM :: HR TEAM REPORT</title>
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<style>
+    #wid {
+        /* background-color: pink; */
+        width: 310px !important;
+
+        min-width: 260px !important;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .table-responsive.officialTableReport {
+        height: 556px;
+    }
+
+    .officialReportCustomTable tbody+tbody {
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table-responsive.leaveReportHeight,
+    div#pills-payrollReport .table-responsive,
+    #pills-contactReport .table-responsive {
+        height: 430px;
+    }
+
+    #pills-profile .table-responsive {
+        height: 570px !important;
+    }
+
+    a.hrTeamReportColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrTeamReportColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .dataTables_length label {
+        /* display: block ruby;
+        width: 50px; */
+        margin-top: 5px;
+    }
+
+    label {
+        display: flex;
+        margin-bottom: .5rem;
+        margin-right: 5%;
+    }
+
+    table.dataTable {
+        clear: both;
+        margin-top: -3px !important;
+        margin-bottom: 6px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+        border-spacing: 0px;
+        width: 66vw;
+    }
+
+    div[class^="col-"]:last-child {
+        padding-right: 0;
+        margin-top: 1%;
+    }
+
+    .dataTables_filter {
+        float: right;
+        margin-top: -1%;
+    }
+
+    .row {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-right: 1px;
+        margin-left: -15px;
+    }
+
+    .form-control {
+        border-color: #e3e3e3;
+        box-shadow: none;
+        font-size: 15px;
+        height: 33px;
+        color: #625b55;
+        width: 80px;
+    }
+
+    .adjlen {
+        max-width: 400px;
+        /* Set your preferred maximum width */
+        overflow: hidden;
+        white-space: normal;
+        /* text-overflow: ellipsis; Display an ellipsis (...) when content overflows */
+
+    }
+
+    table .custom-table1 {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .drkclick {
+        background-color: rgb(202, 178, 178) !important;
+    }
+
+    
+    .tophedset,.secondtop2 {
+      padding: 0.8rem;
+    }
+    .secondtop, #tbshow2 {
+      position: relative;
+      top: -30px;
+    }
+
+    .searchtable {
+      position: relative;
+      top: 0px;
+      left: 0px;
+    }
+
+    @media only screen and (max-width: 1199px){
+        label, .thcolor, #myTable1_info, #myTable2_info {
+            font-size: 13px;
+        }
+        .form-control.input-sm {
+            font-size: 13px;
+            height: 30px;
+        }
+        .tdcolor.odd, .tdcolor.even, .pagination, .tdcolor {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 1024px) {
+        .table-responsive.officialTableReport {
+            max-height: 665px;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm, .secondtop, #tbshow2 {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        #pills-teamReport {
+            margin-top: -20px;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .searchtable {
+            display: flow-root;
+        }
+    }
+    @media only screen and (max-width: 509px){
+        .searchtable {
+            display: inline-block;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12 dashboardbody">
+    <div class="quicklink-sidebar-menu ctm-border-radius shadow-sm grow bg-white card ">
+        <!-- Report Lists  -->
+        <div class="card-body align-center tophedset">
+            <ul class="nav flex-row nav-pills" role="tablist">
+                <li class="nav-item mr-2">
+                    <a class="nav-link active mb-2" id="tmrpt" data-toggle="pill" href="#pills-teamReport" role="tab"
+                        aria-controls="pills-home" aria-selected="true">Team Reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="levrpt" name="leave_report" data-toggle="pill" href="#pills-leaveReport"
+                        role="tab" aria-controls="pills-profile" aria-selected="false">Leave reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pyrol" data-toggle="pill" href="#pills-payrollReport" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Payroll reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="cnrpt" data-toggle="pill" href="#pills-contactReport" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Contact reports</a>
+                </li>
+            </ul>
+        </div>
+        <!-- End Here -->
+    </div>
+
+
+
+    <div class="card-body align-center">
+        <div class="tab-content">
+            <!-- Team Report Section -->
+
+            <div class="tab-pane fade show active" id="pills-teamReport" role="tabpanel"
+                aria-labelledby="pills-home-tab">
+                <div class="card shadow-sm grow ctm-border-radius secondtop">
+                    <div class="card-body align-center tophedset">
+                        <ul class="nav flex-row nav-pills" id="pills-tab" role="tablist">
+                            <li class="nav-item mr-2">
+                                <a class="nav-link active mb-2" id="pills-home-tab1" data-toggle="pill"
+                                    href="#pills-home1" role="tab" aria-controls="pills-home"
+                                    aria-selected="true">Official Reports</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
+                                    role="tab" aria-controls="pills-profile" aria-selected="false">Personal reports</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card shadow-sm grow ctm-border-radius" id="tbshow2">
+                    <div class="card-body align-center" style="padding: 10px;">
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="row searchtable">
+                                <div class="col-md-6 data_drop1"></div>
+                                <div class="col-md-6 data_search1"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="tab-pane fade show active" id="pills-home1" role="tabpanel"
+                                        aria-labelledby="pills-home-tab">
+                                        <div class="employee-office-table paginate-table1">
+                                            <div class="table-responsive officialTableReport">
+                                                <table class="table custom-table officialReportCustomTable"
+                                                    id="myTable1">
+                                                    <thead style="position: sticky;
+                                                top: 0;
+                                                z-index: 1;">
+                                                        <tr class="thcolor">
+                                                            <th>Sr. No.</th>
+                                                            <th>Managed By</th>
+                                                            <th>Employee Name</th>
+                                                            <th>ID</th>
+                                                            <th>Project</th>
+                                                            <th>Designation</th>
+                                                            <th>Start Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {%for i in team_data %}
+                                                        <tr class="tdcolor">
+                                                            <td>{{forloop.counter}}</td>
+                                                            <td>{{i.manager}}</td>
+
+                                                            <td>{{i.employee_name}}</td>
+                                                            <td>{{i.employee_id}}</td>
+
+                                                            <td>{{i.project}}</td>
+                                                            <td>{{i.designation}}</td>
+                                                            <td>{{i.crt_date}}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card shadow-sm grow ctm-border-radius" id="tbshow">
+                <div class="card-body align-center" style="padding: 10px;">
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="row searchtable">
+                            <div class="col-md-6 data_drop2"></div>
+                            <div class="col-md-6 data_search2"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="tab-pane fade" id="pills-profile" role="tabpanel"
+                                    aria-labelledby="pills-profile-tab">
+                                    <div class="employee-office-table paginate-table2">
+                                        <div class="table-responsive">
+                                            <table class="table custom-table1 table-hover" id="myTable2">
+                                                <thead
+                                                    style="position: sticky; top: 0; z-index: 1; background-color: white;">
+                                                    <tr class="thcolor">
+                                                        <th>Name</th>
+                                                        <th>Gender</th>
+                                                        <th>Current Salary</th>
+                                                        <th>Date Of Birth</th>
+                                                        <th>Phone Number</th>
+                                                        <th>Address</th>
+                                                        <th>Bank Name</th>
+                                                        <th>Account Number</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i in employee %}
+                                                    <tr class="tdcolor">
+                                                        <td>
+                                                            <h2>{{ i.f_name }}</h2>
+                                                        </td>
+                                                        <td>{{ i.gender }}</td>
+                                                        <td>{{ i.salary }}</td>
+                                                        <td>{{ i.dob }}</td>
+                                                        <td>{{ i.mobile }}</td>
+                                                        <td id="wid" class="adjlen"
+                                                            style="max-width: 600px !important;">
+                                                            {{i.address}}</td>
+                                                        <td>{{ i.bank_name }}</td>
+                                                        <td>{{ i.account_number }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Here -->
+
+            <!-- Leave Report Section -->
+
+            <div class="tab-pane fade" id="pills-leaveReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="card shadow-sm grow ctm-border-radius">
+                    <div class="card-body align-center">
+                        <div class="employee-office-table">
+                            <div class="table-responsive leaveReportHeight">
+                                <table class="table custom-table table-hover">
+                                    <thead style="position: sticky;
+                                    top: 0;
+                                    z-index: 1;">
+                                        <tr class="thcolor">
+                                            <th>Name</th>
+                                            <th>Days Remaining</th>
+                                            <th>Days Approved</th>
+                                            <th>Sick Days</th>
+                                            <th>Work From Home</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in leave %}
+                                        <tr class="tdcolor">
+                                            <td>
+
+                                                <h2>{{i.name}}</h2>
+                                            </td>
+                                            <td>{{i.days_allowed}}</td>
+                                            <td>{{i.taken}}</td>
+                                            <td>{{i.sick_day}}</td>
+                                            <td>{{i.work_from_home}}</td>
+
+                                        </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Here -->
+
+            <!-- Payroll Report Section -->
+
+            <div class="tab-pane fade" id="pills-payrollReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="card shadow-sm ctm-border-radius grow">
+                    <div class="card-body align-center">
+                        <div class="employee-office-table">
+                            <div class="table-responsive">
+                                <table class="table custom-table">
+                                    <thead style="position: sticky;
+                                    top: 0;
+                                    z-index: 1;">
+                                        <tr class="thcolor">
+                                            <th>Name</th>
+                                            <th>Salary</th>
+                                            <th>Bank Name</th>
+                                            <th>Account Number</th>
+                                            <th>Current Salary</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {%for i in employee %}
+                                        <tr class="tdcolor">
+                                            <td>
+                                                <h2>{{i.f_name}}</h2>
+                                            </td>
+                                            <td>{{i.salary}}</td>
+                                            <td>{{i.bank_name}}</td>
+                                            <td>{{i.account_number}}</td>
+                                            <td>{{i.salary}}</td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Here -->
+
+            <!-- Contact Report Section -->
+
+            <div class="tab-pane fade" id="pills-contactReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="card shadow-sm ctm-border-radius grow">
+                    <div class="card-body align-center">
+                        <div class="employee-office-table">
+                            <div class="table-responsive">
+                                <table class="table custom-table table-hover">
+                                    <thead style="position: sticky;
+                                    top: 0;
+                                    z-index: 1;">
+                                        <tr class="thcolor">
+                                            <th>Team Member</th>
+                                            <th>Email</th>
+                                            <th>Phone Number</th>
+                                            <th>Secondary Phone Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {%for i in employee %}
+                                        <tr class="tdcolor">
+                                            <td>
+                                                <h2>{{i.f_name}}</h2>
+                                            </td>
+                                            <td>{{i.email}}</td>
+                                            <td>{{i.mobile}}</td>
+                                            <td>{{i.mobile_alt}}</td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Here -->
+
+        </div>
+    </div>
+</div>
+{% block paginate %}
+<script src="../static/js/jquery.dataTables.min.js"></script>
+<script src="../static/js/dataTables.bootstrap.min.js"></script>
+{% endblock paginate %}
+<script>
+    $(document).ready(function () {
+        $("#myTable1").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable1_paginate, #myTable1_info').appendTo('.paginate-table1');
+                $('#myTable1_length').appendTo('.data_drop1');
+                $('#myTable1_filter').appendTo('.data_search1');
+            },
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#myTable2").DataTable({
+            "lengthMenu": [50, 100, 150, 200, 250],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            columnDefs: [
+                { width: 70, targets: 5 },
+                { className: '.adjlen', targets: 5 },
+            ],
+            fixedColumns: true,
+            initComplete: function (settings, json) {
+                $('#myTable2_paginate, #myTable2_info').appendTo('.paginate-table2');
+                $('#myTable2_length').appendTo('.data_drop2');
+                $('#myTable2_filter').appendTo('.data_search2');
+
+                // Trigger a draw after moving elements to ensure proper rendering
+                this.api().columns.adjust().draw();
+            },
+        });
+    });
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#tbshow').hide();
+        $('#pills-home-tab1').click(function () {
+            $('#tbshow').hide();
+            $('#tbshow2').show();
+        });
+        $('#pills-profile-tab').click(function () {
+            $('#tbshow2').hide();
+            $('#tbshow').show();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#levrpt').click(function () {
+            $('#tbshow').hide();
+        });
+        $('#pyrol').click(function () {
+            $('#tbshow').hide();
+        });
+        $('#cnrpt').click(function () {
+            $('#tbshow').hide();
+        });
+        $('#tmrpt').click(function () {
+            // $('#tbshow').show();
+            $("#pills-home-tab1").click();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Handle row clicks
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("drkclick");
+        });
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("tdcolor");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+            $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".dashboardbody").css({ "max-width": "66.6%", "flex": "0 0 66.6%" });
+            }
+            else{
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $("#fullscreen").click(function(){
+            $("table.dataTable").css({"width":"90vw"});
+        });
+        $("#showsidebar").click(function(){
+            $("table.dataTable").css({"width":"66vw"});
+        });
+    });
+</script>
+
+
+{% endblock body %}

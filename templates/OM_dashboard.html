@@ -1,0 +1,423 @@
+{% extends 'OM_header.html' %}
+{% block addr%}Dashboard{% endblock addr%}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: MANAGER DASHBOARD</title>
+<style>
+    .table-responsive.listofEmpHeight,
+    .table-responsive.projectsHeight {
+        height: 340px;
+    }
+
+    a.my_list_board.text-dark.cmDashboardColorChange.p-4.first-slider-btn.ctm-border-right.ctm-border-left.ctm-border-top {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.my_list_board.text-dark.cmDashboardColorChange.p-4.first-slider-btn.ctm-border-right.ctm-border-left.ctm-border-top:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .drkclick {
+        background-color: rgb(202, 178, 178) !important;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.7rem;
+        border-bottom: 1px solid #ededed;
+    }
+    .nameclick {
+        background-color: white;
+        border-radius: 7px;
+        border-style: none;
+        color: black;
+        width: 173px;
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        h4.card-title.mb-0 {
+            font-size: 18px;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .fourcards{
+            position: relative;
+            bottom: 40px;
+        }
+        
+    }
+    @media only screen and (max-width: 657px){
+        .card-right2 .card-title {
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        .card-right2 p {
+            font-size: 16px;
+            font-weight: 650;
+        }
+        .card-icon {
+            width: 50px;
+            height: 50px;
+        }
+        .thcolor {
+            font-size: 13px;
+        }
+        .tdcolor {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 575px){
+        .card-icon {
+            width: 90px;
+            height: 60px;
+            position: relative;
+            left: 30px;
+        }
+        .card-right2 .card-title {
+            font-size: 16px;
+        }
+    }
+    @media only screen and (max-width: 388px){
+        .card-icon {
+            width: 60px;
+            height: 50px;
+            position: relative;
+            left: 10px;
+        }
+        h4.card-title.mb-0 {
+            font-size: 16px;
+        }
+    }
+</style>
+{% endblock style %}
+
+{% block work_location %}
+<div class="user-dropdown user-info align-right dropdown d-inline-block header-dropdown">
+    <form method="post">
+        {% csrf_token %}
+        <select name="work_location" class="form-control form-select select-emp" id="" onchange="this.form.submit();">
+        
+            <option {% if request.session.work_location == 'IN' %} selected {% endif %} value="IN">INDIA</option>
+            <option {% if request.session.work_location == 'US' %} selected {% endif %} value="US">USA</option>
+        </select>
+    </form>
+</div>
+{% endblock work_location %}
+
+
+
+{% block notify %}
+<div class="user-info align-right dropdown d-inline-block header-dropdown">
+    <a href="javascript:void(0)" data-toggle="dropdown" class=" menu-style dropdown-toggle">
+        <div class="user-avatar d-inline-block">
+            <i class="fa fa-comments notify"></i><span class="badge" id="badge">{{notify}}</span>
+        </div>
+    </a>
+    <div class="dropdown-menu notification-dropdown-menu shadow-lg border-0 m-0 dropdown-menu-right"
+        style="min-width: 23rem;">
+        <div class="cont">
+            {% for i,j in noti %}
+            <div class="sec new">
+                <div class="profCont">
+                    <img class="profile" src="../{{j}}">
+                </div>
+                <div class="txt messages messages{{forloop.counter}}" id="messages">{{i.message}}</div>
+            </div>
+            {%endfor%}
+            <div class="sec new" style="border-bottom: none;">
+                <div class="text-center sub"><a href="CM_notification">View All
+                        Notifications</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock notify %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12 dashboardbody">
+    <div class="row">
+        <div class="col-md-6 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow timesheetdiv">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Timesheet</h4>
+                </div>
+                <div class="card-body" style="margin: 40px auto;">
+                    <div class="row fourcards">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="card dash-widget ctm-border-radius shadow-sm grow">
+                                <div class="card-body" style="padding: 10px;">
+                                    <div class="card-icon bg-danger">
+                                        <i class="fa fa-calendar-minus-o"></i>
+                                    </div>
+                                    <div class="card-right2">
+                                        <h4 class="card-title">Total Pending</h4>
+                                        <p class="card-text">{{total_pending}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6 col-12">
+                            <div class="card dash-widget ctm-border-radius shadow-sm grow">
+                                <div class="card-body" style="padding: 10px;">
+                                    <div class="card-icon bg-success">
+                                        <i class="fa fa-calendar-plus-o"></i>
+                                    </div>
+                                    <div class="card-right2">
+                                        <h4 class="card-title">Total Approved</h4>
+                                        <p class="card-text">{{total_approved}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6 col-12">
+                            <div class="card dash-widget ctm-border-radius shadow-sm grow">
+                                <div class="card-body" style="padding: 10px;">
+                                    <div class="card-icon bg-danger">
+                                        <i class="fa fa-calendar-minus-o"></i>
+                                    </div>
+                                    <div class="card-right2">
+                                        <h4 class="card-title">Last Month Pending</h4>
+                                        <p class="card-text">{{total_pending_last}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6 col-12">
+                            <div class="card dash-widget ctm-border-radius shadow-sm grow">
+                                <div class="card-body" style="padding: 10px;">
+                                    <div class="card-icon bg-success">
+                                        <i class="fa fa-calendar-plus-o"></i>
+                                    </div>
+                                    <div class="card-right2">
+                                        <h4 class="card-title">Last Month Approved</h4>
+                                        <p class="card-text">{{total_approved_last}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Projects</h4>
+                </div>
+                <div class="card-body">
+                    <div class="employee-office-table">
+                        <div class="table-responsive projectsHeight">
+                            <table class="table custom-table">
+                                <thead style="position: sticky;
+                                top: 0;
+                                z-index: 1;">
+                                    <tr class="thcolor">
+                                        <th>Serial No.</th>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for i in project%}
+                                    <tr class="tdcolor">
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{i.project_name}}</td>
+                                        <td>{{i.status}}</td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post">
+        {%csrf_token%}
+        <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">List Of Employees</h4>
+                </div>
+                <div class="card-body">
+                    <div class="employee-office-table">
+                        <div class="table-responsive listofEmpHeight">
+                            <table class="table custom-table">
+                                <thead style="position: sticky;
+                                top: 0;
+                                z-index: 1;">
+                                    <tr class="thcolor">
+                                        <th>Serial No.</th>
+                                        <th>Name</th>
+                                        <th>ID</th>
+                                        <th>Designation</th>
+                                        <th>Manager</th>
+                                        <th>Leave Taken</th>
+                                        <th>Leave Remaining</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for i in employee%}
+                                    <tr class="tdcolor">
+                                        <td>{{forloop.counter}}</td>
+                                        <td><button name="emp_details" class="nameclick"
+                                            value="{{i.login_id}}" href="">{{i.f_name}}
+                                            {{i.l_name}}</button></td>
+                                        <td>{{i.login_id}}</td>
+                                        <td>{{i.designations}}</td>
+                                        <td>{{i.managers}}</td>
+                                        <td>{{i.leave_taken}}</td>
+                                        <td>{{i.leave_remaining}}</td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div></form>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Change Password</h1>
+                <button type="button" style="font-size: 14px;" class="btn-close" id="closeModal"
+                    aria-label="Close"></button>
+            </div>
+            <form method="post">
+                {%csrf_token%}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="current-pass" class="col-form-label" style="font-size:16px;">Current
+                            Password:</label>
+                        <input type="password" name="old_pwd" class="form-control w-100" id="old_pwd" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new-pass" class="col-form-label" style="font-size:16px;">New
+                            Password:</label>
+                        <input type="password" name="new_pwd" class="form-control w-100" id="new_pwd" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm-pass" class="col-form-label" style="font-size:16px;">Confirm
+                            Password:</label>
+                        <input type="password" name="confirm_pwd" class="form-control w-100" id="confirm_pwd" required>
+                        <span class="text-danger errorMsgSpan" id="matchpass"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="cancelModal">Cancel</button>
+                    <button name="save" class="btn btn-success" id="save_data">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="status" value="{{passwordstatus}}">
+<script>
+    $(document).ready(function () {
+        var input = document.getElementById('status').value;
+        // alert(input);
+        if (input == '0') {
+            $("#exampleModal").show();
+        } else if (input != '0') {
+            $("#exampleModal").hide();
+        }
+        $("#closeModal, #cancelModal").click(function () {
+            $("#exampleModal").hide();
+        });
+    });
+</script>
+<script>
+    $("#save_data").click(function () {
+        var pass = document.getElementById('new_pwd').value;
+        var conpass = document.getElementById('confirm_pwd').value;
+        if (pass != conpass) {
+            $('#matchpass').show();
+            return false;
+        }
+    });
+    $("#confirm_pwd").keyup(function () {
+        var pass = document.getElementById('new_pwd').value;
+        var conpass = document.getElementById('confirm_pwd').value;
+        if (pass != conpass) {
+            $('#matchpass').show();
+            return false;
+        } else {
+            $('#matchpass').hide();
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Handle row clicks
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("drkclick");
+        });
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("tdcolor");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".dashboardbody").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+{% endblock body %}

@@ -1,0 +1,339 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Employee List{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock %}
+{% block style %}
+<title>WFM :: HR EMPLOYEE LIST</title>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<style>
+    .form-control2{
+        border: 1px solid #ccc !important;
+    }
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .empHRTableCustom tbody+tbody {
+        border-top: 1px solid #dee2e6;
+    }
+
+    input#empDesignation:focus-visible {
+        outline: none;
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #09796b !important;
+        color: white;
+    }
+
+    span.select2.select2-container.select2-container--default {
+        line-height: 1.5;
+        border: 1px solid #767676;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        width: 100% !important;
+        background-color: #fff;
+        display: -webkit-box;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: unset;
+        width: 100%;
+    }
+
+    span.text-danger {
+        display: flex;
+    }
+
+    .iconAndLabel {
+        display: flex;
+    }
+
+    .employee-office-table .table input {
+        width: 100%;
+    }
+
+    .rowsWidth {
+        margin-left: unset;
+        margin-right: unset;
+    }
+
+    .form-control2 {
+        padding: 0 10px;
+    }
+
+    .DivFlexBox {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+    }
+
+    #plusAdd {
+        padding: 0 6px;
+    }
+
+    label.modalLabelText {
+        font-weight: bold;
+        /* padding: 10px 0px; */
+        text-align: left;
+        float: left;
+    }
+
+    .table-responsive.HRempListHeight {
+        height: 900px;
+    }
+
+    a.hrEmpListColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrEmpListColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    @media only screen and (max-width: 980px) {
+        tr.FlexDisplay {
+            display: flex;
+        }
+
+        .FlexDisplay td {
+            margin: auto;
+            width: 160px !important;
+        }
+    }
+
+    @media only screen and (max-width:768px) {
+        .table-responsive.HRempListHeight {
+            height: 665px;
+        }
+    }
+</style>
+
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12">
+    <form method="post" id="post-form">
+        {%csrf_token%}
+        <div class="row">
+            <div class="col-md-12 d-flex">
+                <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h4 class="card-title mb-0 d-inline-block">Edit Employees</h4>
+                        <div class="card-title mb-0 successMessageCard" id="successMsg">{{message}}</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="fname" class="modalLabelText">FirstName</label>
+                                        <input type="text" id="editfname" name="fname" placeholder="First Name.."
+                                            class="form-control2" value="{{employee.f_name}}">
+                                        <span class="text-danger" id="editfirstName"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="lname" class="modalLabelText">LastName</label>
+                                        <input type="text" id="editlname" name="lname" placeholder="Last Name.."
+                                            class="form-control2" value="{{employee.l_name}}">
+                                        <span class="text-danger" id="editLastName"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="email" class="modalLabelText">Email-ID</label>
+                                        <input type="mail" id="editmailID" name="mailId" placeholder="Email.."
+                                            class="form-control2" value="{{employee.email}}">
+                                        <span class="text-danger" id="editemailID"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="dob" class="modalLabelText">Date of
+                                            Birth</label>
+                                        <input type="text" id="editbirthDate" name="DOB" placeholder="Date of Birth"
+                                            class="form-control2 select2" value="{{employee.dob}}">
+                                        <span class="text-danger" id="editdateofBirth"></span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-3">
+                                        <label for="gender" class="modalLabelText">Gender</label>
+                                        <select name="gender" class="form-control2" id="editempGender">
+                                            <option value="0">--select--</option>
+                                            <option {%ifequal employee.gender 'male' %} selected {%endifequal%}
+                                                value="male">
+                                                Male</option>
+                                            <option {%ifequal employee.gender 'female' %} selected {%endifequal%}
+                                                value="female">Female</option>
+                                        </select>
+                                        <span class="text-danger" id="editgender"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="contact" class="modalLabelText">Contact</label>
+                                        <input type="tel" id="editcontactNo" name="phoneNo" placeholder="Contact.."
+                                            class="form-control2" maxlength="10" value="{{employee.mobile}}">
+                                        <span class="text-danger" id="editphoneNo"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="altContact" class="modalLabelText">Alternate
+                                            Contact</label>
+                                        <input type="tel" id="editaltContact" name="AltPhoneNo"
+                                            placeholder="Alternate Contact.." class="form-control2" maxlength="10"
+                                            value="{{employee.alt_mobile}}">
+                                        <span class="text-danger" id="editaltPhone"></span>
+                                    </div>
+                                    <div class="col-md-3 designationshowhide">
+                                        <div class="iconAndLabel">
+                                            <label for="designation" class="modalLabelText">Designation</label>
+                                            
+                                        </div>
+                                        <select name="designation" class="form-control2" id="">
+                                            <option value="0">--select--</option>
+                                            {% for designations in designation %}
+                                            <option {%ifequal employee.designations designations.designation%} selected  value="{{designations.designation}}">
+                                                {{designations.designation}}</option>
+                                                {%else%}  value="{{designations.designation}}">
+                                                {{designations.designation}}</option>
+                                                {%endifequal%}
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-3">
+                                        <label for="doj" class="modalLabelText">Date of
+                                            Joining</label>
+                                        <input type="text" id="editjoiningDate" name="DOJ" placeholder="Date of Joining"
+                                            class="form-control2 select2" value="{{employee.doj}}">
+                                        <span class="text-danger" id="editdateJoin"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="salary" class="modalLabelText">Salary</label>
+                                        <input type="text" id="editempSalary" name="salary" placeholder="Salary.."
+                                            class="form-control2" value="{{employee.salary}}">
+                                        <span class="text-danger" id="editsalary"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="bank_name" class="modalLabelText">Bank Name</label>
+                                        <input type="text" id="editbank_name" name="bankName" placeholder="Bank Name.."
+                                            class="form-control2" value="{{employee.bank_name}}">
+                                        <span class="text-danger" id="editbankName"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="acct_no" class="modalLabelText">Account No.</label>
+                                        <input type="text" id="editacct_No" name="acctNo" placeholder="Account No.."
+                                            class="form-control2" maxlength="16" value="{{employee.account_number}}">
+                                        <span class="text-danger" id="editacctNo"></span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-3">
+                                        <label for="ifsc_code" class="modalLabelText">IFSC Code</label>
+                                        <input type="text" id="editifsc_code" name="ifsc_code" placeholder="IFSC Code.."
+                                            class="form-control2" value="{{employee.ifsc}}">
+                                        <span class="text-danger" id="editifscCode"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="branch" class="modalLabelText">Branch</label>
+                                        <input type="text" id="editempBranch" name="branch" placeholder="Branch.."
+                                            class="form-control2" value="{{employee.branch}}">
+                                        <span class="text-danger" id="editbranchName"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="HR" class="modalLabelText">HR</label>
+                                        <select name="HR" class="form-control2 select2" id="editempHR">
+                                            <option value="0">--select--</option>
+                                            {% for i in hr %}
+                                            <option {%ifequal employee.hr_id i.f_name %} selected {%endifequal%}
+                                                value="{{i.f_name}}">{{i.f_name}}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="text-danger" id="editHRName"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="manager" class="modalLabelText">Manager</label>
+                                        <select name="manager" class="form-control2 select2" id="editempManager">
+                                            <option value="0">--select--</option>
+                                        </select>
+                                        <span class="text-danger" id="editmanName"></span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-3">
+                                        <label for="current_project" class="modalLabelText">Current
+                                            Project</label>
+                                        <!-- <input type="text" id="editcurrProject" name="CurrProject"
+                                            placeholder="Current Project" class="form-control2"
+                                            value="{{employee.current_project}}"> -->
+                                        <select name="CurrProject" class="form-control2 select2" id="editcurrProject">
+                                            <option value="0">--select--</option>
+                                        </select>
+                                        <span class="text-danger" id="editcurrentProject"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="" class="modalLabelText">Leave</label>
+                                        <input type="text" id="leave" name="leave" placeholder="Leave.."
+                                            class="form-control2" value="{{leaveDetails.days_allowed}}">
+                                        <span class="text-danger" id="editteamName"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="team_name" class="modalLabelText">Sick Leave</label>
+                                        <input type="text" id="sickleave" name="sickleave" placeholder="Sick Leave.."
+                                            class="form-control2" value="{{leaveDetails.sick_day}}">
+                                        <span class="text-danger" id="editteamName"></span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <label for="addr" class="modalLabelText">Address</label>
+                                        <textarea style="height: 50px;" name="Address" class="form-control2"
+                                            id="editempAddr" cols="5" value="{{employee.address}}"></textarea>
+                                        <span class="text-danger" id="editaddr"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="text-center">
+                                            <button name="edit_emp" id="edit_emp"
+                                                class="btn btn-theme button-1 text-white ctm-border-radius mt-4 ApproveText"
+                                                value="Approve">Save Changes</button>
+                                            <button name="cancel_emp"
+                                                class="btn btn-danger text-white ctm-border-radius mt-4 DenyText"
+                                                type="submit" value="Deny" data-dismiss="modal"
+                                                aria-label="Close">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function() {
+    $('#editempHR').change(function() {
+        var hrId = $(this).val();
+        $.ajax({
+            url: '/hr/',
+            data: {
+                'hr_id': hrId
+            },
+            success: function(data) {
+                var managerSelect = $('#editempManager');
+                managerSelect.empty();
+                $.each(data.managers, function(index, manager) {
+                    managerSelect.append($('<option>').text(manager.name).val(manager.id));
+                });
+
+                var projectSelect = $('#editcurrProject');
+                projectSelect.empty();
+                $.each(data.projects, function(index, project) {
+                    projectSelect.append($('<option>').text(project.name).val(project.id));
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock body %}

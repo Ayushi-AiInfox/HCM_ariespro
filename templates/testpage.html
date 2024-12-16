@@ -1,0 +1,508 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Attendance{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock %}
+{% block style %}
+<title>WFM :: HR DASHBOARD</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
+    integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css"
+    integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /* Popup container - can be anything you want */
+    .popup {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* The actual popup */
+    .popuptext {
+        width: 160px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        background-color: #fff;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px 0;
+        position: absolute;
+        z-index: 1;
+        top: 130%;
+        left: 50%;
+        margin-left: -80px;
+    }
+
+    /* Popup arrow */
+    .popuptext::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        /* changed top to bottom */
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent #555 transparent;
+        /* changed border botom color instead of top*/
+    }
+
+    /* Toggle this class - hide and show the popup */
+    .popup .show {
+        visibility: visible;
+        -webkit-animation: fadeIn 1s;
+        animation: fadeIn 1s;
+    }
+
+    /* Add animation (fade in the popup) */
+    @-webkit-keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    table td {
+        border: 1px solid #ccc;
+    }
+
+    th {
+        background-color: #001f3f;
+        color: #fff;
+        padding: 0.5em 1em;
+    }
+
+    thead {
+        border-left: 1px solid #001f3f;
+        border-right: 1px solid #001f3f;
+    }
+
+    .employee-office-table {
+        box-shadow: none;
+    }
+
+    .table {
+        color: #000;
+        border: 1px solid #f0f0f0;
+    }
+
+    .custom-table tr {
+        background-color: #fff;
+        box-shadow: 0 0 3px #e5e5e5;
+    }
+
+    .table.custom-table>tbody>tr>td,
+    .table.custom-table>tbody>tr>th,
+    .table.custom-table>tfoot>tr>td,
+    .table.custom-table>tfoot>tr>th,
+    .table.custom-table>thead>tr>td,
+    .table.custom-table>thead>tr>th {
+        padding: 10px 8px;
+        vertical-align: middle;
+    }
+
+    .table-striped>tbody>tr:nth-of-type(2n + 1) {
+        background-color: #f6f6f6;
+    }
+
+    .HRupcomingLeaves hr {
+        margin: 0 0;
+    }
+
+    .dash-card-container {
+        justify-content: space-between;
+    }
+
+    h6.HRDateText {
+        color: #333;
+    }
+
+    .card-body.leavesHr-applied {
+        padding: 10px 20px;
+    }
+
+    span.statusBtn {
+        color: #333;
+    }
+
+    .upcomingLeavesHR {
+        padding: 10px 1.25rem;
+    }
+
+    .table-responsive.listofUsers {
+        height: 350px;
+    }
+
+    a.hrDashboardColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrDashboardColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    @media only screen and (max-width: 425px) {
+        h6.HRDateText {
+            font-size: 14px;
+            display: inline-block;
+            width: 100px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12">
+
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Attendance of Employees</h4>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12 mb-4">
+                        <div class="fc-left">
+                            <div class="fc-button-group">
+                                <form method="post">
+                                    {%csrf_token%}
+                                    <button type="submit" name='prev' value="prev"
+                                        class="fc-prev-button fc-button fc-state-default fc-corner-left">
+                                        <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                    </button>
+                                    <button type="submit" name='next' value="next"
+                                        class="fc-next-button fc-button fc-state-default fc-corner-right">
+                                        <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="employee-office-table">
+                        <div class="table-responsive listofUsers">
+                            <table class="table table-striped custom-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th colspan="31">Days</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>tony stark</td>
+                                        <td class="popup" onclick="myFunction(1)">1
+                                            <div class="popuptext" id="myPopup1">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(2)">2
+                                            <div class="popuptext" id="myPopup2">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(3)">3<div class="popuptext" id="myPopup3">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(4)">4<div class="popuptext" id="myPopup4">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(5)">5<div class="popuptext" id="myPopup5">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(6)">6<div class="popuptext" id="myPopup6">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(7)">7<div class="popuptext" id="myPopup7">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(8)">8<div class="popuptext" id="myPopup8">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(9)">9<div class="popuptext" id="myPopup9">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(10)">10<div class="popuptext"
+                                                id="myPopup10">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(11)">11<div class="popuptext"
+                                                id="myPopup11">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(12)">12<div class="popuptext"
+                                                id="myPopup12">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(13)">13<div class="popuptext"
+                                                id="myPopup13">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(14)">14<div class="popuptext"
+                                                id="myPopup14">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(15)">15<div class="popuptext"
+                                                id="myPopup15">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(16)">16<div class="popuptext"
+                                                id="myPopup16">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(17)">17<div class="popuptext"
+                                                id="myPopup17">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(18)">18<div class="popuptext"
+                                                id="myPopup18">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(19)">19<div class="popuptext"
+                                                id="myPopup19">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(20)">20<div class="popuptext"
+                                                id="myPopup20">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(21)">21<div class="popuptext"
+                                                id="myPopup21">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(22)">22<div class="popuptext"
+                                                id="myPopup22">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(23)">23<div class="popuptext"
+                                                id="myPopup23">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(24)">24<div class="popuptext"
+                                                id="myPopup24">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(25)">25<div class="popuptext"
+                                                id="myPopup25">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(26)">26<div class="popuptext"
+                                                id="myPopup26">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(27)">27<div class="popuptext"
+                                                id="myPopup27">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(28)">28<div class="popuptext"
+                                                id="myPopup28">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(29)">29<div class="popuptext"
+                                                id="myPopup29">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(30)">30<div class="popuptext"
+                                                id="myPopup30">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td><td class="popup" onclick="myFunction(31)">31<div class="popuptext"
+                                                id="myPopup31">
+                                                <button class="btn btn-danger"
+                                                    style="border-bottom: unset; margin-bottom: 8px;">Absent</button><br>
+                                                <button class="btn btn-success" style="margin-bottom: 8px;">Half
+                                                    Day</button><br>
+                                                <button class="btn btn-warning">Holiday</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="add_event" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Attendance</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="">Select</label>
+                <select name="" class="form-control select" id="">
+                    <option value="0">--Select--</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Half Day">Half Day</option>
+                    <option value="Holiday">Holiday</option>
+                </select>
+                <div class="text-center">
+                    <button name="addEmp" id="addEmp"
+                        class="btn btn-theme button-1 text-white ctm-border-radius mt-4 addEmp">Add</button>
+                    <button name="cancelEmp" class="btn btn-danger text-white ctm-border-radius mt-4"
+                        data-dismiss="modal" aria-label="Close">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".popuptext").hide();
+    function myFunction(myval) {
+        // Get a reference to the popup element
+        var popup = $("#myPopup" + myval);
+        
+        // Check if the popup is visible
+        if (popup.is(":visible")) {
+            // If the popup is already visible, hide it
+            popup.hide();
+        } else {
+            // Otherwise, hide all other popups and show the clicked popup
+            $(".popuptext").hide();
+            popup.show();
+        }
+    }
+    
+</script>
+{% endblock body %}

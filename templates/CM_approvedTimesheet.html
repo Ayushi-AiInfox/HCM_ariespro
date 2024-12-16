@@ -1,0 +1,497 @@
+{% extends 'CM_header.html' %}
+{% block addr%}Approved Timesheet{% endblock addr%}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: MANAGER APPROVED TIMESHEET </title>
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<style>
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+
+    body {
+        counter-reset: Serial;
+    }
+
+    table {
+        border-collapse: separate;
+    }
+
+    tr td:first-child:before {
+        counter-increment: Serial;
+        content: counter(Serial);
+    }
+
+    .table-responsive {
+        height: 480px;
+        width: unset;
+    }
+
+    a.my_list_board.text-dark.cmApprovedTimesheetColorChange.ctm-border-right.ctm-border-left {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.my_list_board.text-dark.cmApprovedTimesheetColorChange.ctm-border-right.ctm-border-left:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    
+
+    label {
+        display: flex;
+        margin-bottom: .5rem;
+    }
+
+    table.dataTable {
+        clear: both;
+        margin-top: 4px !important;
+        margin-bottom: 6px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+        /* border-spacing: 2px; */
+        width: 67vw;
+    }
+
+    .form-control {
+        border-color: #e3e3e3;
+        box-shadow: none;
+        font-size: 15px;
+        height: 33px;
+        color: #625b55;
+        width: 80px;
+    }
+
+    .form-inline {
+        display: -ms-flexbox;
+        display: block;
+        -ms-flex-flow: row wrap;
+        flex-flow: row wrap;
+        -ms-flex-align: center;
+        align-items: center;
+        width: 100% !important;
+    }
+
+    .dataTables_empty {
+        font-size: 100%;
+    }
+
+    td .dataTables_empty::before {
+        display: none !important;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    tr:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    b {
+        font-size: 20px;
+        color: #09796b;
+        font-weight: bolder !important;
+    }
+
+    #pendtimsheet .weekNo h5 {
+        font-weight: bold;
+        box-shadow: 0px 5px 10px #09796b;
+        margin: -3vh auto;
+        margin-bottom: -3vh;
+        padding: 0px;
+        border-radius: 15px;
+        font-size: initial;
+        width: 95%;
+        position: relative;
+        bottom: 3px;
+    }
+
+    .weekNo {
+        border-bottom: none !important;
+    }
+
+    #pendtimsheet {
+        margin-bottom: -2%;
+
+    }
+
+    .fc-left {
+        margin-left: 10px;
+    }
+
+    #myTable1 .odd .sorting_1::before {
+        display: none !important;
+    }
+
+    #myTable1 .even .sorting_1::before {
+        display: none !important;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.9rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .pageinationAdj {
+        position: relative;
+        top: 0px;
+    }
+
+    .fc-prev-button.fc-button.fc-state-default.fc-corner-left,
+    .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+        height: 2rem !important;
+    }
+    @media only screen and (max-width: 1325px){
+        span {
+            font-size: 13px;
+        }
+        .topdate {
+            font-size: 16px;
+        }
+    }
+    @media only screen and (max-width: 1281px){
+        .card-title.mb-0 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+    }
+    @media only screen and (max-width: 1199px){
+        .card-title.mb-0 {
+            font-size: 13px;
+        }
+        span {
+            font-size: 12px;
+        }
+        .topdate {
+            font-size: 15px;
+        }
+        .fc-left {
+            font-size: 9px;
+        }
+        .thcolor {
+            font-size: 14px;
+        }
+        .odd, .even {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 1178px){
+        #pendtimsheet .weekNo h5 {
+            height: 9.5vh;
+        }
+        .thcolor {
+            font-size: 13px;
+        }
+    }
+    @media only screen and (max-width: 1083px){
+        .fc-left {
+            font-size: 6px;
+            margin-left: 0px;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card {
+            margin-bottom: 15px;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .card-title.mb-0 {
+            font-size: 16px;
+        }
+        .fc-left {
+            font-size: 9px;
+        }
+        #pendtimsheet .weekNo h5 {
+            height: 5.5vh;
+        }
+        table.dataTable {
+            width: 89vw;
+        }
+    }
+    @media only screen and (max-width: 914px){
+        .card-title.mb-0 {
+            font-size: 14px;
+        }
+    }
+    @media only screen and (max-width: 830px){
+        .card-title.mb-0 {
+            font-size: 13px;
+        }
+    }
+    @media only screen and (max-width: 795px){
+        .topdate {
+            font-size: 12px;
+        }
+    }
+
+    @media only screen and (max-width: 767px){
+        .card-title.mb-0 {
+            position: relative;
+            bottom: 10px;
+            font-size: 17px;
+        }
+        .fc-left {
+            font-size: 9px;
+            position: absolute;
+            left: 75vw;
+            bottom: 5vh;
+        }
+        .card-header.weekNo {
+            position: relative;
+            top: 14px;
+        }
+        .entrysearch{
+            display: flow-root;
+        }
+    }
+    @media only screen and (max-width: 672px){
+        .fc-left {
+            position: absolute;
+            bottom: 6vh;
+        }
+        label, .dataTables_info, .pagination {
+            font-size: 13px;
+        }
+  
+    }
+    @media only screen and (max-width: 529px){
+        .entrysearch{
+            display: inline-block !important;
+        }
+    }
+    
+    @media only screen and (max-width: 482px){
+        .fc-left {
+            position: absolute;
+            bottom: 11vh;
+        }
+        #pendtimsheet .weekNo h5 {
+            height: 10.5vh;
+        }
+    }
+    @media only screen and (max-width: 419px){
+        .fc-left {
+            left: 260px;
+        }
+    }
+    @media only screen and (max-width: 366px){
+        .fc-left {
+            left: 210px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12 dashboardbody">
+
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <h5 class="card-title mb-0">Weekly Report</h5>
+                        </div>
+                        <div class="col-md-8" id="pendtimsheet">
+                            <div class="card-header weekNo">
+                                <h5 class="card-title mb-0 text-center weekStartEndDate">
+                                    <span>Week Start Date : <b class="topdate">{{start}}</b></span>&nbsp;&nbsp;
+                                    <span>Week End Date : <b class="topdate">{{end}}</b></span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="fc-left">
+                                <div class="fc-button-group">
+                                    <form method="post">
+                                        {%csrf_token%}
+                                        <button type="submit" name='prev' value="prev"
+                                            class="fc-prev-button fc-button fc-state-default fc-corner-left"
+                                            title="previous">
+                                            <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                        </button>
+                                        <button type="submit" name='next' value="next"
+                                            class="fc-next-button fc-button fc-state-default fc-corner-right"
+                                            title="next">
+                                            <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pageinationAdj">
+                    <div class="row entrysearch">
+                        <div class="col-md-6 data_drop1"></div>
+                        <div class="col-md-6 data_search1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form method="post">
+                                {%csrf_token%}
+                                <div class="employee-office-table paginate-table1">
+                                    <div class="table-responsive">
+                                        <table class="table custom-table" id="myTable1">
+                                            <thead style="position: sticky;
+                                        top: 0;
+                                        z-index: 1;">
+                                                <tr class="thcolor">
+                                                    <th style="width: 11%;">Serial No</th>
+                                                    <th>Name</th>
+                                                    <th>ID</th>
+
+                                                    <th style="width: 100px;">Total Week Hours</th>
+                                                    <th>Report</th>
+                                                    <!-- <th style="display: none;"></th> -->
+
+
+                                                </tr>
+                                            </thead>
+
+
+                                            <tbody>
+
+                                                {% for i in pending%}
+                                                <!-- <td class="dataTables_empty" valign="top" colspan="5"><span class="lnr lnr-file-empty mr-2"></span></td>                                                    </td>  -->
+                                                <!-- <tr></tr> -->
+
+                                                <tr>
+                                                    <td></td>
+                                                    <td>{{i.name}}</td>
+                                                    <td>{{i.id}}</td>
+
+                                                    <td>{{i.total}}</td>
+                                                    <td><button id="id{{i.id}}" value="{{i.id}}|{{start}}|{{end}}"
+                                                            class="btn btn-theme ctm-border-radius text-white btn-sm PendingtoAorD"
+                                                            name="approve">Approved</button></td>
+                                                </tr>
+
+                                                {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Project Modal  -->
+
+
+    <!-- End Here -->
+</div>
+
+{% block paginate %}
+<script src="../static/js/jquery.dataTables.min.js"></script>
+<script src="../static/js/dataTables.bootstrap.min.js"></script>
+{% endblock paginate %}
+<script>
+    $(document).ready(function () {
+        $("#myTable1").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable1_paginate, #myTable1_info').appendTo('.paginate-table1');
+                $('#myTable1_length').appendTo('.data_drop1');
+                $('#myTable1_filter').appendTo('.data_search1');
+            },
+            columnDefs: [
+                {
+                    targets: 0, // Assuming the serial number column is the first column
+                    searchable: true,
+                    orderable: true,
+                    render: function (data, type, row, meta) {
+                        // Use meta.row + meta.settings._iDisplayStart + 1 for the position
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    },
+                },
+            ],
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            $("#myTable1").css({ "width": "100%" });
+            $(".fc-left").css({ "margin-left": "25px" });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".dashboardbody").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            $("#myTable1").css({ "width": "100%" });
+            $(".fc-left").css({ "margin-left": "15px" });
+
+
+        });
+    });
+</script>
+<!-- <script>
+    $(document).ready(function () {
+        $("#fullscreen").click(function () {
+            $("table.dataTable").css({ "width": "91vw" });
+        });
+        $("#showsidebar").click(function () {
+            $("table.dataTable").css({ "width": "68vw" });
+        });
+    });
+</script> -->
+<!-- <script>
+    $(document).ready(function(){
+        if($(window).width()<1179){
+            $("#fullscreen").click(function(){
+                $("#pendtimsheet .weekNo h5").css({"height":"6.5vh"});
+            });
+            $("#showsidebar").click(function(){
+                $("#pendtimsheet .weekNo h5").css({"height":"9.5vh"});
+            });
+        }
+        else{
+            $("#pendtimsheet .weekNo h5").css({"height":"6.5vh"});
+        }
+    });
+</script> -->
+{% endblock body %}

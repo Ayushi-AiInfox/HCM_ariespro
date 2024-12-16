@@ -1,0 +1,475 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Employee Tracker{% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: HR EMPLOYEE TRACKER</title>
+<style>
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    a.hrPendingTimeColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrPendingTimeColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .lbl {
+        position: relative;
+        margin-left: 4%;
+        font-weight: 700;
+    }
+
+    /* .comment {
+        margin-bottom: 2%;
+    } */
+
+    #thstyle p {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        /* max-width: 136px; */
+        text-align: left !important;
+        /* text-overflow: ellipsis; */
+        width: 95%;
+    }
+
+    .yesss td {
+        width: 100px;
+    }
+
+    .card.ctm-border-radius.shadow-sm.flex-fill.grow1 {
+        height: 95px;
+    }
+
+    .rectangle-img {
+        height: 78px;
+        width: 84px;
+        border-radius: 12px;
+        position: absolute;
+        left: 4vw;
+        bottom: 8px;
+    }
+
+    .emp-know {
+        position: absolute;
+        bottom: 0px;
+        left: 14vw;
+    }
+
+    .card-header .weekNo h4 {
+        font-weight: bold;
+        box-shadow: 0 5px 10px #09796b;
+        width: 95%;
+        padding: 6px;
+        border-radius: 15px;
+        position: relative;
+        bottom: 1.5vh;
+        right: 60px;
+    }
+
+    .card-header .weekNo h4 span {
+        font-size: 15px;
+        margin: 0 15px;
+    }
+
+    .card-header .weekNo h4 span b {
+        font-size: 20px;
+        color: #09796b;
+    }
+
+    .card-header.weekNo {
+        border-bottom: none;
+        margin-bottom: -20px;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.7rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .col-md-2.weekrep {
+        position: relative;
+        top: 10px;
+    }
+    .assigned {
+        float: left;
+        padding-right: 2px;
+        color: red;
+    }
+    .myparagraph {
+        max-width: 800px;
+        width: 100%;
+        word-wrap: break-word;
+        white-space: break-spaces;
+        text-align: left;
+        line-height: 20px;
+        /* margin-bottom: -10px; */
+    }
+    @media only screen and (max-width: 1199px){
+        .emp-know {
+            position: absolute;
+            bottom: 0px;
+            left: 16vw;
+        }
+        .card-title.mb-0 {
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .card-header .weekNo h4 span {
+            font-size: 13px;
+        }
+        .card-header .weekNo h4 span b {
+            font-size: 15px;
+        }
+        .card-header .weekNo h4 {
+            width: 105%;
+            position: relative;
+            right: 50px;
+        }
+        .yesss, .mainheading, .lbl, .comment, 
+        .btn.btn-theme.button-1.text-white.ctm-border-radius.mt-4,
+         .btn.btn-danger.text-white.ctm-border-radius.mt-4 {
+            font-size: 13px;
+        }
+    }
+    @media only screen and (max-width: 1048px){
+        .card-header .weekNo h4 {
+            position: relative;
+            right: 30px;
+        }
+        .col-md-3.weekrep {
+            position: relative;
+            top: 8px;
+        }
+        .card-header .weekNo h4 span {
+            font-size: 11px;
+        }
+        .card-header .weekNo h4 span b {
+            font-size: 14px;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .card-header .weekNo h4 {
+            width: 100%;
+            position: relative;
+            right: 0px;
+        }
+        .col-md-3.weekrep {
+            position: relative;
+            top: -7px;
+        }
+        .emp-know {
+            position: absolute;
+            left: 22vw;
+        }
+        .rectangle-img {
+            position: absolute;
+            left: 6vw;
+        }
+    }
+    @media only screen and (max-width: 575px){
+        .emp-know {
+            position: absolute;
+            left: 30vw;
+        }
+    }
+    @media only screen and (max-width: 383px){
+        h6 {
+            font-size: 14px;
+        }
+        .emp-know {
+            position: absolute;
+            left: 35vw;
+            bottom: 7px;
+        }
+    }
+</style>
+
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12 emptrack">
+
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow1">
+                <div class="user-info card-body">
+                    <div>
+                        <div class="user-avatar  text-center mb-4">
+                            <img src="../{{img}}" alt="User Avatar" class="img-fluid rectangle-img" width="100">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="user-details emp-know">
+                            <h6>Name : <b>{{emp_name}}</b></h6>
+                            <h6>ID : <b>{{employee_id}}</b></h6>
+                            <h6>Designation : <b>{{designation}}</b></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-3 weekrep">
+                            <h4 class="card-title mb-0">Weekly Report</h4>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-header weekNo">
+                               
+                                <h4 class="card-title mb-0 text-center weekStartEndDate">
+                                    <span>Week Start Date : <b>{{start_date}}</b></span>
+                                    <span>Week End Date : <b>{{end_date}}</b></span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {%csrf_token%}
+                        <input type="hidden" name="empid" value="{{emp_id}}"></input>
+                        <!-- <div class="card-header weekNo">
+                            <input type="hidden" name="empid" value="{{emp_id}}"></input>
+                            <h4 class="card-title mb-0 text-center weekStartEndDate">
+                                <span>Week Start Date : <b>{{start_date}}</b></span>
+                                <span>Week End Date : <b>{{end_date}}</b></span>
+                            </h4>
+                        </div> -->
+                        <div class="employee-office-table">
+                            <div class="table-responsive">
+                                <table class="table custom-table">
+                                    <tr class="mainheading">
+                                        <th></th>
+                                        <th scope="col">MON</th>
+                                        <th scope="col">TUE</th>
+                                        <th scope="col">WED</th>
+                                        <th scope="col">THU</th>
+                                        <th scope="col">FRI</th>
+                                        <th scope="col">SAT</th>
+                                        <th scope="col">SUN</th>
+                                        <th scope="col">TOTAL</th>
+                                    </tr>
+                                    <form method="post">
+                                        {%csrf_token%}
+                                        {% for tasks in data %}
+                                        <tr class="yesss">
+                                            <th scope="row" id="thstyle">
+                                                <div class="assigned"> {{tasks.assigned}}</div>
+                                                <p style="text-align: center;" title="{{tasks.project_name}}">
+                                                    {{tasks.project_name}}</p>
+                                            </th>
+                                            <td>
+                                                <input id="pr1mon" autocomplete="off" value="{{tasks.mon}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1tue" autocomplete="off" value="{{tasks.tue}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1wed" autocomplete="off" value="{{tasks.wed}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1thu" autocomplete="off" value="{{tasks.thu}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1fri" autocomplete="off" value="{{tasks.fri}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1sat" autocomplete="off" value="{{tasks.sat}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1sun" autocomplete="off" value="{{tasks.sun}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1total" autocomplete="off" value="{{tasks.total}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+
+                                        </tr>
+
+                                        {%endfor%}
+                                        <tr>
+                                            <th scope="row" id="thstyle">
+                                                <p><label for="comment"
+                                                        class="lbl">Monday</label></p>
+                                            </th>
+                                            <td colspan="8">
+                                                <!-- <textarea style="width: 99% !important; font-size: 13px;line-height: 15px;margin-bottom: -15px;" name="comment" class="comment"
+                                                    rows="5" 
+                                                    readonly>{{comments}}</textarea> -->
+                                                    <p class="myparagraph">{{comments}}</p>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <th scope="row" id="thstyle">
+                                                <p><label for="comment"
+                                                        class="lbl">Tuesday</label></p>
+                                            </th>
+                                            <td colspan="8">
+                                                <!-- <textarea style="width: 99% !important; font-size: 13px;line-height: 15px;margin-bottom: -15px;" name="comment" class="comment"
+                                                    rows="5" 
+                                                    readonly>{{tue_comm}}</textarea> -->
+                                                    <p class="myparagraph">{{tue_comm}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" id="thstyle">
+                                                <p><label for="comment"
+                                                        class="lbl">Wednesday</label></p>
+                                            </th>
+                                            <td colspan="8">
+                                                <!-- <textarea style="width: 99% !important; font-size: 13px;line-height: 15px;margin-bottom: -15px;" name="comment" class="comment"
+                                                    rows="5" 
+                                                    readonly>{{wed_comm}}</textarea> -->
+                                                    <p class="myparagraph">{{wed_comm}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" id="thstyle">
+                                                <p><label for="comment"
+                                                        class="lbl">Thursday</label></p>
+                                            </th>
+                                            <td colspan="8">
+                                                <!-- <textarea style="width: 99% !important; font-size: 13px;line-height: 15px;margin-bottom: -15px;" name="comment" class="comment"
+                                                    rows="5"
+                                                    readonly>{{thu_comm}}</textarea> -->
+                                                    <p class="myparagraph">{{thu_comm}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" id="thstyle">
+                                                <p><label for="comment"
+                                                        class="lbl">Friday</label></p>
+                                            </th>
+                                            <td colspan="8">
+                                                <!-- <textarea style="width: 99% !important; font-size: 13px;line-height: 15px;margin-bottom: -15px;" name="comment" class="comment"
+                                                    rows="5" 
+                                                    readonly>{{fri_comm}}</textarea> -->
+                                                    <p class="myparagraph">{{fri_comm}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" id="thstyle">
+                                                <p><label for="comment"
+                                                        class="lbl">Saturday</label></p>
+                                            </th>
+                                            <td colspan="8">
+                                                <!-- <textarea style="width: 99% !important; font-size: 13px;line-height: 15px;" name="comment" class="comment"
+                                                    rows="5" 
+                                                    readonly>{{sat_comm}}</textarea> -->
+                                                    <p class="myparagraph" style="padding-bottom: 10px;">{{sat_comm}}</p>
+                                            </td>
+                                        </tr>
+
+                                </table>
+                                <!-- <label for="comment" id="lbl">Comment</label>
+                                <textarea name="comment" id="comment" maxlength="200" rows="2"
+                                    placeholder="Add Commnet...">{{comments}}</textarea> -->
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button class="btn btn-theme button-1 text-white ctm-border-radius mt-4" name="Approve"
+                                value="{{start_date}}">Approve</button>
+                            <button class="btn btn-danger text-white ctm-border-radius mt-4" name="Deny"
+                                value="{{start_date}}">Reject</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="add_event2" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reason For Rejection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="usrform" class="form">
+                        <textarea name="comment" class="reason-form" placeholder="Additional Information..."></textarea>
+                    </div>
+                    <div class="text-center">
+                        <a href="javascript:void(0);"
+                            class="btn btn-theme button-1 text-white ctm-border-radius mt-4">Submit</a>
+                        <a href="javascript:void(0);" class="btn btn-danger text-white ctm-border-radius mt-4"
+                            data-dismiss="modal" aria-label="Close">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".emptrack").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            // $(".yesss td").css({ "width": "125px" });
+            // $("#thstyle p").css({ "width": "100%" });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".emptrack").css({ "max-width": "66.6%", "flex": "0 0 66.6%" });
+            }
+            else{
+                $(".emptrack").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            // $(".yesss td").css({ "width": "99.9px" });
+            // $("#thstyle p").css({ "width": "70%" });
+        });
+    });
+</script>
+{% endblock body %}

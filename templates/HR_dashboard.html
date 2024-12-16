@@ -1,0 +1,600 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Dashboard{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock user %}
+{% block style %}
+<title>WFM :: HR DASHBOARD</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
+    integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css"
+    integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+<script src="../static/js/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /* .clr1{
+        background-color: blue;
+    } */
+    .chart-container {
+        max-width: 350px;
+        margin: auto;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    .row.topset {
+        margin-bottom: -11px;
+    }
+
+    
+
+    .HRupcomingLeaves hr {
+        margin: 0 0;
+    }
+
+    .dash-card-container {
+        justify-content: space-between;
+    }
+
+    h6.HRDateText {
+        color: #333;
+    }
+
+    .card-body.leavesHr-applied {
+        padding: 10px 20px;
+    }
+
+    span.statusBtn {
+        color: #333;
+    }
+
+    .upcomingLeavesHR {
+        padding: 10px 1.25rem;
+        margin-bottom: -8px;
+    }
+
+    .listofUsers {
+        height: 350px;
+    }
+
+    a.hrDashboardColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrDashboardColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .image-round {
+        height: 31px;
+        width: 33px;
+        border-radius: 100%;
+    }
+
+    .dash-card-container {
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        min-height: 39px;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .drkclick {
+        background-color: rgb(202, 178, 178) !important;
+    }
+
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        /* -webkit-overflow-scrolling: touch; */
+        height: 400px !important;
+    }
+    .card-header {
+      background: none;
+      padding: 0.7rem;
+      border-bottom: 1px solid #ededed;
+    }
+    .hrprotitle {
+      position: relative;
+      left: 10px;
+    }
+    @media only screen and (max-width: 1199px){
+        .hrprotitle, .card-title.mb-0.d-inline-block {
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .card-icon {
+            width: 55px;
+            height: 50px;
+        }
+        .card-right2 .card-title {
+            font-size: 14px;
+        }
+        .thcolor {
+            font-size: 13px;
+        }
+        .tdcolor {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 991px){  
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        /* .card.dash-widget.ctm-border-radius.shadow-sm.grow {
+            height: 155px !important;
+            overflow: hidden;
+        } */
+        #myChart {
+            position: inherit;
+        }
+    }
+    @media only screen and (max-width: 912px){
+        .card-right2 .card-title {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width:767px){
+        .card.dash-widget.ctm-border-radius.shadow-sm.grow {
+            margin-bottom: 25px;
+    }
+    }
+    @media only screen and (max-width: 425px) {
+        h6.HRDateText {
+            font-size: 14px;
+            display: inline-block;
+            width: 100px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block notify %}
+<div class="user-info align-right dropdown d-inline-block header-dropdown">
+    <a href="javascript:void(0)" data-toggle="dropdown" class=" menu-style dropdown-toggle">
+        <div class="user-avatar d-inline-block">
+            <i class="fa fa-comments notify"></i><span class="badge" id="badge">{{notify}}</span>
+        </div>
+    </a>
+    <div class="dropdown-menu notification-dropdown-menu shadow-lg border-0 m-0 dropdown-menu-right"
+        style="min-width: 23rem;">
+        <div class="cont">
+            {% for i,j in noti %}
+            
+            <div class="sec new">
+                <div class="profCont">
+                    <img class="profile" src="../{{j}}">
+                </div>
+                <div class="txt messages messages{{forloop.counter}}" id="messages">{{i.message}}</div>
+            </div>
+           
+            {%endfor%}
+
+            <div class="sec new" style="border-bottom: none;">
+                <div class="text-center sub"><a href="HR_notification">View All
+                        Notifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock notify %}
+{% block body %}
+<input type="hidden" id="pythn" name="pythn" value='{{pythn}}' />
+<div class="col-xl-9 col-lg-8  col-md-12 dashboardbody">
+    <div class="row">
+        <div class="col-md-6 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 hrprotitle">Projects</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="card dash-widget ctm-border-radius shadow-sm grow">
+                                <div class="card-body">
+                                    <div class="card-icon bg-danger">
+                                        <i class="fa fa-calendar-minus-o"></i>
+                                    </div>
+                                    <div class="card-right2">
+                                        <h4 class="card-title">Pending Projects</h4>
+                                        <p class="card-text">{{pending}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-sm-6 col-12">
+                            <div class="card dash-widget ctm-border-radius shadow-sm grow">
+                                <div class="card-body">
+                                    <div class="card-icon bg-success">
+                                        <i class="fa fa-calendar-plus-o"></i>
+                                    </div>
+                                    <div class="card-right2">
+                                        <h4 class="card-title">Completed Projects</h4>
+                                        <p class="card-text">{{complete}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="card dash-widget ctm-border-radius shadow-sm grow">
+                                <div class="card-header upcomingLeavesHR">
+                                    <h4 class="card-title mb-0 d-inline-block">Upcoming Leave</h4>
+                                </div>
+                                <div class="card-body leavesHr-applied">
+                                    <div class="recent-comment HRupcomingLeaves">
+                                        {%for leave,pic in approved%}
+                                        <a href="javascript:void(0)" class="dash-card text-primary">
+                                            <div class="dash-card-container">
+                                                <div class="icondateBox">
+                                                    <div class="dash-card-icon">
+                                                        <img class="image-round" src="../{{pic}}">
+                                                        <!-- <img src="{{pic}}" > -->
+                                                    </div>
+                                                    <div class="dash-card-content">
+                                                        <h6 class="mb-0 HRDateText">{{leave.from_dt}} - {{leave.to_dt}}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                                <div class="dash-card-content">
+                                                    <span class="statusBtn Approved" id="id1">{{leave.emp_name}}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <hr>{%endfor%}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4 class="card-title mb-0 hrprotitle">Total Employees</h4>
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- <div id="pieChart"></div> -->
+                    <div class="chart-container" style="position: relative; width:100%">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 hrprotitle">List Of Projects</h4>
+                </div>
+                <div class="card-body">
+                    <div class="employee-office-table">
+                        <div class="table-responsive listofUsers">
+                            <table class="table custom-table">
+                                <thead style="position: sticky;
+                                top: 0;
+                                z-index: 1;">
+                                    <tr class="thcolor">
+                                        <th>Serial No.</th>
+                                        <th>Title</th>
+                                        <th>Manager</th>
+                                        <th>Start Date</th>
+                                        <th>Status</th>
+                                        <th>End Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for project in projects%}
+                                    <tr class="tdcolor">
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{project.project_name}}</td>
+                                        <td>{{project.manager}}</td>
+                                        <td>{{project.start_date}}</td>
+                                        <td>{{project.status}}</td>
+                                        <td>{{project.end_date}}</td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0 hrprotitle">List of Employees</h4>
+                </div>
+                <div class="card-body">
+                    <div class="employee-office-table">
+                        <div class="table-responsive listofUsers">
+                            <table class="table custom-table">
+                                <thead style="position: sticky;
+                                top: 0;
+                                z-index: 1;">
+                                    <tr class="thcolor">
+                                        <th>Serial No.</th>
+                                        <th>Name</th>
+                                        <th>ID</th>
+                                        <th>Designation</th>
+                                        <th>Manager</th>
+                                        <th>Leave Taken</th>
+                                        <th>Leave Remaining(PL+SL)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i,j in employee %}
+                                    <tr class="tdcolor">
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{i.f_name}}</td>
+                                        <td>{{i.login_id}}</td>
+                                        <td>{{i.designations}}</td>
+                                        <td>{{i.managers}}</td>
+                                        <td>{{i.leave_taken}}</td>
+                                        <td>{{j}}</td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Change Password</h1>
+                <button type="button" style="font-size: 14px;" class="btn-close" id="closeModal"
+                    aria-label="Close"></button>
+            </div>
+            <form method="post">
+                {%csrf_token%}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="current-pass" class="col-form-label" style="font-size:16px;">Current
+                            Password:</label>
+                        <input type="password" name="old_pwd" class="form-control w-100" id="old_pwd" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new-pass" class="col-form-label" style="font-size:16px;">New
+                            Password:</label>
+                        <input type="password" name="new_pwd" class="form-control w-100" id="new_pwd" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm-pass" class="col-form-label" style="font-size:16px;">Confirm
+                            Password:</label>
+                        <input type="password" name="confirm_pwd" class="form-control w-100" id="confirm_pwd" required>
+                        <span class="text-danger errorMsgSpan" id="matchpass"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="cancelModal">Cancel</button>
+                    <button name="save" class="btn btn-success" id="DataSave">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="status" value="{{passwordstatus}}">
+<script>
+    $(document).ready(function () {
+        var input = document.getElementById('status').value;
+        // alert(input);
+        if (input == '0') {
+            $("#exampleModal").show();
+        } else if (input != '0') {
+            $("#exampleModal").hide();
+        }
+        $("#closeModal, #cancelModal").click(function () {
+            $("#exampleModal").hide();
+        });
+    });
+</script>
+<script>
+    $("#DataSave").click(function () {
+        var pass = document.getElementById('new_pwd').value;
+        var conpass = document.getElementById('confirm_pwd').value;
+        if (pass != conpass) {
+            $('#matchpass').show();
+            return false;
+        }
+    });
+    $("#confirm_pwd").keyup(function () {
+        var pass = document.getElementById('new_pwd').value;
+        var conpass = document.getElementById('confirm_pwd').value;
+        if (pass != conpass) {
+            $('#matchpass').show();
+            return false;
+        } else {
+            $('#matchpass').hide();
+        }
+    });
+</script>
+<!-- <script>
+    $(document).ready(function(){
+     $("tr").click(function(){
+       $(this).toggleClass("clr1");
+     });
+   }); -->
+</script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [{% for i in label %} '{{i}}', {% endfor %}],
+    datasets: [{
+        label: 'No of Employees',
+        data: [{% for j in data %} {{ j }}, {% endfor %}],
+        backgroundColor: [
+            'rgba(255, 103, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255,1)',
+            'rgba(154, 200, 64, 1)',
+            'rgba(154, 171, 154, 1)',
+            'rgba(255, 156, 132, 1)',
+            'rgba(110, 23, 65, 1)',
+            'rgba(189, 568, 89, 1)',
+            'rgba(175, 19, 0, 1)',
+            'rgba(155, 153, 255,1)',
+            'rgba(156, 206, 64, 1)',
+            'rgba(153, 204, 255, 1)',
+        ]
+            }]
+        },
+    options: {
+        responsive: true,
+            plugins: {
+            legend: {
+                position: 'bottom',
+
+                    labels: {
+                    // This more specific font property overrides the global property
+                    font: {
+                        size: 14
+                    },
+                    boxWidth: 9,
+                        boxHeight: 9,
+                            usePointStyle: true,
+                                pointStyle: 'circle',
+                    }
+            }
+        }
+    }
+    });
+</script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
+
+
+
+<script>
+    $(document).ready(function () {
+        $("table tbody tr").click(function () {
+            $(this).toggleClass("drkclick");
+        });
+        $("table tbody tr").click(function () {
+            $(this).toggleClass("tdcolor");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".paginate_button .previous").click(function () {
+            //    hoverClick();
+            $("table tbody tr").click(function () {
+                $(this).toggleClass("drkclick");
+            });
+            $("table tbody tr").click(function () {
+                $(this).toggleClass("tdcolor");
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".paginate_button").click(function () {
+            //    hoverClick();
+            $("table tbody tr").click(function () {
+                $(this).toggleClass("drkclick");
+            });
+            $("table tbody tr").click(function () {
+                $(this).toggleClass("tdcolor");
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".pagination").on('click', 'tr', function () {
+            $("table tbody tr").click(function () {
+                $(this).toggleClass("drkclick");
+            });
+            $("table tbody tr").click(function () {
+                $(this).toggleClass("tdcolor");
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".paginate_button .next").click(function () {
+            hoverClick();
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".dashboardbody").css({ "max-width": "66.6%", "flex": "0 0 66.6%" });
+            }
+            else{
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+{% endblock body %}

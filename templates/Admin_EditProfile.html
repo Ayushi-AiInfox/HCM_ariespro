@@ -1,0 +1,739 @@
+{% extends 'Admin_header.html' %}
+
+{% block addr %}Edit Profile{% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock %}
+{% block style %}
+<title>WFM :: ADMIN EDIT PROFILE</title>
+
+<link rel="stylesheet" href="../static/plugins/select2/select2.min.css">
+<style>
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .back-area {
+        overflow: hidden;
+        /* margin-bottom: 30px; */
+        background: radial-gradient(at 50% -20%, #e3f7f4, #828282) fixed;
+        padding: 5px;
+        border-radius: 7px;
+    }
+
+    .body-box ul {
+        background: #09796b;
+    }
+
+    .tab li.active {
+        color: #09796b;
+        font-weight: bold;
+        background: #fff;
+    }
+
+    .body-box ul li {
+        margin: 5px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 5px 0px #fff;
+        color: #fff;
+    }
+
+    .tab li {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 8px 10px;
+        transition: 0.3s;
+        font-size: 17px;
+        list-style: none;
+    }
+
+    .man_code {
+        background: #fff;
+        padding: 0px;
+        margin: 50px 10% 0px 10%;
+        border-radius: 5px;
+        /* box-shadow: 0px 0px 10px -2px #000; */
+    }
+
+    .bac-fear {
+        background: #e3f7f4;
+        padding: 8px 0;
+        border-radius: 15px;
+    }
+
+    .abt_area .name_user h3 {
+        font-size: 24px;
+        color: #09796b;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .file-btn {
+        color: #000;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .info_abt {
+        font-size: 16px;
+        color: #888;
+    }
+
+    label {
+        margin-bottom: 8px;
+    }
+
+    .wrap-table100 .form-control {
+        padding: 10px !important;
+        width: 100% !important;
+        border: none !important;
+        /* box-shadow: 0px 0px 5px 0px #09796b !important; */
+        box-shadow: 0px 0px 5px 0px #71797E !important;
+        background-color: #f3f3f3 !important;
+    }
+
+    .edit-btn {
+        width: 30%;
+        margin: 45px auto 0;
+    }
+
+    .le_ri_m {
+        width: 75%;
+        display: block;
+        margin: 0 auto;
+    }
+
+</style>
+
+<!-- Tab switch Style End  -->
+
+<!-- Modal Style  -->
+
+<style>
+
+    .fade.in {
+        opacity: 1;
+    }
+
+    .pass_body img {
+        width: 45%;
+        display: block;
+        margin: 0px auto;
+    }
+
+    .secc h3 {
+        color: #fff;
+        font-size: 26px;
+        text-align: center;
+        font-weight: bold;
+        text-transform: none;
+        position: relative;
+        margin: 25px 0;
+        padding: 0;
+        line-height: 40px;
+        display: block;
+    }
+
+    .secc h6 {
+        color: #797979;
+        font-size: 16px;
+        text-align: center;
+        font-weight: 300;
+        position: relative;
+        float: none;
+        margin: 0;
+        padding: 0;
+        line-height: normal;
+    }
+    .abt_area {
+        position: absolute;
+        top: 20px;
+        left: 0px;
+    }
+    #ImgPrev_sec1 {
+        position: relative;
+        width: 140px;
+        height: 130px;
+        border-radius: 17px;
+        left: 30px;
+    }
+    @media only screen and (max-width: 1199px){
+            #ImgPrev_sec1 {
+            width: 100px;
+            height: 100px;
+        }
+        .abt_area .name_user h3 {
+            font-size: 20px;
+        }
+        #FUImage_sec1 {
+            font-size: 12px;
+        }
+        .abt_area {
+            position: absolute;
+            top: 10px;
+        }
+        #BtnCngPass {
+            width: 17vw;
+            font-size: 13px;
+
+        }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .middlebox {
+            margin-top: 30px;
+        }
+        #ImgPrev_sec1 {
+            width: 120px;
+            height: 115px;
+        }
+        .abt_area {
+            position: absolute !important;
+            left: 22vw !important;
+            top: -12vw;
+        }
+        #FUImage_sec1 {
+            font-size: 14px;
+        }
+    }
+    @media only screen and (max-width: 860px){
+        .abt_area {
+            position: absolute !important;
+            left: 24vw !important;
+            top: -15vw;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        #ImgPrev_sec1 {
+            width: 95px;
+            height: 90px;
+        }
+        .abt_area .name_user h3 {
+            font-size: 17px;
+        }
+        #FUImage_sec1 {
+            font-size: 12px;
+        }
+        .abt_area {
+            position: absolute !important;
+            top: -12vw;
+        }
+    }
+    @media only screen and (max-width: 658px){
+        #ImgPrev_sec1 {
+            width: 90px;
+            height: 86px;
+        }
+        .edit-btn {
+            width: 70%;
+        }
+        .abt_area {
+            position: absolute !important;
+            top: -14vw;
+        }
+        #BtnCngPass {
+            width: 30vw;
+        }
+    }
+    @media only screen and (max-width: 575px) {
+        .edit-btn {
+            margin-top: 60px;
+            width: auto !important;
+        }
+        #ImgPrev_sec1 {
+            width: 90px !important;
+            height: 80px !important;
+        }
+        .abt_area {
+            position: absolute !important;
+            left: 31vw !important;
+            top: -15vw;
+        }
+        .abt_area .name_user h3 {
+            font-size: 17px;
+        }
+        #FUImage_sec1 {
+            font-size: 12px;
+        }
+        .submit-btn {
+            position: relative;
+            bottom: 0px;
+        }
+        .edit-btn {
+            width: 70% !important;
+        }
+    }
+    @media only screen and (max-width: 519px) {
+        .abt_area {
+            position: absolute !important;
+            top: -18vw;
+        }
+    }
+    @media only screen and (max-width: 455px) {
+        .abt_area {
+            position: absolute !important;
+            top: -19vw;
+        }
+        .abt_area .name_user h3 {
+            font-size: 14px;
+        }
+        #FUImage_sec1 {
+            font-size: 9px;
+        }
+        #ImgPrev_sec1 {
+            width: 82px !important;
+            position: relative !important;
+            left: 10px;
+        }
+    }
+    @media only screen and (max-width: 390px){
+        .abt_area {
+            position: absolute !important;
+            top: -20vw;
+        }
+        #ImgPrev_sec1 {
+            width: 65px !important;
+            height: 65px !important;
+        }
+        .edit-btn {
+            font-size: 12px;
+        }
+    }
+    /******************   Animation    ******************/
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3) translate3d(0, 0, 0);
+        }
+
+        50% {
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+
+        80% {
+            opacity: 1;
+            transform: scale(0.89);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1) translate3d(0, 0, 0);
+        }
+    }
+    }
+</style>
+
+<!-- Modal Style End  -->
+
+<style>
+    .field-icon {
+        float: right;
+        margin-left: -25px;
+        margin-top: 15px;
+        position: relative;
+        z-index: 2;
+        padding-right: 20px;
+    }
+</style>
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12 adedpro">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card recent-acti flex-fill shadow-sm grow middlebox">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="wrap-table100 body-box" style="margin-bottom: 5%;">
+                        <div class="row">
+                            <div class="col-md-12" style="margin: 0; padding: 0;">
+                                <div class="back-area">
+                                    <ul class="tab">
+                                        <li class="tablinks active" onclick="tabmod(event, 'Edit')" id="defaultOpen">
+                                            Edit Profile</li>
+                                        <li class="tablinks" onclick="tabmod(event, 'Password')">
+                                            Change Password</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table100 ver1">
+                                    <form method="post"  enctype="multipart/form-data" role="form">
+                                        {%csrf_token%}
+                                        <div class="col-xl-12">
+                                            <div class="dow-box">
+                                                <div id="Edit" class="tabcontent disblc">
+                                                    <div class="man_code">
+                                                        <div class="bac-fear">
+                                                            <div class="row">
+                                                                <div class="col-lg-4">
+                                                                    <div class="imag_prof imag_prof-ty">
+                                                                        <img id="ImgPrev_sec1"
+                                                                            class="image-select EditUsersImgProfile"
+                                                                            src="../{{request.session.profile_pic}}" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-8">
+                                                                    <div class="abt_area">
+                                                                        <div class="name_user">
+                                                                            <h3>{{employee.f_name}} {{employee.l_name}}</h3>
+                                                                        </div>
+
+                                                                        <div class="uplode-pro_img">
+                                                                            <input type="file" id="FUImage_sec1" name="profile_pic"
+                                                                                accept="image/*" class="inputfile file-btn"
+                                                                                onchange="previewImage(event)" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-4">
+                                                            <div class="col-lg-3">
+                                                                <label>First Name </label>
+                                                                <input name="fname" id="txtfirstname" autocomplete="off"
+                                                                    class="form-control" value="{{employee.f_name}}"
+                                                                    readonly>
+                                                                </input>
+                                                            </div>
+
+
+                                                            <div class="col-lg-3">
+                                                                <label>Last Name </label>
+                                                                <input name="lname" id="txtlastname" autocomplete="off"
+                                                                    value="{{employee.l_name}}" class="form-control"
+                                                                    readonly>
+                                                                </input>
+                                                            </div>
+
+                                                            <div class="col-lg-3">
+                                                                <label>Email <span style="color: red">*</span></label>
+                                                                <input id="txtemail" placeholder="Email" style="background: #fff !important;"
+                                                                    autocomplete="off" class="form-control"
+                                                                    name="email" value="{{employee.email}}">
+                                                                </input>
+                                                            </div>
+
+                                                            <div class="col-lg-3">
+                                                                <label>Mobile No. <span
+                                                                        style="color: red">*</span></label>
+                                                                <input id="txtmobile" placeholder="Mobile No."
+                                                                    autocomplete="off" name="mobileNo" style="background: #fff !important;"
+                                                                    onkeypress="return AllowOnlyNumber(event);"
+                                                                    class="form-control" max="10" value="{{employee.mobile}}"></input>
+                                                            </div>
+
+                                                            <div class="col-lg-4" hidden>
+                                                                <label>Date Of Birth <span
+                                                                        style="color: red">*</span></label>
+                                                                <input id="txtdob" type="date" placeholder="DOB" style="background: #fff !important;"
+                                                                    autocomplete="off" class="form-control">
+                                                                </input>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mt-4">
+                                                            <div class="col-lg-12">
+                                                                <label>Address <span style="color: red">*</span></label>
+                                                                <input id="txtaddress" placeholder="Address"
+                                                                    name="addr" autocomplete="off" class="form-control"
+                                                                    rows="2" style="background: #fff !important;" value="{{employee.address}}">
+                                                            </input>
+                                                            </div>
+
+                                                            <div class="col-lg-4" hidden>
+                                                                <label>Alternate Mobile No</label>
+                                                                <input id="TxtAlternateMobile"
+                                                                    placeholder="Alternate Mobile No"
+                                                                    onkeypress="return AllowOnlyNumber(event);"
+                                                                    autocomplete="off" class="form-control"
+                                                                    max="10"></input>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mt-4" hidden>
+                                                            <div class="col-lg-4">
+                                                                <label>City <span style="color: red">*</span></label>
+                                                                <input id="txtxcity" name="city" placeholder="City"
+                                                                    autocomplete="off" class="form-control">
+                                                                </input>
+                                                            </div>
+
+                                                            <div class="col-lg-4">
+                                                                <label>State <span style="color: red">*</span></label>
+                                                                <input id="txtstate" name="state" placeholder="State"
+                                                                    autocomplete="off" class="form-control">
+                                                                </input>
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <label>ZIP Code <span
+                                                                        style="color: red">*</span></label>
+                                                                <input id="txtzip" name="zipCode" placeholder="ZIP Code"
+                                                                    autocomplete="off" class="form-control">
+                                                                </input>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row submit-btn">
+                                                            <div class="col-lg-12">
+                                                                <button id="BtnEditProfile" name="editProfile"
+                                                                    class="btn btn-theme button-1 text-white ctm-border-radius btn-block edit-btn ProfileEditCustomButton"
+                                                                    data-toggle="modal" data-target="#ProfilePopup">Save
+                                                                    Changes</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <form method="post">
+                                        {%csrf_token%}
+                                        <div id="Password" class="tabcontent">
+                                            <div class="mbl-mid">
+                                                <div class="man_code">
+                                                    <div class="le_ri_m">
+                                                        <div class="row">
+                                                            <div class="col-lg-12 mt-4">
+                                                                <label>Current Password <span
+                                                                        style="color: red">*</span></label>
+                                                                <input id="txtcpass" type="password" name="currPass"
+                                                                    placeholder="Current Password" autocomplete="off"
+                                                                    class="form-control" Style="display: inline-block;">
+                                                                </input>
+                                                                <i class="field-icon fa fa-fw fa-eye"></i>
+                                                                <span class="text-danger">{{message}}</span>
+                                                            </div>
+
+
+                                                            <div class="col-lg-12 mt-4">
+                                                                <label>New Password <span
+                                                                        style="color: red">*</span></label>
+                                                                <input id="txtnewpass" type="password" name="password"
+                                                                    placeholder="New Password" autocomplete="off"
+                                                                    class="form-control" Style="display: inline-block;"
+                                                                    onkeyup="return passwordChanged();">
+                                                                </input>
+                                                                <i class="field-icon fa fa-fw fa-eye"></i><span
+                                                                    id="pass-check"></span>
+                                                                <br />
+                                                            </div>
+
+                                                            <div class="col-lg-12 mt-4">
+                                                                <label>Confirm Password <span
+                                                                        style="color: red">*</span></label>
+
+                                                                <input id="txtcp" type="password" name="confirmPass"
+                                                                    placeholder="Confirm Password" autocomplete="off"
+                                                                    class="form-control" Style="display: inline-block;">
+                                                                </input>
+                                                                <i class="field-icon fa fa-fw fa-eye"></i>
+                                                                <span class="text-danger">{{message1}}</span>
+
+                                                            </div>
+
+                                                            <div class="col-lg-12 submit-btn">
+                                                                <button id="BtnCngPass" name="changePass"
+                                                                    class="btn btn-theme button-1 text-white ctm-border-radius btn-block edit-btn ProfileEditCustomChangePass">Save
+                                                                    Changes</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Show Password -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+
+    $(".field-icon").click(function () {
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        input = $(this).parent().find("input");
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
+    });
+</script>
+
+<!--  End Show Password -->
+
+<script>
+    const previewImage = (event) => {
+    /**
+     * Get the selected files.
+     */
+    const imageFiles = event.target.files;
+    /**
+     * Count the number of files selected.
+     */
+    const imageFilesLength = imageFiles.length;
+    /**
+     * If at least one image is selected, then proceed to display the preview.
+     */
+    if (imageFilesLength > 0) {
+        /**
+         * Get the image path.
+         */
+        const imageSrc = URL.createObjectURL(imageFiles[0]);
+        /**
+         * Select the image preview element.
+         */
+        const imagePreviewElement = document.querySelector("#ImgPrev_sec1");
+        /**
+         * Assign the path to the image preview element.
+         */
+        imagePreviewElement.src = imageSrc;
+        /**
+         * Show the element by changing the display value to "block".
+         */
+        imagePreviewElement.style.display = "block";
+    }
+};
+</script>
+
+<script>
+    function tabmod(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+</script>
+
+<script>
+    function AllowOnlyNumber(evt) {
+        var charcode = (evt.which) ? evt.which : event.keyCode
+        if (charcode > 31 && (charcode < 48 || charcode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+<script>
+    function passwordChanged() {
+        var strength = document.getElementById('pass-check');
+        var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
+        var mediumRegex = new RegExp("^(?=.{6,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+        var pwd = document.getElementById("txtnewpass");
+        if (pwd.value.length == 0) {
+            strength.innerHTML = '';
+        }
+        else if (strongRegex.test(pwd.value)) {
+            strength.innerHTML = '<span style="color:green; font-weight: bold;">Strong!</span>';
+        } else if (mediumRegex.test(pwd.value)) {
+            strength.innerHTML = '<span style="color:orange; font-weight: bold;">Medium!</span>';
+        } else {
+            strength.innerHTML = '<span style="color:red; font-weight: bold;">Weak!</span>';
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".adedpro").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".adedpro").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".adedpro").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".emplpro").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            //  $(".bac-fear").css({ "width": "107%", "margin-left": "-45px" });
+            //  $(".mt-4").css({ "width": "1280px", "margin-left": "-61px" });
+            //  $(".abt_area").css({ "padding": "26px", "margin-left": "-30%" });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".emplpro").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".emplpro").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            //  $(".bac-fear").css({ "width": "100%", "margin-left": "0px" });
+            //  $(".mt-4").css({ "width": "103%", "margin-left": "-13px" });
+            //  $(".abt_area").css({ "padding": "26px", "margin-left": "-22%" });
+        });
+    });
+</script>
+{% endblock body %}

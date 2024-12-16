@@ -1,0 +1,173 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Approve Timesheet{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock %}
+{% block style %}
+<title>WFM :: HR APPROVE TIMESHEET</title>
+<style>
+    .table-responsive {
+    height: 450px;
+}
+    a.hrApproveTimeColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+    a.hrApproveTimeColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+    .DivFlexBox {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    label.labelModalText {
+        font-weight: bold;
+        padding: 10px 8px;
+        text-align: center;
+    }
+
+    input.HrInputText {
+        padding: 0px 5px;
+    }
+</style>
+
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Weekly Report</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-header weekNo">
+                        <h4 class="card-title mb-0 text-center">
+                            <span>Year : <b>2021</b></span>
+                            <span>Month : <b>October</b></span>
+                            <span>Week Start Date : <b>OCT 3</b></span>
+                            <span>Week End Date : <b>OCT 9</b></span>
+                        </h4>
+                    </div>
+                    <div class="employee-office-table">
+                        <div class="table-responsive">
+                            <table class="table custom-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 11%;">Serial No.</th>
+                                        <th>Name</th>
+                                        <th>ID</th>
+                                        <th>Designation</th>
+                                        <th style="width: 100px;">Total Week Hours</th>
+                                        <th>Report</th>
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Steve Rogers</td>
+                                        <td>0001</td>
+                                        <td>UI Designer</td>
+                                        <td>20</td>
+                                        <td><a href="javascript:void(0)" id="pending1"
+                                                class="btn btn-theme ctm-border-radius text-white btn-sm PendingtoAorD"
+                                                data-toggle="modal" data-target="#add_event">Pending</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Bruce Wayne</td>
+                                        <td>0002</td>
+                                        <td>Android Developer</td>
+                                        <td>20</td>
+                                        <td><a href="javascript:void(0)" id="pending2"
+                                                class="btn btn-theme ctm-border-radius text-white btn-sm PendingtoAorD2"
+                                                data-toggle="modal" data-target="#add_event">Pending</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Chris Cross</td>
+                                        <td>0003</td>
+                                        <td>.Net Developer</td>
+                                        <td>20</td>
+                                        <td><a href="javascript:void(0)" id="pending3"
+                                                class="btn btn-theme ctm-border-radius text-white btn-sm"
+                                                data-toggle="modal" data-target="#add_event">Pending</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Tony Stark</td>
+                                        <td>0004</td>
+                                        <td>Artificial Intelligence</td>
+                                        <td>20</td>
+                                        <td><a href="javascript:void(0)"
+                                                class="btn btn-theme ctm-border-radius text-white btn-sm"
+                                                data-toggle="modal" data-target="#add_event">Pending</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>Emma</td>
+                                        <td>0005</td>
+                                        <td>iOS Developer</td>
+                                        <td>20</td>
+                                        <td><a href="javascript:void(0)"
+                                                class="btn btn-theme ctm-border-radius text-white btn-sm"
+                                                data-toggle="modal" data-target="#add_event">Pending</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>Eddy</td>
+                                        <td>0006</td>
+                                        <td>Graphic Designer</td>
+                                        <td>20</td>
+                                        <td><a href="javascript:void(0)"
+                                                class="btn btn-theme ctm-border-radius text-white btn-sm"
+                                                data-toggle="modal" data-target="#add_event">Pending</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".ApproveText").click(function () {
+            $(".PendingtoAorD").text("Approved");
+
+            $('.PendingtoAorD').css('background', '#09796b');
+            $('.PendingtoAorD').css('border-color', '#09796b');
+            $('.PendingtoAorD').css('border-bottom', '5px solid #013630 !important');
+
+        });
+    });
+    // $(".ApproveText").click(function () {
+    //     $(this).each(function () {
+    //         var optionValue = $(this).attr("id");
+
+    //         alert(optionValue);
+    //         $($('.PendingtoAorD').attr('id')).html("Approve");
+    //     });
+    // });
+    $(document).ready(function () {
+        $(".DenyText").click(function () {
+            $(".PendingtoAorD").text("Denied");
+            $('.PendingtoAorD').css('background', '#dc3545');
+            $('.PendingtoAorD').css('border-color', '#dc3545');
+            $('.PendingtoAorD').css('border-bottom', '5px solid #7b111b');
+        });
+    });
+</script>
+<script src="../static/js/jquery-3.2.1.min.js"></script>
+<script src="../static/plugins/select2/select2.min.js"></script>
+<script src="../static/plugins/select2/moment.min.js"></script>
+<script src="../static/js/bootstrap-datetimepicker.min.js"></script>
+<script src="../static/js/script.js"></script>
+{% endblock body %}

@@ -1,0 +1,122 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Team Report{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock %}
+{% block style %}
+<title>WFM :: HR TEAM REPORT</title>
+<style>
+    .top-nav-search .btn{
+        top: 12%
+    }
+    .table-responsive.officialTableReport {
+        height: 995px;
+    }
+    .officialReportCustomTable tbody+tbody{
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table-responsive.leaveReportHeight,
+    div#pills-payrollReport .table-responsive,
+    #pills-contactReport .table-responsive {
+        height: 430px;
+    }
+
+    #pills-profile .table-responsive {
+        height: 450px !important;
+    }
+
+    a.hrpayrollColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrpayrollColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    @media only screen and (max-width: 1024px) {
+        .table-responsive.officialTableReport {
+            max-height: 665px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12">
+    <div class="quicklink-sidebar-menu ctm-border-radius shadow-sm grow bg-white card">
+        <!-- Report Lists  -->
+        <div class="card-body align-center">
+            <ul class="nav flex-row nav-pills" role="tablist">
+                <li class="nav-item mr-2">
+                    <a class="nav-link active mb-2" data-toggle="pill" href="#pills-payrollReport" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Payroll reports</a>
+                </li>
+            </ul>
+        </div>
+        <!-- End Here -->
+    </div>
+
+
+
+    <div class="card-body align-center" style="padding: 0.25rem;">
+        <div class="tab-content">
+
+            <!-- Payroll Report Section -->
+
+            <div class="tab-pane fade show active" id="pills-payrollReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="card shadow-sm ctm-border-radius grow">
+                    <div class="card-body align-center">
+                        <div class="employee-office-table">
+                            <div class="table-responsive">
+                                <table class="table custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee</th>
+                                            <th>Salary per Month</th>
+                                            <th>Paid Sick Leave</th>
+                                            <th>Paid Sick Leave <span>(&#8377;)</span></th>
+                                            <th>Paid Holiday</th>
+                                            <th>Paid Holiday <span>(&#8377;)</span></th>
+                                            <th>Paid Vacation Day</th>
+                                            <th>Paid Vacation Day <span>(&#8377;)</span></th>
+                                            <th>Unpaid Vacation</th>
+                                            <th>Unpaid Vacation <span>(&#8377;)</span></th>
+                                            <th>Internet Charges <span>(&#8377;)</span></th>
+                                            <th>Salary + Other Charges <span>(&#8377;)</span></th>
+                                            <th>Paid to Employee</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <h2>abc</h2>
+                                            </td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Here -->
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

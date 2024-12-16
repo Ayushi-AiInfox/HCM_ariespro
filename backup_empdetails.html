@@ -1,0 +1,170 @@
+{% extends 'Admin_header.html' %}
+{% block addr%}Employee Details{% endblock addr%}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: ADMIN EMPLOYEE DETAILS</title>
+<style>
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .tooltip {
+        visibility: hidden;
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 82%;
+        left: 20%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+
+    .tooltip-container:hover .tooltip1 {
+        visibility: visible;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    @media only screen and (max-width: 1200px) {
+        .employee-office-table .table input {
+            width: 100%;
+            min-width: 50px;
+            border: 1px solid #666;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="user-info card-body">
+                    <div style="width: 30%; float: left; height: 200px; margin: 10px">
+                        <div class="user-avatar  text-center mb-4">
+                            <img src="../{{img}}" alt="User Avatar" class="img-fluid rectangle-img" width="100">
+                        </div>
+                    </div>
+                    <div style="width: 60%; float: left; height: 200px; margin: 10px">
+                        <div class="user-details emp-know">
+                            <h4>Name : <b>{{empdesk.f_name}} {{empdesk.l_name}}</b></h4>
+                            <h4>ID : <b>{{empdesk.login_id}}</b></h4>
+                            <h4>Designation : <b>{{empdesk.designations}}</b></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Weekly Report</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {%csrf_token%}
+                        <div class="employee-office-table">
+                            <div class="table-responsive">
+                                <table class="table custom-table mb-3">
+                                    <tr>
+                                        <td></td>
+                                        <th scope="col">WEEK 1</th>
+                                        <th scope="col">DATE</th>
+                                        <th scope="col">EMPLOYEE NAME</th>
+                                        <th scope="col">EMPLOYEE ID</th>
+                                        <th scope="col">ROLE</th>
+                                        <th scope="col">REGULAR</th>
+                                        <th scope="col">ABSENCES</th>
+                                        <th scope="col">TOTAL WEEK HOURS</th>
+                                        <th scope="col">ACTION</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">ccpoem</th>
+                                        <td title="this is the overall timesheet data for ccpoem">
+                                            <div class="tooltip-container">
+                                                <input id="pr1mon" autocomplete="off" value="8" class="" type="text"
+                                                    readonly>
+                                                <div class="tooltip tooltip1" data-tooltip="This is Monday's data.">This
+                                                    is Monday's data.</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="tooltip-container">
+                                                <input id="pr1tue" autocomplete="off" value="8" class="" type="text"
+                                                    readonly>
+                                                <div class="tooltip tooltip2">This is Tuesday's data.</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="tooltip-container">
+                                                <input id="pr1wed" autocomplete="off" value="8" class="" type="text"
+                                                    readonly>
+                                                <div class="tooltip tooltip3">This is Wednesday's data.</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="tooltip-container">
+                                                <input id="pr1thu" autocomplete="off" value="8" class="" type="text"
+                                                    readonly>
+                                                <div class="tooltip tooltip4">This is Thursday's data.</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="tooltip-container">
+                                                <input id="pr1fri" autocomplete="off" value="8" class="" type="text"
+                                                    readonly>
+                                                <div class="tooltip tooltip5">This is Friday's data.</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="tooltip-container">
+                                                <input id="pr1sat" autocomplete="off" value="8" class="" type="text"
+                                                    readonly>
+                                                <div class="tooltip tooltip6">This is Saturday's data.</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="tooltip-container">
+                                                <input id="pr1sun" autocomplete="off" value="8" class="" type="text"
+                                                    readonly>
+                                                <div class="tooltip tooltip7">This is Sunday's data.</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    const tooltipContainers = document.querySelectorAll('.tooltip-container');
+
+    tooltipContainers.forEach(container => {
+        const tooltip = container.querySelector('.tooltip1');
+        const tooltipContent = tooltip.getAttribute('data-tooltip');
+
+        container.addEventListener('mouseover', () => {
+            tooltip.textContent = tooltipContent;
+            tooltip.style.visibility = 'visible';
+        });
+
+        container.addEventListener('mouseout', () => {
+            tooltip.style.visibility = 'hidden';
+        });
+    });
+</script>
+{% endblock body %}

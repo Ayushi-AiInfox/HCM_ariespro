@@ -1,0 +1,865 @@
+{% extends 'header.html' %}
+
+{% block style %}
+<title>WFM :: EMPLOYEE TRACKER</title>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<style>
+    .employee-office-table {
+  padding: 0px 0 10px 0;
+}
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    button#SaveData {
+        width: 100%;
+        min-width: 80px;
+    }
+
+    .table-responsive th {
+        min-width: 100px;
+    }
+
+    span.select2.select2-container.select2-container--default {
+        display: none;
+    }
+
+    input.inline_error {
+        border: 1px solid #f90000 !important;
+    }
+
+    span.select2-selection.select2-selection--single.inline_error {
+        border: 1px solid #f90000 !important;
+        outline: none;
+    }
+
+    span.select2-selection.select2-selection--single {
+        border: 1px solid #f5f5f5 !important;
+
+    }
+
+    .successMessageCard {
+        border: unset;
+        padding: 0 3.25rem;
+        float: right;
+    }
+
+    a.EmpTrackerColor {
+
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.EmpTrackerColor:hover {
+
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .employee-office-table .table input {
+        height: 28px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #525252 transparent transparent;
+        margin-left: -8px;
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #09796b;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border-color: #e3e3e3;
+        box-shadow: none;
+        font-size: 15px;
+        /*height: 35px;*/
+        outline: 1px solid #767676;
+    }
+
+    span.select2-dropdown.select2-dropdown--below {
+        width: 115px !important;
+        margin-left: 5px !important;
+        top: 5px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 25px;
+    }
+
+    .form-control2 {
+        width: 93%;
+        height: 28px;
+        margin-left: 4px;
+    }
+
+    @media only screen and (max-width: 576px) {
+        table td {
+            min-width: 100px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block addr %}Tracker{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock %}
+{% block body %}
+<!--  Weekly Tracker Starts  -->
+
+<div class="col-xl-9 col-lg-8  col-md-12" id="search_para">
+    <div class="card shadow-sm ctm-border-radius grow">
+        <div class="card-body align-center">
+            <div class="row">
+                <div class="col-md-12 d-flex">
+                    <div class="recent-acti flex-fill grow">
+                        <div class="card-header successMessageCard">
+                            <div class="card-title mb-0 d-inline-block" id="successMsg">{{messages}}</div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12 d-flex">
+                    <div class="recent-acti flex-fill grow">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0 d-inline-block">Weekly Tracker</h4>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <div class="fc-toolbar fc-header-toolbar" style="margin: 20px 0 40px 0;">
+                        <div class="fc-left">
+                            <div class="fc-button-group">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" name='prev' value="prev"
+                                        class="fc-prev-button fc-button fc-state-default fc-corner-left">
+                                        <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                    </button>
+                                    <button type="submit" name='next' value="next"
+                                        class="fc-next-button fc-button fc-state-default fc-corner-right">
+                                        <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="fc-right">
+                            <a href="javascript:void(0)" id="addRows"
+                                class="btn btn-theme button-1 ctm-border-radius text-white float-right"
+                                onclick="addRow()">
+                                <span><i class="fa fa-plus"></i></span>
+                                Add Row
+                            </a>
+                        </div>
+                        <div class="fc-center">
+                            <h2>{{request.session.start_date}} - {{request.session.end_date}}</h2>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {%csrf_token%}
+                        <div class="employee-office-table">
+
+                            <div class="table-responsive">
+                                <div>
+                                    <input type="hidden" name="rows" id="DemoCountRow" value="0" />
+                                </div>
+                                <table class="table custom-table main-table" id="main-table">
+                                    <thead>
+                                        <tr>
+                                            <td style="width: 15%"></td>
+                                            <th class="days" scope="col">MON</th>
+                                            <th class="days" scope="col">TUE</th>
+                                            <th class="days" scope="col">WED</th>
+                                            <th class="days" scope="col">THU</th>
+                                            <th class="days" scope="col">FRI</th>
+                                            <th class="days" scope="col">SAT</th>
+                                            <th class="days" scope="col" id="sun-day">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {%for employee in emp_data%}
+                                        <tr class="rowBox">
+                                            <th scope="row">
+                                                <input style="outline: none; width: 93%;" id="project_name"
+                                                    value="{{employee.project_name}}" class="form-control2"
+                                                    name="a0{{forloop.counter}}" />
+                                            </th>
+                                            <td>
+                                                <input id="weekDay1" autocomplete="on" value="{{employee.mon}}"
+                                                    name="a1{{forloop.counter}}" placeholder='0'
+                                                    class="field monday numbersOnly" type="text" maxlength="2"></input>
+                                            </td>
+                                            <td>
+                                                <input id="weekDay2" autocomplete="off" value="{{employee.tue}}"
+                                                    name="a2{{forloop.counter}}" placeholder="0"
+                                                    class="field tuesday numbersOnly" type="text" maxlength="2"></input>
+                                            </td>
+                                            <td>
+                                                <input id="weekDay3" autocomplete="off" value="{{employee.wed}}"
+                                                    name="a3{{forloop.counter}}" placeholder="0"
+                                                    class="field wednesday numbersOnly" type="text"
+                                                    maxlength="2"></input>
+                                            </td>
+                                            <td>
+                                                <input id="weekDay4" autocomplete="off" value="{{employee.thu}}"
+                                                    name="a4{{forloop.counter}}" placeholder="0"
+                                                    class="field thursday numbersOnly" type="text"
+                                                    maxlength="2"></input>
+                                            </td>
+                                            <td>
+                                                <input id="weekDay5" autocomplete="off" value="{{employee.fri}}"
+                                                    name="a5{{forloop.counter}}" placeholder="0"
+                                                    class="field friday numbersOnly" type="text" maxlength="2"></input>
+                                            </td>
+                                            <td>
+                                                <input id="weekDay6" autocomplete="off" value="{{employee.sat}}"
+                                                    name="a6{{forloop.counter}}" placeholder="0"
+                                                    class="field saturday numbersOnly" type="text"
+                                                    maxlength="2"></input>
+                                            </td>
+                                            <td>
+                                                <input id="weekDay7" autocomplete="off" value="{{employee.sun}}"
+                                                    name="a7{{forloop.counter}}" placeholder="0"
+                                                    class="field sunday numbersOnly" type="text" maxlength="2"></input>
+                                            </td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+
+                                </table>
+                                <table class="table custom-table">
+                                    <tr>
+                                        <th scope="row" style="width: 15%">Lunch</th>
+                                        <td>
+                                            <input id="lunch1" autocomplete="off" placeholder="1"
+                                                class="form-control no-edit numbersOnly" disabled></input>
+                                        </td>
+                                        <td>
+                                            <input id="lunch2" autocomplete="off" placeholder="1"
+                                                class="form-control no-edit numbersOnly" disabled></input>
+                                        </td>
+                                        <td>
+                                            <input id="lunch3" autocomplete="off" placeholder="1"
+                                                class="form-control no-edit numbersOnly" disabled></input>
+                                        </td>
+                                        <td>
+                                            <input id="lunch4" autocomplete="off" placeholder="1"
+                                                class="form-control no-edit numbersOnly" disabled></input>
+                                        </td>
+                                        <td>
+                                            <input id="lunch5" autocomplete="off" placeholder="1"
+                                                class="form-control no-edit numbersOnly" disabled></input>
+                                        </td>
+                                        <td>
+                                            <input id="lunch6" autocomplete="off" placeholder="1"
+                                                class="form-control no-edit numbersOnly" disabled></input>
+                                        </td>
+                                        <td>
+                                            <input id="lunch7" autocomplete="off" placeholder="1"
+                                                class="form-control no-edit numbersOnly" disabled></input>
+                                        </td>
+                                    </tr>
+                                    <!-- {{daystr}} -->
+                                    <tr>
+                                        <th scope="row" style="width: 15%">Vacation</th>
+                                        <td>
+                                            <input id="vac1" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="vac2" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="vac3" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="vac4" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                            <span id=""></span>
+                                        </td>
+                                        <td>
+                                            <input id="vac5" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="vac6" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="vac7" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" style="width: 15%">Holiday</th>
+                                        <td>
+                                            <input id="holi1" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="holi2" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="holi3" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="holi4" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="holi5" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="holi6" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="holi7" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" id="sickLeave" style="width: 15%">Sick Leave</th>
+                                        <td>
+                                            <input id="sick1" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="sick2" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="sick3" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="sick4" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="sick5" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="sick6" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="sick7" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" style="width: 15%">Other</th>
+                                        <td>
+                                            <input id="other1" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="other2" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="other3" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="other4" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="other5" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="other6" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="other7" autocomplete="off" placeholder="0" class="numbersOnly"
+                                                type="text" maxlength="2" readonly></input>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" style="width: 15%">Total</th>
+                                        <td>
+                                            <input id="Total1" autocomplete="off" value="{{mond}}"
+                                                class="numbersOnly" type="text" ReadOnly="true"></input>
+                                        </td>
+                                        <td>
+                                            <input id="Total2" autocomplete="off" value="{{tue}}"
+                                                class="numbersOnly" type="text" ReadOnly="true"></input>
+                                        </td>
+                                        <td>
+                                            <input id="Total3" autocomplete="off" value="{{wed}}"
+                                                class="numbersOnly" type="text" ReadOnly="true"></input>
+                                        </td>
+                                        <td>
+                                            <input id="Total4" autocomplete="off" value="{{thu}}"
+                                                class="numbersOnly" type="text" ReadOnly="true"></input>
+                                        </td>
+                                        <td>
+                                            <input id="Total5" autocomplete="off" value="{{fri}}"
+                                                class="numbersOnly" type="text" ReadOnly="true"></input>
+                                        </td>
+                                        <td>
+                                            <input id="Total6" autocomplete="off" value="{{sat}}"
+                                                class="numbersOnly" type="text" ReadOnly="true"></input>
+                                        </td>
+                                        <td>
+                                            <input id="Total7" autocomplete="off" value="{{sun}}"
+                                                class="numbersOnly" type="text" ReadOnly="true"></input>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- <table class="table custom-table">
+                                    <tr>
+                                        <td>
+                                            <div class="mt-4 dis-inline text-center">
+                                                <button type="submit" id="SaveData" name="save"
+                                                    class="btn btn-theme button-1 text-white ctm-border-radius text-center submitBtnClick">Save</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table> -->
+                            </div>
+
+                        </div>
+                        <div class="week-tracker">
+                            <div class="text-left mt-4 dis-inline">
+                                <h4 style="margin: 15px 30px;">weekly hours : {{gtotal}}</h4>
+                            </div>
+                            <div class="mt-4 dis-inline text-center">
+                                <button type="submit" id="submitData" name="submit"
+                                    class="btn btn-theme button-1 text-white ctm-border-radius text-center submitBtnClick">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ends Here -->
+
+<!-- Script to add extra row -->
+<script>
+    $(document).ready(function () {
+
+        $(".successMessageCard").hide();
+        $(".submitBtnClick").click(function () {
+
+            setTimeout(function () {
+                $(".successMessageCard").fadeIn();
+            });
+            setTimeout(function () {
+                $(".successMessageCard").fadeOut();
+            }, 3000);
+        });
+    });
+
+</script>
+<script>
+    var count = 0;
+    var counts = 0;
+    function addRow() {
+
+        var table = document.getElementById("main-table");
+        var rws = table.rows;
+        var cols = table.rows[0].cells.length;
+        var row = table.insertRow(rws.length);
+        var cell;
+        counts++;
+        for (var i = 0; i < cols; i++) {
+            cell = row.insertCell(i);
+
+            if (i == 0) {
+                cell.innerHTML = '<select name="Name' + count + '" class="form-control2 select2"> <option value="0">--Select--</option> {%for project in projectss%}<option value="{{project.project_name}}">{{project.project_name}}</option> {%endfor%}  </select>';
+            }
+            if (i == 1) {
+                cell.innerHTML = '<input type="text" value="0" class="monday numbersOnly" name="Name' + count + '" id="2" placeholder="0" value="">'
+            }
+            if (i == 2) {
+                cell.innerHTML = '<input type="text" value="0" class="tuesday numbersOnly" name="Name' + count + '" id="2" placeholder="0" value="">'
+            }
+            if (i == 3) {
+                cell.innerHTML = '<input type="text" value="0" class="wednesday numbersOnly" name="Name' + count + '" id="2" placeholder="0" value="">'
+            }
+            if (i == 4) {
+                cell.innerHTML = '<input type="text" value="0" class="thursday numbersOnly" name="Name' + count + '" id="2" placeholder="0" value="">'
+            }
+            if (i == 5) {
+                cell.innerHTML = '<input type="text" value="0" class="friday numbersOnly" name="Name' + count + '" id="2" placeholder="0" value="">'
+            }
+            if (i == 6) {
+                cell.innerHTML = '<input type="text" value="0" class="saturday numbersOnly" name="Name' + count + '" id="2" placeholder="0" value="">'
+            }
+            if (i == 7) {
+                cell.innerHTML = '<input type="text" value="0" class="sunday numbersOnly" name="Name' + count + '" id="2" placeholder="0" value="">'
+            }
+            count++;
+        }
+        // document.getElementById("DemoCountRow").innerHTML = "<input  type='text' name='rows' value="+counts+">";
+        document.getElementById("DemoCountRow").value = counts;
+        if ($("#vac1").val()) {
+            $(".monday").prop('disabled', true);
+        }
+        if ($("#vac2").val()) {
+            $(".tuesday").prop('disabled', true);
+        }
+        if ($("#vac3").val()) {
+            $(".wednesday").prop('disabled', true);
+        }
+        if ($("#vac4").val()) {
+            $(".thursday").prop('disabled', true);
+        }
+        if ($("#vac5").val()) {
+            $(".friday").prop('disabled', true);
+        }
+        if ($("#vac6").val()) {
+            $(".saturday").prop('disabled', true);
+        }
+        if ($("#vac7").val()) {
+            $(".sunday").prop('disabled', true);
+        }
+
+        //=================Holiday========================
+        if ($("#holi1").val()) {
+            $(".monday").prop('disabled', true);
+        }
+        if ($("#holi2").val()) {
+            $(".tuesday").prop('disabled', true);
+        }
+        if ($("#holi3").val()) {
+            $(".wednesday").prop('disabled', true);
+        }
+        if ($("#holi4").val()) {
+            $(".thursday").prop('disabled', true);
+        }
+        if ($("#holi5").val()) {
+            $(".friday").prop('disabled', true);
+        }
+        if ($("#holi6").val()) {
+            $(".saturday").prop('disabled', true);
+        }
+        if ($("#holi7").val()) {
+            $(".sunday").prop('disabled', true);
+        }
+
+        //=================Sick========================
+        if ($("#sick1").val()) {
+            $(".monday").prop('disabled', true);
+        }
+        if ($("#sick2").val()) {
+            $(".tuesday").prop('disabled', true);
+        }
+        if ($("#sick3").val()) {
+            $(".wednesday").prop('disabled', true);
+        }
+        if ($("#sick4").val()) {
+            $(".thursday").prop('disabled', true);
+        }
+        if ($("#sick5").val()) {
+            $(".friday").prop('disabled', true);
+        }
+        if ($("#sick6").val()) {
+            $(".saturday").prop('disabled', true);
+        }
+        if ($("#sick7").val()) {
+            $(".sunday").prop('disabled', true);
+        }
+
+        //=================Sick========================
+        if ($("#other1").val()) {
+            $(".monday").prop('disabled', true);
+        }
+        if ($("#other2").val()) {
+            $(".tuesday").prop('disabled', true);
+        }
+        if ($("#other3").val()) {
+            $(".wednesday").prop('disabled', true);
+        }
+        if ($("#other4").val()) {
+            $(".thursday").prop('disabled', true);
+        }
+        if ($("#other5").val()) {
+            $(".friday").prop('disabled', true);
+        }
+        if ($("#other6").val()) {
+            $(".saturday").prop('disabled', true);
+        }
+        if ($("#other7").val()) {
+            $(".sunday").prop('disabled', true);
+        }
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+
+        $("input.numbersOnly").keypress(function (evt) {
+
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        });
+
+        $('input').on('keypress input', function (e) {
+            var number = $(this).val()
+
+            if (number > 8) {
+                /*         alert("Value entered must be 12 or lower."); */
+                $(this).val('');
+                return false;
+            }
+        });
+        $("#addRows").click(function () {
+            $("input.numbersOnly").keypress(function (evt) {
+
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    return false;
+                }
+                return true;
+            });
+
+            $('input').on('keypress input', function (e) {
+                var number = $(this).val()
+
+                if (number > 8) {
+                    alert("Value entered must be 12 or lower."); 
+                    $(this).val('');
+                    return false;
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".main-table tbody tr").each(function () {
+
+            var sick_leave = {{sickleaves | safe}};
+    var other = {{otherleaves | safe}};
+
+    if (sick_leave.includes("Sick Leave")) {
+        if (sick_leave.includes("Monday")) {
+            document.getElementById('sick1').value = "8";
+        }
+        if (sick_leave.includes("Tuesday")) {
+            document.getElementById('sick2').value = "8";
+        }
+        if (sick_leave.includes("Wednesday")) {
+            document.getElementById('sick3').value = "8";
+        }
+        if (sick_leave.includes("Thursday")) {
+            document.getElementById('sick4').value = "8";
+        }
+        if (sick_leave.includes("Friday")) {
+            document.getElementById('sick5').value = "8";
+        }
+        if (sick_leave.includes("Saturday")) {
+            document.getElementById('sick6').value = "8";
+        }
+        if (sick_leave.includes("Sunday")) {
+            document.getElementById('sick7').value = "8";
+        }
+    }
+    if (other.includes("Parental Leave")) {
+        if (other.includes("Monday")) {
+            document.getElementById('vac1').value = "8";
+        }
+        if (other.includes("Tuesday")) {
+            document.getElementById('vac2').value = "8";
+        }
+        if (other.includes("Wednesday")) {
+            document.getElementById('vac3').value = "8";
+        }
+        if (other.includes("Thursday")) {
+            document.getElementById('vac4').value = "8";
+        }
+        if (other.includes("Friday")) {
+            document.getElementById('vac5').value = "8";
+        }
+        if (other.includes("Saturday")) {
+            document.getElementById('vac6').value = "8";
+        }
+        if (other.includes("Sunday")) {
+            document.getElementById('vac7').value = "8";
+        }
+    }
+    if (other.includes("Normal Leave")) {
+        if (other.includes("Monday")) {
+            document.getElementById('vac1').value = "8";
+        }
+        if (other.includes("Tuesday")) {
+            document.getElementById('vac2').value = "8";
+        }
+        if (other.includes("Wednesday")) {
+            document.getElementById('vac3').value = "8";
+        }
+        if (other.includes("Thursday")) {
+            document.getElementById('vac4').value = "8";
+        }
+        if (other.includes("Friday")) {
+            document.getElementById('vac5').value = "8";
+        }
+        if (other.includes("Saturday")) {
+            document.getElementById('vac6').value = "8";
+        }
+        if (other.includes("Sunday")) {
+            document.getElementById('vac7').value = "8";
+        }
+    }
+    if (other.includes("Annual Leave")) {
+        if (other.includes("Monday")) {
+            document.getElementById('vac1').value = "8";
+        }
+        if (other.includes("Tuesday")) {
+            document.getElementById('vac2').value = "8";
+        }
+        if (other.includes("Wednesday")) {
+            document.getElementById('vac3').value = "8";
+        }
+        if (other.includes("Thursday")) {
+            document.getElementById('vac4').value = "8";
+        }
+        if (other.includes("Friday")) {
+            document.getElementById('vac5').value = "8";
+        }
+        if (other.includes("Saturday")) {
+            document.getElementById('vac6').value = "8";
+        }
+        if (other.includes("Sunday")) {
+            document.getElementById('vac7').value = "8";
+        }
+    }
+    if (other.includes("Working From Home")) {
+        if (other.includes("Monday")) {
+            document.getElementById('vac1').value = "8";
+        }
+        if (other.includes("Tuesday")) {
+            document.getElementById('vac2').value = "8";
+        }
+        if (other.includes("Wednesday")) {
+            document.getElementById('vac3').value = "8";
+        }
+        if (other.includes("Thursday")) {
+            document.getElementById('vac4').value = "8";
+        }
+        if (other.includes("Friday")) {
+            document.getElementById('vac5').value = "8";
+        }
+        if (other.includes("Saturday")) {
+            document.getElementById('vac6').value = "8";
+        }
+        if (other.includes("Sunday")) {
+            document.getElementById('vac7').value = "8";
+        }
+    }
+
+    if ($("#vac1").val()) {
+        $(".monday").prop('disabled', true);
+    }
+    if ($("#vac2").val()) {
+        $(".tuesday").prop('disabled', true);
+    }
+    if ($("#vac3").val()) {
+        $(".wednesday").prop('disabled', true);
+    }
+    if ($("#vac4").val()) {
+        $(".thursday").prop('disabled', true);
+    }
+    if ($("#vac5").val()) {
+        $(".friday").prop('disabled', true);
+    }
+    if ($("#vac6").val()) {
+        $(".saturday").prop('disabled', true);
+    }
+    if ($("#vac7").val()) {
+        $(".sunday").prop('disabled', true);
+    }
+
+    //=================Holiday========================
+    if ($("#holi1").val()) {
+        $(".monday").prop('disabled', true);
+    }
+    if ($("#holi2").val()) {
+        $(".tuesday").prop('disabled', true);
+    }
+    if ($("#holi3").val()) {
+        $(".wednesday").prop('disabled', true);
+    }
+    if ($("#holi4").val()) {
+        $(".thursday").prop('disabled', true);
+    }
+    if ($("#holi5").val()) {
+        $(".friday").prop('disabled', true);
+    }
+    if ($("#holi6").val()) {
+        $(".saturday").prop('disabled', true);
+    }
+    if ($("#holi7").val()) {
+        $(".sunday").prop('disabled', true);
+    }
+
+    //=================Sick========================
+    if ($("#sick1").val()) {
+        $(".monday").prop('disabled', true);
+    }
+    if ($("#sick2").val()) {
+        $(".tuesday").prop('disabled', true);
+    }
+    if ($("#sick3").val()) {
+        $(".wednesday").prop('disabled', true);
+    }
+    if ($("#sick4").val()) {
+        $(".thursday").prop('disabled', true);
+    }
+    if ($("#sick5").val()) {
+        $(".friday").prop('disabled', true);
+    }
+    if ($("#sick6").val()) {
+        $(".saturday").prop('disabled', true);
+    }
+    if ($("#sick7").val()) {
+        $(".sunday").prop('disabled', true);
+    }
+
+    //=================Sick========================
+    if ($("#other1").val()) {
+        $(".monday").prop('disabled', true);
+    }
+    if ($("#other2").val()) {
+        $(".tuesday").prop('disabled', true);
+    }
+    if ($("#other3").val()) {
+        $(".wednesday").prop('disabled', true);
+    }
+    if ($("#other4").val()) {
+        $(".thursday").prop('disabled', true);
+    }
+    if ($("#other5").val()) {
+        $(".friday").prop('disabled', true);
+    }
+    if ($("#other6").val()) {
+        $(".saturday").prop('disabled', true);
+    }
+    if ($("#other7").val()) {
+        $(".sunday").prop('disabled', true);
+    }
+        });
+    });
+</script>
+<!-- Ends Here -->
+{% endblock body %}

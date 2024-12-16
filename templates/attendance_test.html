@@ -1,0 +1,387 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Attendance{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock %}
+{% block style %}
+<title>WFM :: HR ATTENDANCE</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+        </script>
+
+        <!-- jsPDF library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+            integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    a.hrattendanceTimeColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrattendanceTimeColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+    .fc-prev-button, .fc-next-button{
+        padding: 7px 8px !important;
+    }
+    td:first-child {
+  text-align: left;
+}
+    .label {
+    display: flex;
+    align-items: center;
+    padding-right: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    }
+.legends {
+  display: flex;
+  align-items: center;
+}
+.dashline {
+  border: 6px solid;
+  width: 10px;
+  text-align: left;
+  float: left;
+  margin: unset;
+}
+    .month, .year{
+        border: unset;
+        max-width: 123px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+        text-align: center;
+        padding: 6px !important;
+        margin-right: 10px;
+        font-weight: 600;
+    }
+    .btn-popup{
+        background: #5F9EA0;
+        color: #fff;
+        width: 100%;
+    }
+    .btn-popup:hover{
+        background: #5F9EA0;
+        color: #fff;
+    }
+    /* Popup container - can be anything you want */
+    .popup {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* The actual popup */
+    .popuptext {
+        width: 100px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        background-color: #fff;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 0px 0;
+        position: absolute;
+        z-index: 1;
+        top: 130%;
+        left: 160%;
+        margin-left: -80px;
+    }
+
+    /* Popup arrow */
+    .popuptext::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        /* changed top to bottom */
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent #555 transparent;
+        /* changed border botom color instead of top*/
+    }
+
+    /* Toggle this class - hide and show the popup */
+    .popup .show {
+        visibility: visible;
+        -webkit-animation: fadeIn 1s;
+        animation: fadeIn 1s;
+    }
+
+    /* Add animation (fade in the popup) */
+    @-webkit-keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    table td {
+        border: 1px solid #ccc;
+    }
+
+    th {
+        background-color: #001f3f;
+        color: #fff;
+        padding: 0.5em 1em;
+    }
+
+    thead {
+        border-left: 1px solid #001f3f;
+        border-right: 1px solid #001f3f;
+    }
+
+    .employee-office-table {
+        box-shadow: none;
+    }
+
+    .table {
+        color: #000;
+        border: 1px solid #f0f0f0;
+    }
+
+    .custom-table tr {
+        background-color: #fff;
+        box-shadow: 0 0 3px #e5e5e5;
+    }
+
+    .table.custom-table>tbody>tr>td,
+    .table.custom-table>tbody>tr>th,
+    .table.custom-table>tfoot>tr>td,
+    .table.custom-table>tfoot>tr>th,
+    .table.custom-table>thead>tr>td,
+    .table.custom-table>thead>tr>th {
+        padding: 10px 8px;
+        vertical-align: middle;
+    }
+
+    .table-striped>tbody>tr:nth-of-type(2n + 1) {
+        background-color: #f6f6f6;
+    }
+
+    .HRupcomingLeaves hr {
+        margin: 0 0;
+    }
+
+    .dash-card-container {
+        justify-content: space-between;
+    }
+
+    h6.HRDateText {
+        color: #333;
+    }
+
+    .card-body.leavesHr-applied {
+        padding: 10px 20px;
+    }
+
+    span.statusBtn {
+        color: #333;
+    }
+
+    .upcomingLeavesHR {
+        padding: 10px 1.25rem;
+    }
+
+    .table-responsive.listofUsers {
+        height: 670px;
+    }
+
+    @media only screen and (max-width: 425px) {
+        h6.HRDateText {
+            font-size: 14px;
+            display: inline-block;
+            width: 100px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12">
+    <form  id="post-form" >
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Attendance of Employees</h4>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12 mb-4" style="display: flex; align-items: center;">
+                        <div class="col-md-6" style="padding: unset;">
+                            <div class="fc-left" style="margin-right: 10px;">
+                                <div class="fc-button-group">
+                                        <button type="submit" name='prev' value="prev"
+                                            class="fc-prev-button fc-button fc-state-default fc-corner-left">
+                                            <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                        </button>
+                                        <button type="submit" name='next' value="next"
+                                            class="fc-next-button fc-button fc-state-default fc-corner-right">
+                                            <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                        </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="display: flex; padding: unset; justify-content: end;">
+                            <div class="monthbox" style="padding: unset;">
+                                <input type="hidden" name="month" value="{{month}}" class="month" readonly style="padding: unset;">
+                                <input type="text" name="" id="month" value="" class="month" readonly style="padding: unset;">
+                            </div>
+                            <div class="yearbox" style="padding: unset;">
+                                <input type="text" name="year" value="{{year}}" class="year" readonly style="padding: unset;">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-12 mb-4" style="display: flex;">
+                        
+                    </div> -->
+                    <div class="col-md-12 mb-2" style="display: flex; align-items: center;">
+                        <div class="col-md-10" style="padding: unset;">
+                            <div class="legends">
+                                <div class="label"><hr class="dashline" style="border-color: #4CBB17; margin-right:5px;"></span>Present</div>
+                                <div class="label"><hr class="dashline" style="border-color: #EE4B2B; margin-right:5px;"></span>Absent</div>
+                                <div class="label"><hr class="dashline" style="border-color: #ffc107; margin-right:5px;"></span>Half Day</div>
+                                <div class="label"><hr class="dashline" style="border-color: #A9A9A9; margin-right:5px;"></span>Holiday</div>
+                                <div class="label"><hr class="dashline" style="border-color: rgb(255, 94, 20); margin-right:5px;"></span>Paid Leave</div>
+                                <div class="label"><hr class="dashline" style="border-color: #8a4d4d; margin-right:5px;"></span>Unpaid Leave</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="display: flex;justify-content: flex-end;padding: unset;">
+                            <a href="javascript:void(0);" id="export-btn" class="btn btn-success" style="width: 65px;
+                            padding: 3px 5px;">Print</a>
+                        </div>
+                    </div>
+                    <div class="employee-office-table" id="emptable">
+                        <div class="table-responsive listofUsers">
+                            <table class="table table-striped custom-table mb-0" id="my-table">
+                                <thead>
+                                    <tr>
+                                        <th>Emp. Name</th>
+                                        <th colspan="31">Days</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if request.user_agent.is_mobile %}
+                                        Do stuff here...
+                                    {% else %}
+                                        not a mobile
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="days_bg" name="days_bg" value="">
+    <input type="hidden" id="days_color" name="days_color" value="">
+    
+    <input type="hidden" id="attendance_status">
+    </form>
+</div>
+<script>
+    $(".popuptext").hide();
+    function myFunction(myval) {
+        // Get a reference to the popup element
+        var popup = $("#myPopup" + myval);
+        
+        // Check if the popup is visible
+        if (popup.is(":visible")) {
+            // If the popup is already visible, hide it
+            popup.hide();
+        } else {
+            // Otherwise, hide all other popups and show the clicked popup
+            $(".popuptext").hide();
+            popup.show();
+        }
+    }
+    
+    
+    function halfday(val2){
+        $(".days" + val2).css("background", "#ffc107");
+        $(".days" + val2).css("color", "#fff"); 
+        $("#days_bg").val("#ffc107"); 
+        $("#days_color").val("#fff");      
+    }
+    function holiday(val3){
+        $(".days" + val3).css("background", "#A9A9A9");
+        $(".days" + val3).css("color", "#fff"); 
+        $("#days_bg").val("#A9A9A9"); 
+        $("#days_color").val("#fff");      
+    }
+    
+</script>
+<script>
+$(document).ready(function() {
+    window.jsPDF = window.jspdf.jsPDF;
+    $('#export-btn').click(function() {
+        var table = $('#my-table')[0];
+
+        html2canvas(table).then(function(canvas) {
+            var imgData = canvas.toDataURL('image/png');
+            var doc = new jsPDF('p', 'mm', 'a4');
+            var imgWidth = doc.internal.pageSize.getWidth();
+            var imgHeight = canvas.height * imgWidth / canvas.width;
+            
+            doc.addImage(imgData, 'PNG', 10, 10, imgWidth - 20, imgHeight);
+            doc.save('Attendance_sheet.pdf');
+        });
+    });
+});
+</script>
+<script type="text/javascript">
+    $(document).on('submit', '#post-form', function(e) {
+        e.preventDefault();
+        // Get the CSRF token from the cookie
+        var csrftoken = getCookie('csrftoken');
+
+        $.ajax({
+            type: 'POST',
+            url: '../hr/attendance_test_create',
+            data: {
+                absent: $('#attendance_status').val(),
+                halfday: $('#halfday').val(),
+                holiday: $('#holiday').val(),
+                csrfmiddlewaretoken: csrftoken,
+            },
+            success: function() {
+                // Handle the success response
+            }
+        });
+    });
+
+    // Function to retrieve the CSRF token from the cookie
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock body %}

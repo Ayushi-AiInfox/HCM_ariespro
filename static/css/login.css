@@ -1,0 +1,846 @@
+:root {
+    --form-height: 590px;
+    --form-width: 650px;
+    /*  Sea Green */
+    --left-color: #9fdeaf;
+    /*  Light Blue  */
+    --right-color: #96dbe2;
+}
+
+html{
+    height: 100%;
+}
+body,
+html {
+    width: 100%;
+    /*height: 100%;*/
+    margin: 0;
+    font-family: 'Helvetica Neue', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.container {
+    width: var(--form-width);
+    /*width: 1100px;*/
+    height: var(--form-height);
+    /*height: 600px;*/
+    position: relative;
+    margin: auto;
+    box-shadow: 2px 10px 40px rgba(22, 20, 19, 0.4);
+    border-radius: 10px;
+    /* margin-top: 50px; */
+}
+
+/* 
+----------------------
+Overlay
+----------------------
+*/
+.overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 100;
+    background-image: linear-gradient(to right, #78c1b9, #5dded0);
+    border-radius: 10px;
+    color: white;
+    clip: rect(0, 385px, var(--form-height), 0);
+}
+
+.open-sign-up {
+    animation: slideleft 1s linear forwards;
+}
+
+.open-sign-in {
+    animation: slideright 1s linear forwards;
+}
+
+.overlay .sign-in,
+.overlay .sign-up {
+    /*  Width is 385px - padding  */
+    --padding: 11px;
+    width: calc(385px - var(--padding) * 2);
+    height: 100%;
+    /* display: flex; */
+    /* justify-content: center; */
+    flex-direction: column;
+    /* align-items: center; */
+    /* padding: 0px var(--padding); */
+    text-align: center;
+}
+
+.overlay .sign-in {
+    float: left;
+}
+
+.overlay-text-left-animation {
+    animation: text-slide-in-left 1s linear;
+}
+
+.overlay-text-left-animation-out {
+    animation: text-slide-out-left 1s linear;
+}
+
+.overlay .sign-up {
+    float: right;
+}
+
+.overlay-text-right-animation {
+    animation: text-slide-in-right 1s linear;
+}
+
+.overlay-text-right-animation-out {
+    animation: text-slide-out-right 1s linear;
+}
+
+
+.overlay h1 {
+    margin: 0px 5px;
+    font-size: 2.1rem;
+}
+
+.overlay p {
+    margin: 20px 0px 30px;
+    font-weight: 200;
+}
+
+/* 
+------------------------
+Buttons
+------------------------
+*/
+.switch-button,
+.control-button {
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 140px;
+    height: 40px;
+    font-size: 20px;
+    text-transform: uppercase;
+    background: none;
+    border-radius: 20px;
+    color: white;
+}
+
+.switch-button {
+    border: 2px solid;
+}
+
+.control-button {
+    border: none;
+    margin-top: 15px;
+}
+
+.switch-button:focus,
+.control-button:focus {
+    outline: none;
+}
+
+.control-button.up {
+    background-color: var(--left-color);
+}
+
+.control-button.in {
+    background-color: var(--right-color);
+}
+
+/* 
+--------------------------
+Forms
+--------------------------
+*/
+.form {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 10px;
+    background: #fff;
+    opacity: 0.8;
+}
+
+.form .sign-in,
+.form .sign-up {
+    /*--padding: 0px;
+    position: absolute;
+    /*  Width is 100% - 385px - padding  
+    width: calc(var(--form-width) - 385px - var(--padding) * 2);*/
+    height: 100%;
+    /* display: flex; */
+    /* justify-content: center; */
+    flex-direction: column;
+    /* align-items: center; */
+    /* padding: 0px var(--padding); */
+    /* text-align: center; */
+}
+
+/* Sign in is initially not displayed */
+/*.form .sign-in {
+    display: none;
+}*/
+.overlay .sign-in,
+.overlay .sign-up {
+    margin: 100px auto;
+}
+
+.overlay .welcome {
+    margin: 50px auto;
+}
+
+.form .sign-in {
+    /*left: 0;*/
+    /*background: #fff;
+    opacity: 0.9;*/
+    padding: 30px;
+    /*border-radius: 20px;*/
+}
+
+.form #sign-up-form .form-group label {
+    /*margin-left: 15px;
+    margin-bottom: 0;*/
+    font-weight: bold;
+    padding: 10px 60px;
+}
+
+.form #sign-in-form .form-group label {
+    font-weight: bold;
+    padding: 4px 0px;
+    margin: 0 40%;
+    text-align: center;
+}
+
+.form #reset-form .form-group label {
+    font-weight: bold;
+    padding: 10px 0px;
+    margin: 0 58px;
+    text-align: center;
+}
+
+.form .sign-up {
+    right: 0;
+    padding: 20px;
+    background: #fff;
+    opacity: 0.95;
+}
+
+.form .sign-up h2 {
+    font-size: 36px;
+    color: #4ae98d;
+}
+
+.form .sign-in h2 {
+    font-size: 36px;
+    color: #4ae98d;
+    margin-top: 50px;
+}
+
+.form-right-slide-in {
+    animation: form-slide-in-right 1s;
+}
+
+.form-right-slide-out {
+    animation: form-slide-out-right 1s;
+}
+
+.form-left-slide-in {
+    animation: form-slide-in-left 1s;
+}
+
+.form-left-slide-out {
+    animation: form-slide-out-left 1s;
+}
+
+.form .sign-in h1 {
+    color: #04423a;
+    margin: 20px auto 2px;
+    font-size: 40px;
+    font-weight: bold;
+    width: 30%;
+    /*border-bottom: 1px solid #29847a;*/
+}
+
+.hor-line {
+    border: 1px solid #29847a;
+    /* height: 1px; */
+    width: 19%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.form #sign-in form .form-group {
+    font-weight: bold;
+    color: #014e47;
+    margin: 25px 0 !important;
+}
+
+.form #sign-in form .form-group input::placeholder {
+    color: red;
+    opacity: 1;
+    font-weight: bold;
+}
+
+.form #sign-in form .form-group input:-ms-input-placeholder {
+    color: red;
+    font-weight: bold;
+}
+
+.form #sign-in form .form-group input::-ms-input-placeholder {
+    color: red;
+    font-weight: bold;
+}
+
+/*****   Forget Placehoder   ***/
+.form .forget-form .form-group ::placeholder {
+    /*color: red;*/
+    opacity: 1;
+    font-weight: bold;
+}
+
+.form .forget {
+    padding: 10px;
+}
+
+.password-forget {
+    display: none;
+    padding: 60px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px #09796b;
+}
+
+.forget h1 {
+    text-align: center;
+    color: red;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.forget p {
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.form .forget-form .form-group :-ms-input-placeholder {
+    color: red;
+    font-weight: bold;
+}
+
+.form .forget-form .form-group ::-ms-input-placeholder {
+    color: red;
+    font-weight: bold;
+}
+
+.form .sign-up h1 {
+    color: #04423a;
+    margin: 0;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.form .sign-up form .form-group {
+    font-weight: bold;
+    color: #014e47;
+    margin: 25px 0 !important;
+}
+
+.form .sign-up form .form-group ::placeholder {
+    color: red;
+    opacity: 1;
+    font-weight: bold;
+}
+
+.form .sign-up form .form-group :-ms-input-placeholder {
+    color: red;
+    font-weight: bold;
+}
+
+.form .sign-up form .form-group ::-ms-input-placeholder {
+    color: red;
+    font-weight: bold;
+}
+
+.social-media-buttons {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 15px;
+}
+
+.social-media-buttons .icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #dadada;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 7px;
+}
+
+.small {
+    font-size: 13px;
+    color: grey;
+    font-weight: 200;
+    margin: 5px;
+}
+
+.social-media-buttons .icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+#sign-in-form input,
+#sign-up-form input,
+#reset-form input,
+#sign-up-form select {
+    color: #fff;
+    margin: 0 auto;
+    font-size: 14px;
+    padding: 10px;
+    width: 260px;
+    font-weight: bold;
+    border: none;
+    /*background-color: #00443c;*/
+    font-family: 'Helvetica Neue', sans-serif;
+    letter-spacing: 1.5px;
+    padding-left: 20px;
+    background-color: rgb(68, 68, 68);
+    /* Needed for IEs */
+    -moz-box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+    -webkit-box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+    box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+    filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3, MakeShadow=true, ShadowOpacity=0.30);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=3,MakeShadow=true,ShadowOpacity=0.30)";
+    zoom: 1;
+}
+
+#sign-up-form select option {
+    /*color: red;*/
+    padding: 20px;
+    background-color: #fff;
+}
+
+.redClass {
+    color: red;
+}
+
+#sign-in-form input::placeholder {
+    letter-spacing: 1px;
+}
+
+::-webkit-input-placeholder {
+    /* WebKit, Blink, Edge */
+    color: #909;
+}
+
+:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #909;
+    opacity: 1;
+}
+
+::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #909;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #909;
+}
+
+::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: #909;
+}
+
+::placeholder {
+    /* Most modern browsers support this now. */
+    color: #909;
+}
+
+.forgot-password {
+    font-size: 12px;
+    display: inline-block;
+    border-bottom: 2px solid #efebeb;
+    padding-bottom: 3px;
+}
+
+.forgot-password:hover,
+.reset-btn:hover {
+    cursor: pointer;
+    background-position: -900px;
+    color: #fff;
+    background-color: #015858 !important;
+    border-bottom: 5px solid #008081 !important;
+}
+
+.password-forget {
+    height: 100%;
+    background: #fff;
+    opacity: 0.8;
+}
+
+.reset-email {
+    width: 400px !important;
+}
+
+.errorText {
+    margin: 0 70px;
+}
+
+.errorText2 {
+    margin: 0 27%;
+    padding: 5px 0;
+}
+
+.reset-btn {
+    width: 35% !important;
+    margin: 0px auto !important;
+}
+
+.sign-up .form-group .my-btn {
+    width: 30% !important;
+    margin: 30px auto !important;
+    font-size: 18px !important;
+}
+
+.sign-in .form-group .my-btn {
+    width: 30% !important;
+    margin: 15px auto !important;
+    font-size: 18px !important;
+}
+
+.my-btn:hover {
+    background-position: -900px;
+    color: #fff;
+    background-color: #015858 !important;
+    border-bottom: 5px solid #008081 !important;
+}
+
+.field-icon {
+    float: right;
+    margin-right: 95px;
+    margin-top: -30px;
+    position: relative;
+    z-index: 2;
+    padding-right: 20px;
+    color: #fff;
+}
+
+.form-control::placeholder {
+    color: #fff;
+    font-style: italic;
+}
+
+/* 
+---------------------------
+Animation
+---------------------------
+*/
+@keyframes slideright {
+    0% {
+        clip: rect(0, 385px, var(--form-height), 0);
+    }
+
+    30% {
+        clip: rect(0, 480px, var(--form-height), 0);
+    }
+
+    /*  we want the width to be slightly larger here  */
+    50% {
+        clip: rect(0px, calc(var(--form-width) / 2 + 480px / 2), var(--form-height), calc(var(--form-width) / 2 - 480px / 2));
+    }
+
+    80% {
+        clip: rect(0px, var(--form-width), var(--form-height), calc(var(--form-width) - 480px));
+    }
+
+    100% {
+        clip: rect(0px, var(--form-width), var(--form-height), calc(var(--form-width) - 385px));
+    }
+}
+
+@keyframes slideleft {
+    100% {
+        clip: rect(0, 385px, var(--form-height), 0);
+    }
+
+    70% {
+        clip: rect(0, 480px, var(--form-height), 0);
+    }
+
+    /*  we want the width to be slightly larger here  */
+    50% {
+        clip: rect(0px, calc(var(--form-width) / 2 + 480px / 2), var(--form-height), calc(var(--form-width) / 2 - 480px / 2));
+    }
+
+    30% {
+        clip: rect(0px, var(--form-width), var(--form-height), calc(var(--form-width) - 480px));
+    }
+
+    0% {
+        clip: rect(0px, var(--form-width), var(--form-height), calc(var(--form-width) - 385px));
+    }
+}
+
+@keyframes text-slide-in-left {
+    0% {
+        padding-left: 20px;
+    }
+
+    100% {
+        padding-left: 50px;
+    }
+}
+
+@keyframes text-slide-in-right {
+    0% {
+        padding-right: 20px;
+    }
+
+    100% {
+        padding-right: 50px;
+    }
+}
+
+@keyframes text-slide-out-left {
+    0% {
+        padding-left: 50px;
+    }
+
+    100% {
+        padding-left: 20px;
+    }
+}
+
+@keyframes text-slide-out-right {
+    0% {
+        padding-right: 50px;
+    }
+
+    100% {
+        padding-right: 20px;
+    }
+}
+
+@keyframes form-slide-in-right {
+    0% {
+        padding-right: 100px;
+    }
+
+    100% {
+        padding-right: 50px;
+    }
+}
+
+@keyframes form-slide-in-left {
+    0% {
+        padding-left: 100px;
+    }
+
+    100% {
+        padding-left: 50px;
+    }
+}
+
+@keyframes form-slide-out-right {
+    0% {
+        padding-right: 50px;
+    }
+
+    100% {
+        padding-right: 80px;
+    }
+}
+
+@keyframes form-slide-out-left {
+    0% {
+        padding-left: 50px;
+    }
+
+    100% {
+        padding-left: 80px;
+    }
+}
+
+.inner-wrapper.login-body .footer {
+    text-align: center;
+    margin: 10px auto;
+}
+.form.forgetForm {
+    position: relative;
+    background-color: unset;
+}
+@media only screen and (max-width:767px){
+    .field-icon{
+        margin-right: 100px;
+    }
+    .form #reset-form .form-group label{
+        margin: 0 0;
+    }
+    button#ResetPass {
+        font-size: 14px;
+        width: auto !important;
+    }
+    .reset-email {
+        margin: unset !important;
+    }
+    .password-forget{
+        padding: 60px !important;
+    }
+}
+@media (min-width:320px) and (max-width:576px) {
+    div#sign-in-form {
+        margin: 5px 0 10px 0 !important;
+      }
+    div#sign-in-info {
+        padding: 30px 16px;
+    }
+    span.errorMsgSpanText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+    .form-group.inputTextBox.errorMsgDiv {
+        margin: 18px 0 0 0 !important;
+    }
+    .text-center.forgotpass {
+        margin: unset;
+    }
+    .form .forget{
+        padding: unset;
+    }
+    .form-group.inputTextBox {
+        margin-top: 20px !important;
+      }
+    .form #reset-form .form-group label{
+        margin: 0 0;
+    }
+    button#ResetPass {
+        font-size: 14px;
+        width: auto !important;
+    }
+    .reset-email {
+        margin: unset !important;
+    }
+    .password-forget{
+        padding: 20px !important;
+    }
+    .forget h1 {
+        font-size: 25px;
+    }
+    .forget p {
+        font-size: 14px;
+    } 
+    .container {
+        width: 100%;
+        max-width: 256px;
+        height: 485px;
+        position: absolute;        
+        right: 0;
+        left: 0;
+    }
+
+    .form .sign-in h1 {
+        margin-top: 20px;
+        font-size: 26px;
+        width: unset;
+    }
+
+    .form-group.inputTextBox {
+        text-align: center;
+    }
+
+    .form #sign-in-form .form-group label {
+        margin: unset;
+        font-size: 13px;
+    }
+
+    #sign-in-form input,
+    #sign-up-form input,
+    #reset-form input,
+    #sign-up-form select {
+        width: 100% !important;
+    }
+
+    .sign-in .form-group .my-btn {
+        width: 100px !important;
+        margin: 10px auto 10px auto !important;
+        font-size: 14px !important;
+    }
+
+    .text-center.forgotpass a {
+        font-size: 13px;
+    }
+    .field-icon{
+        margin-right: unset;
+    }
+    .footerCopyRightText {
+        margin-top: 560px !important;
+        left: 0;
+        right: 0;
+    }
+    .form{
+        height: 550px;
+    }
+    .captcha-container {
+        margin: unset;
+    }
+    span.footerCopy {
+        font-size: 12px;
+    }
+    .inner-wrapper.login-body .footer{
+        margin: unset;
+    }
+    .text-center.forgotpass {
+        top: 512px !important;
+      }
+      .captcha-container {
+        margin: unset !important;
+        margin-top: 15px !important;
+      }
+      .captchaBox {
+        margin-left: 10px !important;
+      }
+}
+
+@media (min-width:576px) and (max-width:767.99px) {
+    
+    .captchaBox {
+        margin-left: 7px !important;
+      }
+      .inline-captcha{
+        width: 89px !important;
+      }
+      #captcha{
+        width: 172px !important;
+      }
+      .captcha-container {
+        margin: 20px 63px !important;
+      }
+    .form .sign-in h1 {
+        margin-top: 20px;
+        width: unset;
+    }
+
+    .form #sign-in-form .form-group label {
+        margin: unset;
+    }
+    .form-group.inputTextBox {
+        text-align: center;
+    }
+    .form #reset-form .form-group label{
+        margin: 0 0;
+    }
+    button#ResetPass {
+        font-size: 14px;
+        width: auto !important;
+    }
+    .reset-email {
+        margin: unset !important;
+    }
+    a.btn.btn-theme.button-1.text-white.ctm-border-radius.btn-block.backButtonText {
+        max-width: 130px;
+    }
+}

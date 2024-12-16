@@ -1,0 +1,634 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Payment Payroll{% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: HR PAYMENT PAYROLL</title>
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<style>
+    .hide {
+        display: none !important;
+    }
+
+    .modal-backdrop.show {
+        opacity: .5;
+        display: none;
+    }
+
+    .btn-paid {
+        color: #fff !important;
+    }
+
+    .modal-content {
+        min-height: unset !important;
+    }
+
+    .month,
+    .year {
+        border: unset;
+        max-width: 123px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+        text-align: center;
+        padding: 6px !important;
+        margin-right: 10px;
+        font-weight: 600;
+    }
+
+    .table-responsive {
+        height: 600px;
+        margin-top: -19px !important;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .table-responsive.officialTableReport {
+        height: 995px;
+    }
+
+    .officialReportCustomTable tbody+tbody {
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table-responsive.leaveReportHeight,
+    div#pills-payrollReport .table-responsive,
+    #pills-contactReport .table-responsive {
+        height: 430px;
+    }
+
+    #pills-profile .table-responsive {
+        height: 450px !important;
+    }
+
+    a.hrpayrollColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrpayrollColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    label {
+        display: flex;
+        margin-bottom: .5rem;
+    }
+
+    table.dataTable {
+        clear: both;
+        margin-top: -7px !important;
+        margin-bottom: 6px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+        border-spacing: 0px;
+        width: 70vw;
+    }
+
+    .form-control {
+        border-color: #e3e3e3;
+        box-shadow: none;
+        font-size: 15px;
+        height: 33px;
+        color: #625b55;
+        width: 80px;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .card-header {
+        background: none;
+        padding: 1.25rem;
+        border-bottom: 1px solid #ededed;
+        margin-bottom: -13px;
+    }
+
+    .drkclick {
+        background-color: rgb(202, 178, 178) !important;
+    }
+
+    .row.topset {
+        margin-bottom: -11px;
+    }
+    .card-header {
+      background: none;
+      padding: 0.5rem;
+      border-bottom: 1px solid #ededed;
+    }
+    .card-title {
+      color: #333;
+      position: relative;
+      left: 10px;
+      top: 6px;
+    }
+    .searchtable {
+      position: relative;
+      top: 0px;
+    }
+    .fc-prev-button.fc-button.fc-state-default.fc-corner-left, .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+        height: 2rem !important;
+        position: relative;
+        left: 8vw;
+    }
+    .col-md-6.middledate {
+        position: relative;
+        left: 7vw;
+    }
+
+    @media only screen and (max-width: 1199px){
+        .card-title.mb-0 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .middledate {
+            position: relative;
+            left: 6vw;
+        }
+        .fc-left {
+            font-size: 9px;
+        }
+        .fc-prev-button.fc-button.fc-state-default.fc-corner-left, 
+        .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+            height: 2rem !important;
+            position: relative;
+            left: 50px;
+        }
+        label, .thcolor, .tdcolor.odd, .tdcolor.even, #payrollTable_info {
+            font-size: 13px;
+        }
+        .form-control {
+            height: 30px;
+            font-size: 13px;
+        }
+        .pagination,  .month, .year  {
+            font-size: 12px;
+        }
+       
+    }
+    
+    @media only screen and (max-width: 1024px) {
+        .table-responsive.officialTableReport {
+            max-height: 665px;
+        }
+        
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .fc-prev-button.fc-button.fc-state-default.fc-corner-left, 
+        .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+            left: 100px;
+        }
+        .middledate {
+            position: relative;
+            left: 12vw;
+        }
+    }
+    @media only screen and (max-width: 840px){
+        .fc-prev-button.fc-button.fc-state-default.fc-corner-left, 
+        .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+            left: 70px;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .col-md-6.middledate {
+            position: relative !important;
+            left: 0vw !important;
+            top: 3vw;
+        }
+        .fc-prev-button.fc-button.fc-state-default.fc-corner-left, 
+        .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+            height: 2rem !important;
+            position: relative;
+            bottom: 10px;
+            left: 10px;
+        }
+        .searchtable {
+            display: flow-root;
+        }
+    }
+    @media only screen and (max-width: 576px){
+        .middledate {
+            position: relative;
+            top: 25px;
+        }
+    }
+    @media only screen and (max-width: 480px){
+        .searchtable {
+            display: inline-block;
+        }
+        .col-md-6.middledate {
+            position: relative !important;
+            top: 5vw;
+        }
+    }
+    @media only screen and (max-width: 410px){
+        .middledate {
+            display: grid !important;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8 col-md-12 dashboardbody">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h4 class="card-title mb-0">Payment Payroll</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 middledate"
+                                style="display: flex; padding: unset; justify-content: end;">
+                                <div class="monthbox" style="padding: unset;">
+                                    <input type="hidden" name="month" value="{{month}}" class="month" readonly
+                                        style="padding: unset;">
+                                    <input type="text" name="" id="month" value="" class="month" readonly
+                                        style="padding: unset;">
+                                </div>
+                                <div class="yearbox" style="padding: unset;">
+                                    <input type="text" name="year" value="{{year}}" class="year" readonly
+                                        style="padding: unset;">
+                                </div>
+                                </div>
+                        </div>
+                        <div class="col-md-3">
+                            <form method="post">
+                                {%csrf_token%}
+                                <div class="fc-left">
+                                    <div class="fc-button-group">
+                                        <button type="submit" name='prev' value="prev"
+                                            class="fc-prev-button fc-button fc-state-default fc-corner-left"
+                                            title="previous">
+                                            <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                        </button>
+                                        <button type="submit" name='next' value="next"
+                                            class="fc-next-button fc-button fc-state-default fc-corner-right"
+                                            title="next">
+                                            <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row searchtable">
+                        <div class="col-md-6 data_drop1"></div>
+                        <div class="col-md-6 data_search1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form method="post">
+                                {%csrf_token%}
+                                <div class="col-md-12 mb-4" style="display: flex; align-items: center;">
+                                    <div class="col-md-6" style="padding: unset;">
+                                    </div>
+                                </div>
+                            </form>
+
+                            <form id="post-form">
+                                {%csrf_token%}
+                                <div class="employee-office-table paginate-table1">
+                                    <div class="table-responsive">
+                                        <table class="table custom-table" id="payrollTable">
+                                            <thead style="position: sticky;
+                                            top: 0;">
+                                                <tr class="thcolor">
+                                                    <th>Employee</th>
+                                                    <th>Salary per Month</th>
+                                                    <th>Paid Sick Leave</th>
+                                                    <th>Paid Sick Leave <span>(&#8377;)</span></th>
+                                                    <th>Paid Holiday</th>
+                                                    <th>Paid Holiday <span>(&#8377;)</span></th>
+                                                    <th>Paid Vacation Day</th>
+                                                    <th>Paid Vacation Day <span>(&#8377;)</span></th>
+                                                    <th>Unpaid Vacation</th>
+                                                    <th>Unpaid Vacation <span>(&#8377;)</span></th>
+                                                    <th>Internet Charges <span>(&#8377;)</span></th>
+                                                    <th>Salary + Other Charges <span>(&#8377;)</span></th>
+                                                    <th>Paid to Employee</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for i in payroll %}
+                                                <tr class="tdcolor">
+                                                    <td class="emp_name">
+                                                        <h2>{{i.employee}}</h2>
+                                                    </td>
+                                                    <td>{{i.salary_per_month}}</td>
+                                                    <td>{{i.paid_sick_leave}}</td>
+                                                    <td id="paid_sick_leave_rs{{forloop.counter}}">
+                                                        {{i.paid_sick_leave_rs}}</td>
+                                                    <td>{{i.paid_holiday}}</td>
+                                                    <td id="paid_holiday_rs{{forloop.counter}}">{{i.paid_holiday_rs}}
+                                                    </td>
+                                                    <td>{{i.paid_vacation_day}}</td>
+                                                    <td id="paid_vacation_day_rs{{forloop.counter}}">
+                                                        {{i.paid_vacation_day_rs}}</td>
+                                                    <td>{{i.unpaid_vacation}}</td>
+                                                    <td class="unpaid_vacation_rs"
+                                                        id="unpaid_vacation_rs{{forloop.counter}}">
+                                                        {{i.unpaid_vacation_rs}}</td>
+                                                    <td id="internet_charges{{forloop.counter}}">
+                                                        {{i.internet_charges_rs}}</td>
+                                                    <td id="salary_and_other_charges_rs{{forloop.counter}}">
+                                                        {{i.salary_and_other_charges_rs}}</td>
+                                                    <td id="paid_to_employee{{forloop.counter}}">
+                                                        <a data-toggle="modal"
+                                                            data-target="#add_event{{forloop.counter}}"
+                                                            class="btn btn-success btn-paid"
+                                                            id="paid{{forloop.counter}}">Payroll</a>
+                                                        <input type="hidden" id="getval{{forloop.counter}}"
+                                                            value="{{i.user_name}},{{month}},{{year}},1">
+                                                        <span class="paid_text"
+                                                            id="paid_text{{forloop.counter}}">{{i.paid_to_employee}}</span>
+                                                    </td>
+                                                    <div id="add_event{{forloop.counter}}" class="modal fade"
+                                                        role="dialog">
+                                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Confirm</h5>
+                                                                    <button type="button" class="close"
+                                                                        data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="text">
+                                                                        Confirm Payment!
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button id="confirm_pay{{forloop.counter}}"
+                                                                        onclick="myFunction({{forloop.counter}})"
+                                                                        value="{{i.user_name}},{{month}},{{year}},1"
+                                                                        class="btn btn-theme button-1 text-white ctm-border-radius mt-4 ApproveText confirm-pay-button"
+                                                                        style="margin-top:unset !important;">Yes</button>
+                                                                    <button
+                                                                        class="btn btn-danger text-white ctm-border-radius mt-4 DenyText"
+                                                                        style="margin-top:unset !important;"
+                                                                        value="Deny" data-dismiss="modal"
+                                                                        aria-label="Close">No</button>
+                                                                </div>
+
+                                                                <!-- </div> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </tr>
+                                                <script>
+                                                    $("#payrollTable .unpaid_vacation_rs").each(function () {
+                                                        var unpaid_vacation_rs = document.getElementById("unpaid_vacation_rs{{forloop.counter}}").innerHTML;
+                                                        var salary_and_other_charges_rs = document.getElementById("salary_and_other_charges_rs{{forloop.counter}}").innerHTML;
+                                                        var paid_to_employee = document.getElementById("paid_text{{forloop.counter}}").innerHTML;
+                                                        var paid_holiday_rs = document.getElementById("paid_holiday_rs{{forloop.counter}}").innerHTML;
+                                                        var paid_vacation_day_rs = document.getElementById("paid_vacation_day_rs{{forloop.counter}}").innerHTML;
+                                                        var paid_sick_leave_rs = document.getElementById("paid_sick_leave_rs{{forloop.counter}}").innerHTML;
+                                                        var internet_charges = document.getElementById("internet_charges{{forloop.counter}}").innerHTML;
+
+                                                        var parse_unpaid_vacation_rs = parseFloat(unpaid_vacation_rs);
+                                                        var parse_salary_and_other_charges_rs = parseFloat(salary_and_other_charges_rs);
+                                                        var parse_paid_to_employee = parseFloat(paid_to_employee);
+                                                        var parse_paid_holiday_rs = parseFloat(paid_holiday_rs);
+                                                        var parse_paid_vacation_day_rs = parseFloat(paid_vacation_day_rs);
+                                                        var parse_paid_sick_leave_rs = parseFloat(paid_sick_leave_rs);
+                                                        var parse_internet_charges = parseFloat(internet_charges);
+
+                                                        if (!isNaN(parse_unpaid_vacation_rs)) {
+                                                            document.getElementById("unpaid_vacation_rs{{forloop.counter}}").innerHTML = parse_unpaid_vacation_rs.toFixed(2);
+                                                        }
+                                                        if (!isNaN(parse_salary_and_other_charges_rs)) {
+                                                            document.getElementById("salary_and_other_charges_rs{{forloop.counter}}").innerHTML = parse_salary_and_other_charges_rs.toFixed(2);
+                                                        }
+                                                        if (!isNaN(parse_paid_to_employee)) {
+                                                            document.getElementById("paid_text{{forloop.counter}}").innerHTML = parse_paid_to_employee.toFixed(2);
+                                                        }
+                                                        if (!isNaN(parse_paid_holiday_rs)) {
+                                                            document.getElementById("paid_holiday_rs{{forloop.counter}}").innerHTML = parse_paid_holiday_rs.toFixed(2);
+                                                        }
+                                                        if (!isNaN(parse_paid_vacation_day_rs)) {
+                                                            document.getElementById("paid_vacation_day_rs{{forloop.counter}}").innerHTML = parse_paid_vacation_day_rs.toFixed(2);
+                                                        }
+                                                        if (!isNaN(parse_paid_sick_leave_rs)) {
+                                                            document.getElementById("paid_sick_leave_rs{{forloop.counter}}").innerHTML = parse_paid_sick_leave_rs.toFixed(2);
+                                                        }
+                                                        if (!isNaN(parse_internet_charges)) {
+                                                            document.getElementById("internet_charges{{forloop.counter}}").innerHTML = parse_internet_charges.toFixed();
+                                                        }
+                                                    });
+                                                </script>
+                                                <script>
+                                                    if ('{{i.paid}}' == '0') {
+                                                        $("#paid_text{{forloop.counter}}").hide();
+                                                    } else {
+                                                        $("#paid{{forloop.counter}}").hide();
+                                                        $("#paid_text{{forloop.counter}}").show();
+                                                        $("#paid_text{{forloop.counter}}").text();
+                                                    }
+                                                </script>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="values" value="">
+</div>
+<script>
+
+    if ('{{month}}' == 1) {
+        document.getElementById('month').value = "January";
+    }
+    if ('{{month}}' == 2) {
+        document.getElementById('month').value = "February";
+    }
+    if ('{{month}}' == 3) {
+        document.getElementById('month').value = "March";
+    }
+    if ('{{month}}' == 4) {
+        document.getElementById('month').value = "April";
+    }
+    if ('{{month}}' == 5) {
+        document.getElementById('month').value = "May";
+    }
+    if ('{{month}}' == 6) {
+        document.getElementById('month').value = "June";
+    }
+    if ('{{month}}' == 7) {
+        document.getElementById('month').value = "July";
+    }
+    if ('{{month}}' == 8) {
+        document.getElementById('month').value = "August";
+    }
+    if ('{{month}}' == 9) {
+        document.getElementById('month').value = "September";
+    }
+    if ('{{month}}' == 10) {
+        document.getElementById('month').value = "October";
+    }
+    if ('{{month}}' == 11) {
+        document.getElementById('month').value = "November";
+    }
+    if ('{{month}}' == 12) {
+        document.getElementById('month').value = "December";
+    }
+</script>
+<script>
+    function myFunction(myval) {
+        var paid_value = $("#confirm_pay" + myval).val();
+        $("#values").val(paid_value);
+        $("#paid" + myval).hide();
+        $("#paid_text" + myval).show();
+        $("#paid_text" + myval).text();
+        setTimeout(() => {
+            $("#add_event" + myval).addClass("hide");
+        }, 200);
+    }
+</script>
+<script>
+    $(document).on('submit', '#post-form', function (e) {
+        // alert("form")
+        e.preventDefault();
+        // Get the CSRF token from the cookie
+        var csrftoken = getCookie('csrftoken');
+        // alert("form sub")
+        $.ajax({
+            type: 'POST',
+            url: '../hr/payroll',
+
+            data: {
+                paid: $('#values').val(),
+
+                csrfmiddlewaretoken: csrftoken,
+            },
+            success: function () {
+                // alert("form submited")
+                // Handle the success response
+            }
+
+        });
+
+    });
+
+    // Function to retrieve the CSRF token from the cookie
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+</script>
+{% block paginate %}
+<script src="../static/js/jquery.dataTables.min.js"></script>
+<script src="../static/js/dataTables.bootstrap.min.js"></script>
+{% endblock paginate %}
+<script>
+    $(document).ready(function () {
+        $("#payrollTable").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#payrollTable_paginate, #payrollTable_info').appendTo('.paginate-table1');
+                $('#payrollTable_length').appendTo('.data_drop1');
+                $('#payrollTable_filter').appendTo('.data_search1');
+            },
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Handle row clicks
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("drkclick");
+        });
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("tdcolor");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".dashboardbody").css({ "max-width": "66.6%", "flex": "0 0 66.6%" });
+            }
+            else{
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $("#fullscreen").click(function(){
+            $("table.dataTable").css({"width":"96vw"});
+        });
+        $("#showsidebar").click(function(){
+            $("table.dataTable").css({"width":"70vw"});
+        });
+    });
+</script>
+{% endblock body %}

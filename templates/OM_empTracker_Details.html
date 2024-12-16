@@ -1,0 +1,460 @@
+{% extends 'OM_header.html' %}
+{% block addr%}Employee Tracker{% endblock addr%}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: MANAGER EMPLOYEE TRACKER</title>
+<style>
+    .modal-content.datauses {
+        width: 60vw;
+        position: relative;
+        left: 100px;
+        height: 75vh;
+        overflow: hidden;
+    }
+
+    .modal-header.cardheader {
+        background-color: #09796b;
+        height: 4vh;
+        color: white;
+    }
+
+    .projectname {
+        position: relative;
+        bottom: 10px;
+    }
+
+    .fontfamily {
+        font-size: 15px !important;
+        text-align: left;
+        font-family: inherit;
+        line-height: 20px;
+        font-weight: 400 !important;
+    }
+
+    .datefamily {
+        text-align: center !important;
+        font-family: inherit;
+        font-size: 12px !important;
+        margin-bottom: 0px;
+        margin-left: 0px;
+    }
+
+    .datefamily:hover {
+        cursor: context-menu;
+    }
+
+    .checkmovebtn {
+        position: relative;
+        right: 2vw;
+    }
+
+    .btn.btn-primary.text-white.ctm-border-radius.mt-4 {
+        border-bottom: 5px solid rgb(1, 42, 95);
+        position: relative;
+        bottom: 15px !important;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    a.my_list_board.text-dark.cmApprovedTimesheetColorChange.ctm-border-right.ctm-border-left {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.my_list_board.text-dark.cmApprovedTimesheetColorChange.ctm-border-right.ctm-border-left:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    #lbl {
+        margin-left: 8px;
+        font-weight: 700;
+    }
+
+    #comment {
+        margin-bottom: 2%;
+    }
+
+    #thstyle p {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        /* max-width: 136px; */
+        text-align: left !important;
+        width: 90%;
+    }
+
+    #thstyle {
+        width: 12vw;
+    }
+
+    .rectangle-img {
+        height: 78px;
+        width: 84px;
+        border-radius: 12px;
+        position: relative;
+        right: 80px;
+        bottom: 20px;
+    }
+
+    .emp-know {
+        position: relative;
+        right: 140px;
+        bottom: 30px;
+    }
+
+    .card.ctm-border-radius.shadow-sm.flex-fill.grow1 {
+        height: 95px;
+    }
+
+    .card-header .weekNo h4 {
+        font-weight: bold;
+        box-shadow: 0 5px 10px #09796b;
+        width: 100%;
+        padding: 6px;
+        border-radius: 15px;
+        position: relative;
+        right: 55px;
+
+    }
+
+    .card-header .weekNo h4 span {
+        font-size: 15px;
+        margin: 0 15px;
+    }
+
+    .card-header .weekNo h4 span b {
+        font-size: 20px;
+        color: #09796b;
+    }
+
+    .weekNo {
+        border-bottom: none !important;
+    }
+
+    .col-md-2.weekrep {
+        position: relative;
+        top: 10px;
+    }
+
+
+    .card-header {
+        background: none;
+        padding: 0.4rem;
+        border-bottom: 1px solid #ededed;
+    }
+    .assigned {
+    float: left;
+    padding-right: 2px;
+    color: red;
+    }
+    .col-md-3.weekrep {
+        position: relative;
+        top: 10px;
+    }
+    @media only screen and (max-width: 1199px) {
+        .employee-office-table .table input {
+            width: 100%;
+            min-width: 50px;
+            border: 1px solid #666;
+        }
+        .rectangle-img {
+            height: 65px;
+            width: 65px;
+            position: relative;
+            right: 50px;
+        }
+        .emp-know {
+            position: relative;
+            right: 80px;
+        }
+        .emp-know h6, .topdate {
+            font-size: 14px !important;
+        }
+        .card-header .weekNo h4 span {
+            font-size: 11px;
+        }
+        .card-title.mb-0 {
+            font-size: 15px;
+        }
+        #thstyle p, th {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .card-header .weekNo h4 span {
+            font-size: 13px;
+        }
+        .emp-know h6, .topdate, .card-title.mb-0 {
+            font-size: 16px !important;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .card-header .weekNo h4 {
+            position: relative;
+            left: 0px;
+        }
+        .btn {
+            font-size: 13px;
+        }
+        .col-md-3.weekrep {
+            position: relative;
+            top: 0px;
+        }
+    }
+    @media only screen and (max-width: 575px){
+        .emp-know h6 {
+            font-size: 14px !important;
+        }
+        .emp-know {
+            position: relative;
+            right: 10px;
+        }
+        .rectangle-img {
+            position: relative;
+            right: 20px;
+        }
+    }
+    @media only screen and (max-width: 339px){
+        .emp-know h6 {
+            font-size: 12.5px !important;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12 cmemptracker">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow1">
+                <div class="user-info card-body">
+                    <div style="width: 30%; float: left; height: 200px; margin: 10px">
+                        <div class="user-avatar  text-center mb-4">
+                            <img src="../{{img}}" alt="User Avatar" class="img-fluid rectangle-img" width="100">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="user-details emp-know">
+                            <h6>Name : <b>{{empdesk.f_name}} {{empdesk.l_name}}</b></h6>
+                            <h6>ID : <b>{{empdesk.login_id}}</b></h6>
+                            <h6>Designation : <b>{{empdesk.designations}}</b></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-3 weekrep">
+                            <h5 class="card-title mb-0">Weekly Report</h5>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-header weekNo">
+                                <input type="hidden" name="empid" value="{{emp_id}}"></input>
+                                <h4 class="card-title mb-0 text-center weekStartEndDate">
+                                    <span>Week Start Date : <b class="topdate">{{request.session.start_dt}}</b></span>
+                                    <span>Week End Date : <b class="topdate">{{request.session.end_dt}}</b></span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card-body">
+                    <form method="post">
+                        {%csrf_token%}
+                        <div class="employee-office-table">
+                            <div class="table-responsive">
+                                <table class="table custom-table mb-3">
+                                    <tr>
+                                        <td></td>
+                                        <th scope="col">MON</th>
+                                        <th scope="col">TUE</th>
+                                        <th scope="col">WED</th>
+                                        <th scope="col">THU</th>
+                                        <th scope="col">FRI</th>
+                                        <th scope="col">SAT</th>
+                                        <th scope="col">SUN</th>
+                                        <th scope="col">TOTAL</th>
+                                    </tr>
+                                    {% for tasks in data %}
+
+                                    <tr>
+                                        <th scope="row" id="thstyle">
+                                            <div class="assigned"> {{tasks.assigned}} </div>
+                                            <p style="text-align: center;" title="{{tasks.project_name}}">
+                                                {{tasks.project_name}}</p>
+                                            <!-- <span title="{{tasks.project_name}}">{{tasks.project_name}}</span> -->
+                                        </th>
+                                        <td>
+                                            <input id="pr1mon" autocomplete="off" value="{{tasks.mon}}" class=""
+                                                type="text" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="pr1tue" autocomplete="off" value="{{tasks.tue}}" class=""
+                                                type="text" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="pr1wed" autocomplete="off" value="{{tasks.wed}}" class=""
+                                                type="text" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="pr1thu" autocomplete="off" value="{{tasks.thu}}" class=""
+                                                type="text" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="pr1fri" autocomplete="off" value="{{tasks.fri}}" class=""
+                                                type="text" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="pr1sat" autocomplete="off" value="{{tasks.sat}}" class=""
+                                                type="text" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="pr1sun" autocomplete="off" value="{{tasks.sun}}" class=""
+                                                type="text" readonly></input>
+                                        </td>
+                                        <td>
+                                            <input id="pr1total" autocomplete="off" value="{{tasks.total}}" class=""
+                                                type="text" readonly></input>
+                                        </td>
+                                    </tr>
+                                    {%endfor%}
+                                    <tr>
+                                        <th scope="row" id="thstyle">
+                                            <p style="margin-top:-10px;"><label for="comment" id="lbl">Comment</label>
+                                            </p>
+                                        </th>
+                                        <td colspan="8">
+                                            <textarea style="width: 99% !important;" name="comment" id="comment"
+                                                cols="2" placeholder="Add Cooment..." readonly>{{comments}}</textarea>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <form method="post">
+                    {%csrf_token%}
+                    <input type="hidden" name="empid" value="{{emp_id}}">
+                    <div class="text-center" style="margin-bottom: 1%;">
+                        <a class="btn btn-primary text-white ctm-border-radius mt-4" 
+                        data-toggle="modal" data-target="#add_Comment_event_first">View Tasks</a>
+                    </div>
+
+                    <div id="add_Comment_event_first" class="modal fade" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 850px;">
+                            <div class="modal-content datauses">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">View Tasks</h4>
+                                </div>
+                                <div class="modal-body" style="overflow-y: auto;">
+                                    <div class="card-body cardinfo" draggable="true" id="{{i.id}}">
+                                        {% for task in tasks %}
+                                        <div class="card-right2">
+                                            <div class="card dash-widget ctm-border-radius shadow-sm grow2">
+                                                <div class="modal-header cardheader">
+                                                    <h6 class="projectname">{{task.project_id}}</h6>
+                                                </div>
+                                                <div class="card-body innercardbody" style="padding: 10px; ">
+                                                    <p class="fontfamily">{{task.description}}</p>
+                                                </div>
+    
+                                                <div class="row lowest">
+                                                    <div class="col-md-4 ">
+                                                        <p class="datefamily" title="Requirement Date">
+                                                            {{task.assigning_date}}</p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <p class="datefamily" title="Target Date">
+                                                            {{task.target_date}}</p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <p class="datefamily" title="Completed Date">
+                                                            {{task.complete_date}}</p>
+                                                    </div>
+    
+                                                </div>
+    
+    
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+    
+                                    </div>
+                                </div>
+                                <div class="modal-footer text-center">
+                                    <div class="row">
+                                        <button name="cancelEmp"
+                                            class="btn btn-danger text-white ctm-border-radius checkmovebtn"
+                                            data-dismiss="modal" aria-label="Close">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".cmemptracker").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            //$("#myTable1").css({ "width": "100%" });
+            //$("#thstyle").css({ "width": "25%", "text-align": "center" });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".cmemptracker").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".cmemptracker").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            //$("#myTable1").css({ "width": "100%" });
+            //$("#thstyle ").css({ "width": "15%" });
+        });
+    });
+</script>
+{% endblock body %}

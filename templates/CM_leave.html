@@ -1,0 +1,1313 @@
+{% extends 'CM_header.html' %}
+{% block addr %}Leave{% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: MANAGER LEAVE</title>
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.css"> -->
+
+
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+
+
+
+
+<style>
+    #clbtn {
+        width: 85px;
+    }
+    .notes {
+        min-width: 410px;
+        width: 100%;
+        white-space: pre-line;
+        word-break: break-word;
+        text-align: center;
+    }
+
+    .red {
+        color: red;
+        font-weight: 700;
+    }
+
+    .green {
+        color: green;
+        font-weight: 700;
+    }
+
+    .black {
+        color: #333;
+        font-weight: 700;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    a.cmLeaveColorChange {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.cmLeaveColorChange:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border-color: #e3e3e3;
+        box-shadow: none;
+        font-size: 15px;
+        height: 35px;
+    }
+
+    .form-control {
+        height: 35px;
+    }
+
+    .color-change::placeholder {
+        color: #09697b;
+        font-style: italic;
+    }
+
+    .showEmail {
+        /* background-color: #09796b;    */
+        border-radius: 7%;
+        font-weight: 600;
+        color: black;
+        width: 520px;
+        padding: 5px;
+    }
+
+    .modal-content {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        width: 140%;
+        pointer-events: auto;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, .2);
+        border-radius: .3rem;
+        outline: 0;
+        min-height: 360px;
+        /* height: 50%; */
+    }
+
+    [data-title]:hover:after {
+        opacity: 1;
+        transition: all 0.1s ease 0.5s;
+        visibility: visible;
+    }
+
+    [data-title]::after {
+        content: attr(data-title);
+        word-break: break-all;
+        position: absolute;
+        padding: 6px 11px 8px 10px;
+        color: rgb(49, 48, 48);
+        white-space: break-spaces;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        -moz-box-shadow: 0px 0px 4px #666;
+        -webkit-box-shadow: 0px 0px 4px #666;
+        box-shadow: 0px 0px 4px #666;
+        opacity: 0;
+        z-index: 99999;
+        visibility: hidden;
+        right: 24px;
+        top: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 44em;
+        background-color: rgb(226, 222, 222);
+        color: rgb(44, 43, 43);
+        font-family: 'Optima, sans-serif';
+        font-weight: 50;
+    }
+
+    [data-title] {
+        position: relative;
+        font-size: large;
+    }
+
+    .modal-body {
+        position: relative;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1rem;
+        overflow: auto;
+    }
+
+    .mdlbtn {
+        background-color: rgb(212, 64, 64);
+        border-radius: 12%;
+        font-weight: 600;
+        color: white;
+        width: 100px;
+    }
+
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        height: 440px;
+    }
+
+    .lnr-bubble:hover {
+        background-color: rgb(223, 223, 222);
+        border-radius: 35%;
+    }
+
+
+
+    label {
+        display: flex;
+        margin-bottom: .5rem;
+    }
+
+    table.dataTable {
+        clear: both;
+        margin-top: 0px !important;
+        margin-bottom: 6px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+        border-spacing: 0px;
+        width: 80vw;
+    }
+
+    .form-control {
+        border-color: #e3e3e3;
+        box-shadow: none;
+        font-size: 15px;
+        height: 33px;
+        color: #625b55;
+        width: 80px;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .drkclick {
+        background-color: rgb(202, 178, 178) !important;
+    }
+
+    .card.ctm-border-radius.shadow-sm.grow2 {
+        width: 103%;
+        margin-left: -15px;
+    }
+
+    .nav {
+        margin: -14px 0px -21px 10px;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.7rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .card-title {
+        color: #333;
+        position: relative;
+        left: 10px;
+    }
+
+    .searchCount {
+        position: relative;
+        top: 0px;
+    }
+    .row.topset {
+        margin-bottom: -11px;
+    }
+
+    .tophedset {
+        padding: 0.7rem;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.7rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .card-title {
+        color: #333;
+        position: relative;
+        left: 10px;
+    }
+
+    .searchtable {
+        position: relative;
+        bottom: 4px;
+    }
+    #modalEmail {
+        word-wrap: break-word;
+        white-space: collapse;
+        margin-top: -4%;
+    }
+
+    @media only screen and (max-width: 1199px) {
+
+        .nav-link.active.mb-2,
+        .nav-link.active,
+        label,
+        .tdcolor.odd,
+        .pagination {
+            font-size: 12px;
+        }
+
+        .tdcolor.even,
+        .tdcolor {
+            font-size: 12px;
+        }
+
+        .thcolor,
+        #myTable1_info {
+            font-size: 14px;
+        }
+
+        .modal-content {
+            position: relative;
+            top: 70px;
+            right: 70px;
+        }
+    }
+
+    @media only screen and (max-width: 991px) {
+
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+    }
+
+    @media only screen and (max-width: 767px) {
+        .entrysearch {
+            display: flow-root;
+        }
+
+        .card-title.mb-0 {
+            font-size: 17px;
+        }
+
+        .form-control.input-sm {
+            font-size: 12px;
+        }
+
+        .modal-content {
+            width: 120%;
+        }
+    }
+
+    @media only screen and (max-width: 670px) {
+        .modal-content {
+            width: 100%;
+            position: relative;
+            left: 10px;
+        }
+    }
+
+    @media only screen and (max-width: 575px) {
+        .modal-content {
+            width: 65%;
+            position: relative;
+            left: 90px;
+        }
+    }
+
+    @media only screen and (max-width: 515px) {
+        .entrysearch {
+            display: inline-block !important;
+        }
+    }
+</style>
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12 dashboardbody">
+    <div class="quicklink-sidebar-menu ctm-border-radius shadow-sm grow bg-white card">
+        <!-- Report Lists  -->
+        <div class="card-body align-center">
+            <ul class="nav flex-row nav-pills" role="tablist">
+                <li class="nav-item mr-2">
+                    <a class="nav-link active mb-2 EmployeeLeaveData" data-toggle="pill" href="#pills-teamReport" role="tab"
+                        aria-controls="pills-home" aria-selected="true">Employee Leave Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ApplyforLeave" name="leave_report" data-toggle="pill" href="#pills-leaveReport" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Apply for Leave</a>
+                </li>
+            </ul>
+        </div>
+        <!-- End Here -->
+    </div>
+
+
+
+        <div class="card-body align-center" style="padding: unset;">
+            <div class="tab-content">
+                <!-- Team Report Section -->
+    
+                <form method="post">
+                    {% csrf_token %}
+
+                <div class="tab-pane fade show active LeaveDatas" id="pills-teamReport" role="tabpanel"
+                    aria-labelledby="pills-home-tab">
+                    <!--  Leave of all Employee   -->
+    
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="padding: unset;">
+                            <div class="card ctm-border-radius shadow-sm grow">
+                                <div class="card-header">
+                                    <h4 class="card-title mb-0">Leave Data</h4>
+                                </div>
+    
+                                <div class="card-body align-center">
+                                    <div class="row searchCount entrysearch">
+                                        <div class="col-md-6 data_drop1"></div>
+                                        <div class="col-md-6 data_search1"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+    
+                                            <div class="employee-office-table paginate-table1 ">
+                                                <div class="table-responsive modalHeight">
+                                                    <table class="table custom-table mb-0" id="myTable1">
+                                                        <thead style="position: sticky;
+                                                        top: 0;
+                                                        z-index: 1;">
+                                                            <tr class="thcolor">
+                                                                <th>Employee</th>
+                                                                <th>Leave Type</th>
+                                                                <th>Applied Date</th>
+                                                                <th>From</th>
+                                                                <th>To</th>
+                                                                <th>Remaining Leaves</th>
+                                                                <th>Days</th>
+                                                                <th>Paid Leave</th>
+                                                                <th>Status</th>
+                                                                <th>Notes</th>
+                                                                {% if request.session.work_location == 'US' %}<th>Action</th>{% endif %}
+                                                                <!-- <th>Action</th> -->
+                                                                <th style="display: none;"></th>
+                                                                <th style="display: none;"></th>
+    
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for sl,pl,leaves in leaves_detail %}
+    
+                                                            <tr class="tdcolor">
+                                                                <td>
+                                                                    <h2>{{leaves.emp_name}}</h2>
+                                                                </td>
+                                                                <td><input type="hidden"
+                                                                        class="leave_type leave_type{{forloop.counter}}"
+                                                                        value="{{leaves.leave_type}}">{{leaves.leave_type}}
+                                                                </td>
+                                                                <td>{{leaves.date_applied}}</td>
+                                                                <td>{{leaves.from_dt}}</td>
+                                                                <td>{{leaves.to_dt}}</td>
+                                                                <td id="">
+                                                                    <input type="hidden" id="remainleaves"
+                                                                        class="remainleaves{{forloop.counter}}"
+                                                                        value="{{pl}}" /><input type="hidden" id="sickleave"
+                                                                        class="sickleave{{forloop.counter}}"
+                                                                        value="{{sl}}" />{{sl}}
+                                                                    SL/{{pl}}
+                                                                    PL
+                                                                </td>
+                                                                <td><input type="hidden" id="daysleave"
+                                                                        class="daysleave daysleave{{forloop.counter}}"
+                                                                        value="{{leaves.no_of_days}}">{{leaves.no_of_days}}
+                                                                </td>
+                                                                <td class=""><input type="text" id="paidleave"
+                                                                        class="paidleave paidleave{{forloop.counter}}"
+                                                                        value=""
+                                                                        style="text-align: center; border: none; background: transparent;">
+                                                                </td>
+                                                                <td id="leave_status{{forloop.counter}}"
+                                                                    class="status{{forloop.counter}}">
+                                                                    {{leaves.status}}</td>
+    
+                                                                <td hidden class="notes notes3"
+                                                                    id="notes{{forloop.counter}}">
+                                                                    {{leaves.reason}}</td>
+    
+                                                                <td><span class="showEmail lnr lnr-bubble mr-2"
+                                                                        data-title="{{leaves.reason}}"></span>
+                                                                </td>
+                                                                    {% if request.session.work_location == 'US' %}
+                                                                <td class="buttons-hide{{forloop.counter}}">
+                                                                    <button id="apbtn" name="approve"
+                                                                    style="font-size: 15px;"
+                                                                    class="btn btn-theme button-1 text-white ctm-border-radius ApproveText"
+                                                                    value="{{leaves.id}}">Approve</button>
+                                                                </td>
+                                                                <td class="buttons1-hide{{forloop.counter}}">
+                                                                    <button id="clbtn" style="font-size: 15px;"
+                                                                            class="btn btn-danger text-white ctm-border-radius DenyText"
+                                                                            value="{{leaves.id}}" name="reject"
+                                                                            aria-label="Close">Reject</button>
+                                                                </td>
+                                                                    {% endif %}
+                                                            
+                                                            </tr>
+                                                            <div class="modal fade" id="emailModal" tabindex="-1"
+                                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                                                <b>Note</b>
+                                                                            </h5>
+                                                                            <button type="button" class="close"
+                                                                                data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p id="modalEmail"></p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                class="btn btn-danger text-white ctm-border-radius mt-4"
+                                                                                data-dismiss="modal">Close</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                $(document).ready(function () {
+                                                                    $(`#myTable1 .leave_type`).each(function () {
+                                                                        var leave_type = $(`.leave_type{{forloop.counter}}`).val();
+                                                                        var daysleave = $(`.daysleave{{forloop.counter}}`).val();
+                                                                        var remainleaves = $(`.remainleaves{{forloop.counter}}`).val();
+                                                                        var sickleave = $(`.sickleave{{forloop.counter}}`).val();
+                                                                        // alert(leave_type)
+                                                                        // alert(remainleaves)
+                                                                        if (leave_type == "Sick Leave") {
+                                                                            // alert('{{sl}}')
+                                                                            if ('{{leaves.no_of_days}}' >= '{{sl}}') {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{sl}}');
+                                                                            }
+                                                                            else {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                            }
+                                                                            if ('{{sl}}' == 0) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                            }
+                                                                        }
+                                                                        if (leave_type == "Parental Leave") {
+                                                                            // alert(remainleaves)
+                                                                            if ('{{leaves.no_of_days}}' >= 9) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{pl}}');
+                                                                            }
+                                                                            else {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                            }
+                                                                            if ('{{pl}}' == 0) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                            }
+                                                                        }
+                                                                        if (leave_type == "Annual Leave") {
+                                                                            if ('{{leaves.no_of_days}}' >= 9) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{pl}}');
+                                                                            }
+                                                                            else {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                            }
+                                                                            if ('{{pl}}' == 0) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                            }
+                                                                        }
+                                                                        if (leave_type == "Normal Leave") {
+                                                                            // alert('{{leaves.no_of_days}}')
+                                                                            if ('{{leaves.no_of_days}}' >= 9) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{pl}}');
+                                                                            }
+                                                                            else {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                            }
+                                                                            if ('{{pl}}' == 0) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                            }
+                                                                        }
+                                                                        if (leave_type == "Working From Home") {
+                                                                            if ('{{leaves.no_of_days}}' >= 9) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{pl}}');
+                                                                            }
+                                                                            else {
+                                                                                $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                            }
+                                                                            if ('{{pl}}' == 0) {
+                                                                                $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                            }
+                                                                        }
+                                                                        var leave_status = $("#leave_status{{forloop.counter}}").html().trim();
+                                                                        // console.log(leave_status);
+                                                                        // if (leave_status == 'Rejected' || leave_status == 'Approved') {
+                                                                        //     $(".buttons-hide{{forloop.counter}}").hide();
+                                                                        // } else {
+                                                                        //     $(".buttons-hide{{forloop.counter}}").show();
+                                                                        // }
+                                                                        if (leave_status == 'Rejected') {
+                                                                            $(".buttons-hide{{forloop.counter}}").show();
+                                                                            $(".buttons1-hide{{forloop.counter}}").hide();
+    
+                                                                        } else if (leave_status == 'Approved') {
+                                                                            $(".buttons-hide{{forloop.counter}}").hide();
+                                                                            $(".buttons1-hide{{forloop.counter}}").show();
+                                                                        } else {
+                                                                            $(".buttons-hide{{forloop.counter}}").show();
+                                                                            $(".buttons1-hide{{forloop.counter}}").show();
+                                                                        }
+                                                                        if (leave_status == 'Rejected') {
+                                                                            $(".status{{forloop.counter}}").addClass('red');
+                                                                        } else if (leave_status == 'Approved') {
+                                                                            $(".status{{forloop.counter}}").addClass('green');
+                                                                        } else {
+                                                                            $(".status{{forloop.counter}}").addClass('black');
+                                                                        }
+                                                                    });
+                                                                    $("#myTable1 .notes").each(function () {
+                                                                        var notes = $(this).text();
+    
+                                                                        var notelen = notes.length;
+                                                                        // console.log(notes + notelen);
+    
+                                                                        if (notelen < 30) {
+                                                                            $(".notes").css("min-width", "unset");
+                                                                            $(".notes").css("width", "100%");
+                                                                            $(".notes").css("white-space", "unset");
+                                                                            $(".notes").css("word-break", "unset");
+                                                                        } else if (notelen > 30) {
+                                                                            $(".notes").css("min-width", "410px");
+                                                                            $(".notes").css("width", "100%");
+                                                                            $(".notes").css("white-space", "pre-line");
+                                                                            $(".notes").css("word-break", "break-word");
+                                                                        }
+                                                                    });
+                                                                });
+                                                            </script>
+                                                            <script>
+                                                                document.getElementById('myTable1').addEventListener('click', function (event) {
+                                                                    const target = event.target;
+    
+                                                                    if (target.classList.contains('showEmail')) {
+                                                                        const row = target.parentElement.parentElement;
+                                                                        const email = row.getElementsByTagName('td')[8].innerText;
+    
+                                                                        document.getElementById('modalEmail').innerText = email;
+                                                                        $('#emailModal').modal('show');
+                                                                    }
+                                                                });
+                                                            </script>
+    
+                                                            {%endfor%}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+    
+                                        </div>
+                                    </div>
+                                    {% block paginate %}
+                                    <script src="../static/js/jquery.dataTables.min.js"></script>
+                                    <script src="../static/js/dataTables.bootstrap.min.js"></script>
+                                    {% endblock paginate %}
+                                    <script>
+                                        // $(document).ready(function () {
+                                        //     $("#myTable1").DataTable({
+                                        //         "lengthMenu": [50, 100, 150, 200],
+                                        //         "pageLength": 50,
+                                        //         lengthChange: true,
+                                        //         info: true,
+                                        //         initComplete: (settings, json) => {
+                                        //             $('#myTable1_paginate, #myTable1_info').appendTo('.paginate-table1');
+                                        //             $('#myTable1_length').appendTo('.data_drop1');
+                                        //             $('#myTable1_filter').appendTo('.data_search1');
+                                        //         },
+                                        //     });
+                                        // });
+                                        $(document).ready(function () {
+                                            $("#myTable1").DataTable({
+                                                "lengthMenu": [50, 100, 150, 200],
+                                                "pageLength": 50,
+                                                "lengthChange": true,
+                                                "info": true,
+                                                "order": [[2, "desc"]], // Sort by the third column (index 2) in descending order
+                                                "initComplete": (settings, json) => {
+                                                    $('#myTable1_paginate, #myTable1_info').appendTo('.paginate-table1');
+                                                    $('#myTable1_length').appendTo('.data_drop1');
+                                                    $('#myTable1_filter').appendTo('.data_search1');
+                                                },
+                                            });
+                                        });
+                                    </script>
+    
+    
+    
+    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                </form>
+    
+    
+    
+                <!--  Ends Here   -->
+    
+    
+                <!-- End Here -->
+    
+                <!-- Leave Report SECTION -->
+                
+    <form method="post">
+        {% csrf_token %}
+    
+                <div class="tab-pane fade ApplyLeaves" id="pills-leaveReport" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <!--  Leave Form   -->
+    
+                    <div class="col-md-12" style="padding: unset;">
+                        <div class="card ctm-border-radius shadow-sm grow">
+                            <div class="card-header">
+                                <h4 class="card-title mb-0">Apply Leaves</h4>
+                            </div>
+                            <div class="card-body">
+                               
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>
+                                                    Leave Type
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <select id="leaveList" class="form-control select" name="leaveType">
+                                                    <option value="0">--Select--</option>
+                                                    <option value="Working From Home">Working From Home</option>
+                                                    <option value="Sick Leave">Sick Leave</option>
+                                                    <option value="Parental Leave">Parental Leave</option>
+                                                    <option value="Annual Leave">Annual Leave</option>
+                                                    <option value="Normal Leave">Normal Leave</option>
+                                                </select>
+                                                <span class="text-danger" id="leaveMsg"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 leave-col">
+                                            <div class="form-group">
+                                                <label>Remaining Leaves</label>
+                                                <input id="remianLeave" style="width: 100%;"
+                                                    placeholder="SL {{manager_sl}}/ PL {{manager_pl}}" class="form-control"
+                                                    readonly></input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>From</label>
+                                                <input id="fromDate" autocomplete="off" placeholder="" class="form-control"
+                                                    name="fromDate" type="date" onchange="daysDifference()" required>
+                                                <span class="text-danger" id="startDate"></span>
+    
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 leave-col">
+                                            <div class="form-group">
+                                                <label>To</label>
+                                                <input id="toDate" autocomplete="off" placeholder="" class="form-control"
+                                                    name="toDate" type="date" onchange="daysDifference()" required>
+                                                <span class="text-danger" id="endDate"></span>
+                                                <span class="text-danger" id="endDate1"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>
+                                                    Select Day Time
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <select id="HalfData" name="day" class="form-control select"
+                                                    onchange="changeLeave()">
+                                                    <option value="0">--Select--</option>
+                                                    <option value="Full_Day">Full Day</option>
+                                                    <option value="First_Half">First Half</option>
+                                                    <option value="Second_Half">Second Half</option>
+                                                </select>
+                                                <span class="text-danger" id="halfData"></span>
+                                                <span class="text-danger" id="halfData1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 leave-col">
+                                            <div class="form-group">
+                                                <label>Number of Days Leave</label>
+                                                <input type="number" id="LeaveDay" autocomplete="off" placeholder="0"
+                                                    name="NumofDays" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group mb-0">
+                                                <label>Reason</label>
+                                                <!-- &nbsp;<span class="text-danger" id="reason">*</span> -->
+                                                <textarea id="reasonArea" style="width: 100%;" name="leaveReason"
+                                                    placeholder="Additional Information ..." autocomplete="off"
+                                                    class="form-control color-change" rows="4"></textarea>
+                                                <!-- <div id="charCount" style="text-align: right;margin-right: 2%;font-weight: 700;"></div> -->
+                                                <!-- <span class="text-danger" id="reason">*</span> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button name="applyLeave" id="applybtn"
+                                            class="btn btn-theme button-1 text-white ctm-border-radius mt-4">Apply</button>
+                                        <button name="cancelLeave"
+                                            class="btn btn-danger text-white ctm-border-radius mt-4">Cancel</button>
+                                    </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-12 ApplyLeaves">
+                        <div class="card ctm-border-radius shadow-sm grow2">
+                            <div class="card-header">
+                                <h4 class="card-title mb-0">Manager Leave Data</h4>
+                            </div>
+    
+                            <div class="card-body">
+                                
+                                    
+                                    <div class="employee-office-table">
+                                        <div class="table-responsive modalHeight">
+                                            <table class="table custom-table mb-0" id="myTable1">
+                                                <thead style="position: sticky;
+                                                top: 0;
+                                                z-index: 1;">
+                                                    <tr class="thcolor">
+                                                        <th>Manager</th>
+                                                        <th>Leave Type</th>
+                                                        <th>Applied Date</th>
+                                                        <th>From</th>
+                                                        <th>To</th>
+                                                        <!-- <th>Days</th> -->
+                                                        <th>Status</th>
+                                                        <th>Notes</th>
+                                                        <!-- <th style="display: none;"></th> -->
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i in emp_leaves %}
+    
+                                                    <tr class="tdcolor">
+                                                        <td>
+                                                            <h2>{{i.emp_name}}</h2>
+                                                        </td>
+                                                        <td><input type="hidden"
+                                                                class="leave_type leave_type{{forloop.counter}}"
+                                                                value="{{leaves.leave_type}}">{{i.leave_type}}</td>
+                                                        <td>{{i.date_applied}}</td>
+                                                        <td>{{i.from_dt}}</td>
+                                                        <td>{{i.to_dt}}</td>
+                                                        <!-- <td><input type="hidden" id="daysleave"
+                                                                class="daysleave daysleave{{forloop.counter}}"
+                                                                value="{{leaves.no_of_days}}">{{i.no_of_days}}</td> -->
+    
+                                                        <td id="leave_status23{{forloop.counter}}"
+                                                            class="status23{{forloop.counter}}">
+                                                            {{i.status}}</td>
+                                                        <!-- <td id="leave_status{{forloop.counter}}" class="status{{forloop.counter}}">
+                                                            {{leaves.status}}</td> -->
+    
+                                                        <td hidden class="notes notes3" id="notes{{forloop.counter}}">
+                                                            {{i.reason}}
+                                                        </td>
+                                                        <td><span class="showEmail lnr lnr-bubble mr-2"
+                                                                data-title="{{i.reason}}"></span></td>
+    
+                                                        <!-- <td class="notes" id="notes{{forloop.counter}}">{{i.reason}}</td> -->
+    
+                                                    </tr>
+                                                    <div class="modal fade" id="emailModal" tabindex="-1"
+                                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">
+                                                                        <b>Note</b>
+                                                                    </h5>
+                                                                    <button type="button" class="close" data-dismiss="modal"
+                                                                        aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p id="modalEmail"></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button"
+                                                                        class="btn btn-danger text-white ctm-border-radius mt-4"
+                                                                        data-dismiss="modal">Close</button>
+                                                                    <!-- <button data-dismiss="modal"
+                                                                        class="btn btn-danger text-white ctm-border-radius mt-4">Close</button> -->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <script>
+                                                        $(document).ready(function () {
+                                                            $('#reasonArea').on('input', function () {
+                                                                var maxLength = $(this).attr('maxlength');
+                                                                var currentLength = $(this).val().length;
+                                                                var remaining = maxLength - currentLength;
+    
+                                                                if (remaining >= 0) {
+                                                                    $('#charCount').text(remaining + ' characters remaining');
+    
+                                                                } else {
+    
+                                                                    $('#charCount').text('Character limit exceeded');
+                                                                }
+                                                            });
+                                                        });
+                                                    </script>
+                                                    <script>
+                                                        document.getElementById('myTable1').addEventListener('click', function (event) {
+                                                            const target = event.target;
+    
+                                                            if (target.classList.contains('showEmail')) {
+                                                                const row = target.parentElement.parentElement;
+                                                                const email = row.getElementsByTagName('td')[7].innerText;
+    
+                                                                document.getElementById('modalEmail').innerText = email;
+                                                                $('#emailModal').modal('show');
+                                                            }
+                                                        });
+                                                    </script>
+                                                    <script>
+                                                        $(document).ready(function () {
+                                                            $(`#myTable1 .leave_type`).each(function () {
+                                                                var leave_type = $(`.leave_type{{forloop.counter}}`).val();
+                                                                var daysleave = $(`.daysleave{{forloop.counter}}`).val();
+                                                                var remainleaves = $(`.remainleaves{{forloop.counter}}`).val();
+                                                                var sickleave = $(`.sickleave{{forloop.counter}}`).val();
+                                                                // alert(leave_type)
+                                                                // alert(remainleaves)
+                                                                if ('{{leaves.valid_leaves}}' == 0) {
+                                                                    $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                }
+                                                                else {
+                                                                    if (leave_type == "Sick Leave") {
+                                                                        // alert('{{sl}}')
+                                                                        if ('{{leaves.no_of_days}}' >= '{{sl}}') {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{sl}}');
+                                                                        }
+                                                                        else {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                        }
+                                                                        if ('{{sl}}' == 0) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                        }
+                                                                    }
+                                                                    if (leave_type == "Parental Leave") {
+                                                                        // alert(remainleaves)
+                                                                        if ('{{leaves.no_of_days}}' >= 9) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{pl}}');
+                                                                        }
+                                                                        else {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                        }
+                                                                        if ('{{pl}}' == 0) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                        }
+                                                                    }
+                                                                    if (leave_type == "Annual Leave") {
+                                                                        if ('{{leaves.no_of_days}}' >= 9) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{pl}}');
+                                                                        }
+                                                                        else {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                        }
+                                                                        if ('{{pl}}' == 0) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                        }
+                                                                    }
+                                                                    if (leave_type == "Normal Leave") {
+                                                                        // alert('{{leaves.no_of_days}}')
+                                                                        if ('{{leaves.no_of_days}}' >= 9) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{pl}}');
+                                                                        }
+                                                                        else {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                        }
+                                                                        if ('{{pl}}' == 0) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                        }
+                                                                    }
+                                                                    if (leave_type == "Working From Home") {
+                                                                        if ('{{leaves.no_of_days}}' >= 9) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{pl}}');
+                                                                        }
+                                                                        else {
+                                                                            $(`.paidleave{{forloop.counter}}`).val('{{leaves.no_of_days}}');
+                                                                        }
+                                                                        if ('{{pl}}' == 0) {
+                                                                            $(`.paidleave{{forloop.counter}}`).val("0");
+                                                                        }
+                                                                    }
+                                                                }
+    
+                                                                // var leave_status = $("#leave_status{{forloop.counter}}").html();
+    
+                                                                // if (leave_status == 'Rejected') {
+                                                                //     $(".status{{forloop.counter}}").addClass('red');
+                                                                // } else if (leave_status == 'Approved') {
+                                                                //     $(".status{{forloop.counter}}").addClass('green');
+                                                                // } else {
+                                                                //     $(".status{{forloop.counter}}").addClass('black');
+                                                                // }
+    
+                                                            });
+                                                            $("#myTable1 .notes").each(function () {
+                                                                var notes = $(this).text();
+                                                                var notelen = notes.length;
+                                                                console.log("notelen");
+    
+                                                                if (notelen < 30) {
+                                                                    $(".notes").css("min-width", "unset");
+                                                                    $(".notes").css("width", "unset");
+                                                                    $(".notes").css("white-space", "unset");
+                                                                    $(".notes").css("word-break", "unset");
+                                                                } else if (notelen > 30) {
+                                                                    $(".notes").css("min-width", "410px");
+                                                                    $(".notes").css("width", "100%");
+                                                                    $(".notes").css("white-space", "pre-line");
+                                                                    $(".notes").css("word-break", "break-word");
+                                                                }
+                                                            });
+                                                        });
+                                                    </script>
+    
+                                                    {%endfor%}
+                                                    <script>
+                                                        document.getElementById('myTable1').addEventListener('click', function (event) {
+                                                            const target = event.target;
+    
+                                                            if (target.classList.contains('showEmail')) {
+                                                                const row = target.parentElement.parentElement;
+                                                                const email = row.getElementsByTagName('td')[9].innerText;
+    
+                                                                document.getElementById('modalEmail').innerText = email;
+                                                                $('#emailModal').modal('show');
+                                                            }
+                                                        });
+                                                    </script>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Ends Here -->
+                </div>
+    
+                <!-- End Here -->
+            </form>
+            </div>
+        </div>
+   
+
+</div>
+
+<script>
+    function changeLeave() {
+        weight = 0;
+        var start = document.getElementById('fromDate').value;
+        var end = document.getElementById('toDate').value;
+
+        if ('Full_Day' === $("#HalfData option:selected").val()) {
+            weight = 1
+        }
+        else if ('First_Half' === $("#HalfData option:selected").val()) {
+            weight = 0.5;
+        } else {
+            weight = 0.5;
+        }
+
+        function daysDifference() {
+            var dateI1 = document.getElementById("fromDate").value;
+            var dateI2 = document.getElementById("toDate").value;
+            var date1 = new Date(dateI1);
+            var date2 = new Date(dateI2);
+
+            const oneDay = 1000 * 60 * 60 * 24;
+            const time_difference = date2.getTime() - date1.getTime();
+
+            var result = Math.round(time_difference / oneDay) + weight;
+            if (date1 > date2 && date2 < date1) {
+                document.getElementById("LeaveDay").value = '0';
+                document.getElementById("endDate1").innerHTML = "End date should be greater";
+                $("#endDate1").show();
+                return false;
+            }
+            if (date2 >= date1) {
+                document.getElementById("LeaveDay").value = result;
+                $("#endDate1").hide();
+            }
+            if ('0' === $("#HalfData option:selected").val()) {
+                document.getElementById("LeaveDay").value = '0';
+            }
+        }
+        daysDifference();
+    }
+    changeLeave();
+
+    $("#fromDate, #toDate").on('change', function () {
+        // alert("dghgd");
+        var dateI1 = document.getElementById("fromDate").value;
+        var dateI2 = document.getElementById("toDate").value;
+        var date1 = new Date(dateI1);
+        var date2 = new Date(dateI2);
+        const oneDay = 1000 * 60 * 60 * 24;
+        const time_difference = date2.getTime() - date1.getTime();
+
+        var result = Math.round(time_difference / oneDay) + weight;
+        if (date1 > date2 && date2 < date1) {
+            document.getElementById("LeaveDay").value = '0';
+            document.getElementById("endDate1").innerHTML = "End date should be greater";
+            $("#endDate1").show();
+            return false;
+        }
+        if (date2 >= date1) {
+            $("#endDate1").hide();
+            document.getElementById("LeaveDay").value = result;
+        }
+        if ('0' === $("#HalfData option:selected").val()) {
+            document.getElementById("LeaveDay").value = '0';
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        $("#applybtn").click(function () {
+
+            var start_date = document.getElementById('fromDate');
+            var end_date = document.getElementById('toDate');
+            if ('0' === $('#leaveList').val() || !start_date.value || !end_date.value || '0' === $('#HalfData').val() || $("#reasonArea").val() == '') {
+                document.getElementById("leaveMsg").innerHTML = "please select value from Dropdown";
+                document.getElementById('startDate').innerHTML = "Please select start date";
+                document.getElementById('endDate').innerHTML = "Please select end date";
+                document.getElementById('halfData').innerHTML = "Please select day";
+                document.getElementById('reason').innerHTML = "Please type reason for leave";
+                return false;
+            }
+
+            var dateI1 = document.getElementById("fromDate").value;
+            var dateI2 = document.getElementById("toDate").value;
+            var date1 = new Date(dateI1);
+            var date2 = new Date(dateI2);
+
+            const oneDay = 1000 * 60 * 60 * 24;
+            const time_difference = date2.getTime() - date1.getTime();
+
+            var result = Math.round(time_difference / oneDay) + weight;
+            if (date1 > date2 && date2 < date1) {
+                document.getElementById("LeaveDay").value = '0';
+                document.getElementById("endDate1").innerHTML = "End date should be greater";
+                $("#endDate1").show();
+                return false;
+            }
+            if (date2 >= date1) {
+                document.getElementById("LeaveDay").value = result;
+                $("#endDate1").hide();
+            }
+            if ('0' === $("#HalfData option:selected").val()) {
+                $("#halfData1").show();
+                alert("please select day");
+                document.getElementById("LeaveDay").value = '0';
+                return false;
+            }
+        });
+        $("#reasonArea").keypress(function () {
+            $('#reason').hide();
+        });
+        $("#leaveList, #HalfData").change(function () {
+            if ('0' != $('#leaveList').val()) {
+                $("#leaveMsg").hide();
+            }
+            if ('0' != $('#HalfData').val()) {
+                $("#halfData").hide();
+            }
+        });
+        $("#fromDate, #toDate").change(function () {
+            var start_date = document.getElementById('fromDate');
+            var end_date = document.getElementById('toDate');
+            if (start_date.value) {
+                $("#startDate").hide();
+            }
+            if (end_date.value) {
+                $("#endDate").hide();
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#leaveList").change(function () {
+            var e = document.getElementById("leaveList");
+            var selectedItem = e.options[e.selectedIndex].value;
+            if (selectedItem == "0") {
+                document.getElementById('remianLeave').value = 'SL {{manager_sl}}/PL {{manager_pl}}';
+            }
+            if (selectedItem == 'Sick Leave') {
+                document.getElementById('remianLeave').value = 'SL {{manager_sl}}';
+            }
+            if (selectedItem == 'Parental Leave') {
+                document.getElementById('remianLeave').value = 'PL {{manager_pl}}';
+            }
+            if (selectedItem == 'Annual Leave') {
+                document.getElementById('remianLeave').value = 'PL {{manager_pl}}';
+            }
+            if (selectedItem == 'Normal Leave') {
+                document.getElementById('remianLeave').value = 'PL {{manager_pl}}';
+            }
+            if (selectedItem == 'Working From Home') {
+                document.getElementById('remianLeave').value = 'PL {{manager_pl}}';
+            }
+        });
+    });
+</script>
+
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.min.js"></script> -->
+<script language="javascript">
+    $(document).ready(function () {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        today = yyyy + '-' + mm + '-' + dd;
+        $('#fromDate').attr('min', today);
+        $('#toDate').attr('min', today);
+
+        $("#leaveList").change(function () {
+            var e = document.getElementById("leaveList");
+            var selectedItem = e.options[e.selectedIndex].value;
+            if (selectedItem == "Sick Leave") {
+                $('#fromDate').removeAttr('min');
+                $('#toDate').removeAttr('min');
+            } else {
+                $('#fromDate').attr('min', today);
+                $('#toDate').attr('min', today);
+            }
+        });
+    });
+</script>
+
+<script src="../static/js/bootstrap.min.js"></script> <!-- for popup to see the note of leave     -->
+<script>
+    $(document).ready(function () {
+        // Handle row clicks
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("drkclick");
+        });
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("tdcolor");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            $(".card.ctm-border-radius.shadow-sm.grow2").css({ "margin-left": "-15px", "width": "102%" });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if ($(window).width() > 991 && $(window).width() < 1200) {
+                $(".dashboardbody").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else {
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            $(".card.ctm-border-radius.shadow-sm.grow2").css({ "margin-left": "-15px", "width": "103%" });
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#fullscreen").click(function () {
+            $("table.dataTable").css({ "width": "80vw" });
+        });
+        $("#showsidebar").click(function () {
+            $("table.dataTable").css({ "width": "80vw" });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('.LeaveDatas').show();
+        $('.ApplyLeaves').hide();
+
+        $('.EmployeeLeaveData').click(function(){
+            $('.LeaveDatas').show();
+            $('.ApplyLeaves').hide();
+        });
+        $('.ApplyforLeave').click(function(){
+            $('.LeaveDatas').hide();
+            $('.ApplyLeaves').show();
+        });
+    });
+</script>
+{% endblock body %}

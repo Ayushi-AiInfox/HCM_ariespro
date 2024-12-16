@@ -1,0 +1,498 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../static/img/favicon.png" />
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/login.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <title>WFM :: LOGIN</title>
+    <style>
+        body {
+            background-image: url('../static/img/cloud_bg2.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+        }
+
+        .text-center.forgotpass {
+            position: absolute;
+            top: 540px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .captchaBox {
+            display: flex;
+            align-items: center;
+            margin-left: 25px;
+        }
+
+        .inline-captcha {
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: line-through;
+            font-family: cursive;
+            font-style: italic;
+        }
+
+        .captcha-container {
+            display: flex;
+            margin: 20px 81px;
+        }
+
+        .hor-line {
+            border: 1px solid #29847a;
+            height: 0px;
+            width: 32%;
+            margin: 0 auto;
+            padding: 0;
+        }
+        @media only screen and (max-width: 575px){
+            .form {
+                height: 550px;
+                width: 70vw;
+                position: relative;
+                right: 12vw;
+            }
+            .container {
+                box-shadow: 0 0px 0px #000 !important;
+            }
+        }
+        @media only screen and (max-width: 515px){
+            .form {
+                position: relative;
+                right: 9vw;
+            }
+        }
+        @media only screen and (max-width: 465px){
+            .form {
+                height: 550px;
+                width: 78vw;
+                position: relative;
+                right: 11vw;
+            }
+            #image {
+                font-size: 11px !important;
+            }
+        }
+        @media only screen and (max-width: 415px){
+            .form {
+                width: 86vw;
+                position: relative;
+                right: 12vw;
+            }
+        }
+    </style>
+</head>
+
+<body onload="generate()">
+
+    <form id="form1" method="post">
+        {% csrf_token %}
+        <div id="loader-wrapper">
+            <div class="loader">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <div class="inner-wrapper login-body">
+            <div class="login-wrapper">
+                <div class="container" style="box-shadow: 0 5px 10px #000000;">
+
+                    <div class="overlay" id="overlay" hidden>
+                        <div class="sign-in" id="sign-in">
+                            <div class=" m-auto" style="text-align: center;">
+                                <img src="../static/img/logo.png" alt="logo image" class="img-fluid">
+                            </div>
+                            <div class="welcome">
+                                <h1>Welcome Back!</h1>
+                                <p>To keep connected with us please login with your personal info</p>
+                                <a class="switch-button" id="slide-right-button">Sign In</a>
+                            </div>
+                        </div>
+
+                        <div class="sign-up" id="sign-up">
+                            <div class=" m-auto" style="text-align: center;">
+                                <img src="../static/img/logo.png" alt="logo image" class="img-fluid">
+                            </div>
+                            <div class="welcome">
+                                <h1>Hello, New User</h1>
+                                <p>Enter your personal details and start a journey with us</p>
+                                <a class="switch-button" id="slide-left-button">Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form" id='signInUp' style="box-shadow: 0 5px 10px #09796b;">
+                        <div class="col-md-12">
+
+                            <!-- Sign In Section -->
+
+                            <div class="sign-in" id="sign-in-info">
+                                <div class=" m-auto" style="text-align: center;">
+                                    <img src="../static/img/logo.png" alt="logo image" class="img-fluid">
+                                </div>
+                                <h1
+                                    style="text-align: center; font-family:Verdana, Geneva, Tahoma, sans-serif; inline-size: auto;">
+                                    SIGN IN</h1>
+                                <hr class="hor-line" />
+                                <div id="sign-in-form" style="margin: 23px auto;">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-12">
+                                                <div class="form-group inputTextBox">
+                                                    <label>USERNAME</label>
+                                                    <input name="username" id="username" autocomplete="off"
+                                                        placeholder="Username" class="form-control"
+                                                        style="width: 70%;"></input>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group inputTextBox">
+                                                    <label>PASSWORD</label>
+                                                    <input name="password" id="pwd" autocomplete="off" type="password"
+                                                        placeholder="Password" class="form-control"
+                                                        style="width: 70%;"></input>
+                                                    <i class="field-icon fa fa-fw fa-eye"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="captcha-container">
+                                                    <div class="">
+                                                        <div class="form-group">
+                                                            <input type="text" placeholder="Please enter captcha"
+                                                                name="captcha" id="captcha" class="form-control"
+                                                                style="margin: unset;width: 205px;font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="">
+                                                        <div class="form-group">
+                                                            <div class="captchaBox">
+                                                                <div class="inline" onclick="generate()">
+                                                                    <img src="../static/img/loadcaptcha.png" alt=""
+                                                                        style="width: 22px;height: 23px; margin-right: 6px;">
+                                                                </div>
+                                                                <input type="text" id="image"
+                                                                    class="inline-captcha form-control" style="padding: 0px 12px;margin: unset;
+                                                                    width: 110px; font-family: Verdana, Geneva, Tahoma, sans-serif;
+                                                                    text-align: center;" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group inputTextBox errorMsgDiv"
+                                                    style="text-align: center;margin:15px 0;">
+                                                    <span class="errorMsgSpanText" id="empty-err"
+                                                        style="color:red;font-weight: bold;">{{s}}</span>
+                                                    <span class="errorMsgSpanText" style="color:red;font-weight: bold;"
+                                                        id="captcha-alert"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <button id="BtnSignIn" name="login"
+                                                        class="btn btn-theme button-1 text-white ctm-border-radius btn-block my-btn">Login</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center forgotpass">
+                                    <a href="#" onclick="show_forget()">Forgot Password?</a>
+                                </div>
+                            </div>
+
+                            <!--  End Here  -->
+
+                        </div>
+
+                        <!-- Sign Up Section -->
+
+                        <div class="sign-up" id="sign-up-info" hidden>
+                            <h1 style="text-align: center;">Create Account</h1>
+                            <div id="sign-up-form" style="margin-top: 15px;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group inputTextBox">
+                                            <input name="userName" id="TxtName" autocomplete="off" placeholder="Name"
+                                                class="form-control"></input>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group inputTextBox">
+                                            <input name="Password" id="TxtEmail" autocomplete="off" placeholder="Email"
+                                                class="form-control"></input>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group inputTextBox">
+                                            <input name="" id="TxtUsrName" autocomplete="off" placeholder="Username"
+                                                class="form-control"></input>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group inputTextBox">
+                                            <select id="TxtDropDown" class="form-control" placeholder="Profile name">
+                                                <option value="Employee">Employee</option>
+                                                <option value="clientManager">Client Manager
+                                                </option>
+                                                <option value="HR">HR</option>
+                                            </select>
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group inputTextBox">
+                                            <input name="" id="TxtPass" autocomplete="off" placeholder="Password"
+                                                class="form-control" type="password"
+                                                onkeyup="return passwordChanged();"></input>
+                                            <i class="field-icon fa fa-fw fa-eye" style="margin-right: 55px;"></i><span
+                                                id="strength"></span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group inputTextBox">
+                                            <input name="" id="TxtCnfPass" autocomplete="off"
+                                                placeholder="Confirm Password" class="form-control"
+                                                type="password"></input>
+                                            <i class="field-icon fa fa-fw fa-eye" style="margin-right: 55px;"></i>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-0">
+                                    <button id="BtnSignUp"
+                                        class="btn btn-theme button-1 text-white ctm-border-radius btn-block my-btn">Register</button>
+
+                                </div>
+                            </div>
+
+                            <div class="text-center dont-have">
+                                Already have an account? <a href="#" id="loginLink">Login</a>
+                            </div>
+                        </div>
+
+                        <!--  End Here  -->
+
+                    </div>
+
+                    <!-- Forget Password Section -->
+
+                    <div class="password-forget" id="forgot-box">
+                        <div class="row wrapper">
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <a class="btn btn-theme button-1 text-white ctm-border-radius btn-block backButtonText"
+                                        onclick="hide_forget()" style="width: 100%;">
+                                        <i class="fa fa-arrow-left" aria-hidden="true"
+                                            style="padding: 0 10px;"></i>Back</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 my-auto myShadow" style="padding: 30px;">
+                                <div class="row">
+                                    <div class="form forgetForm">
+                                        <div class="forget" id='forget_pass'>
+                                            <h1>Forgot Password</h1>
+                                            <p class="lead text-center text-secondary2">
+                                                To reset your password, enter the registered e-mail adddress and we will
+                                                send you password reset instructions on your e-mail!
+                                            </p>
+                                            <div id="reset-form" class="forget-form" style="margin: 0 auto;">
+                                                <div class="form-group">
+                                                    <label>EMAIL : </label>
+                                                    <input name="mail" id="TxtResEmail" autocomplete="off"
+                                                        placeholder="Email" class="form-control reset-email"></input>
+                                                </div>
+                                                <div class="form-group inputTextBox errorMsgDiv"
+                                                    style="text-align: center;margin:24px 0;">
+                                                    <span class="errorMsgSpanText"
+                                                        style="color:red;font-weight: bold;">{{message}}</span>
+
+                                                </div>
+
+                                                <div class="form-group inputTextBox" style="margin-top: 50px;">
+                                                    <button id="ResetPass" name="reset"
+                                                        class="btn btn-theme button-1 text-white ctm-border-radius btn-block reset-btn">Reset
+                                                        Password</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--  End Here  -->
+
+                </div>
+                <!-- CopyRight Section -->
+
+                <footer class="footer footerCopyRightText">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <span style="color: #fff;">Copyright &copy;
+                                    <script>document.write(new Date().getFullYear())</script>
+                                    <b class="footerCopy" style="color: #fff;">Ariespro. All rights reserved.</b>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+
+                <!--  End Here  -->
+
+            </div>
+
+        </div>
+
+
+        <!--  SignIn and Forget Password transformation -->
+
+        <script type="text/javascript">
+            function show_forget() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('signInUp').style.display = 'none';
+                document.getElementById('forgot-box').style.display = 'block';
+            }
+            function hide_forget() {
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('signInUp').style.display = 'block';
+                document.getElementById('forgot-box').style.display = 'none';
+            }
+
+        </script>
+
+        <!--  End Here  -->
+
+
+        <!--  Password show - hide transformation -->
+
+        <script>
+
+            $(".field-icon").click(function () {
+                $(this).toggleClass("fa-eye fa-eye-slash");
+                input = $(this).parent().find("input");
+                if (input.attr("type") == "password") {
+                    input.attr("type", "text");
+                } else {
+                    input.attr("type", "password");
+                }
+            });
+        </script>
+
+        <!--  End Here  -->
+
+        <!--  Important JS -->
+        <!-- Important JS  -->
+        <script src="../static/js/jquery-3.2.1.min.js"></script>
+        <script src="../static/js/popper.min.js"></script>
+        <script src="../static/js/bootstrap.min.js"></script>
+        <script src="../static/plugins/select2/moment.min.js"></script>
+        <script src="../static/plugins/select2/select2.min.js"></script>
+        <script src="../static/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="../static/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+        <script src="../static/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+        <script src="../static/js/script.js"></script>
+
+        <!--  End Here  -->
+    </form>
+
+    <script>
+        var captcha;
+        function generate() {
+
+            // Clear old input
+            document.getElementById("captcha").value = "";
+
+            // Access the element to store
+            // the generated captcha
+            captcha = document.getElementById("image");
+            var uniquechar = "";
+
+            const randomchar =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            // Generate captcha for length of
+            // 5 with random character
+            for (let i = 1; i < 7; i++) {
+                uniquechar += randomchar.charAt(
+                    Math.random() * randomchar.length)
+            }
+
+            // Store generated input
+            captcha.value = uniquechar;
+        }
+
+        $("#BtnSignIn").click(function () {
+            const usr_input = document
+                .getElementById("captcha").value;
+
+            // Check whether the input is equal
+            // to generated captcha or not
+            if ($("#username").val() == "" || $("#pwd").val() == "") {
+                document.getElementById("empty-err").innerHTML = "Enter valid username and password";
+                $("#empty-err").show();
+                setTimeout(() => {
+                    $("#empty-err").hide();
+                }, 4000);
+                return false;
+            }
+            if ($("#captcha").val() == "") {
+                document.getElementById("captcha-alert").innerHTML = "Please enter captcha";
+                $("#captcha-alert").show();
+                setTimeout(() => {
+                    $("#captcha-alert").hide();
+                }, 4000);
+                return false;
+            }
+            if (usr_input != captcha.value) {
+                document.getElementById("captcha-alert").innerHTML = "Please enter a valid captcha";
+                $("#captcha-alert").show();
+                setTimeout(() => {
+                    $("#captcha-alert").hide();
+                }, 4000);
+                return false;
+            }
+        });
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#captcha').bind("paste", function (e) {
+                e.preventDefault();
+            });
+            //  Disable copy from captcha field
+            $('#image').bind("copy", function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+
+</html>

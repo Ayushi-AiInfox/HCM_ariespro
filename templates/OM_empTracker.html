@@ -1,0 +1,794 @@
+{% extends 'OM_header.html' %}
+{% block addr%}Employee Tracker{% endblock addr%}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: MANAGER EMPLOYEE TRACKER</title>
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+<style>
+    .modal-content.datauses {
+        width: 60vw;
+        position: relative;
+        left: 100px;
+        height: 75vh;
+        overflow: hidden;
+    }
+
+    .modal-header.cardheader {
+        background-color: #09796b;
+        height: 4vh;
+        color: white;
+    }
+
+    .projectname {
+        position: relative;
+        bottom: 10px;
+    }
+
+    .fontfamily {
+        font-size: 15px !important;
+        text-align: left;
+        font-family: inherit;
+        line-height: 20px;
+        font-weight: 400 !important;
+    }
+
+    .datefamily {
+        text-align: center !important;
+        font-family: inherit;
+        font-size: 12px !important;
+        margin-bottom: 0px;
+        margin-left: 0px;
+    }
+
+    .datefamily:hover {
+        cursor: context-menu;
+    }
+
+    .checkmovebtn {
+        position: relative;
+        right: 2vw;
+    }
+
+    .btn.btn-primary.text-white.ctm-border-radius.mt-4 {
+        border-bottom: 5px solid rgb(1, 42, 95);
+    }
+    
+    .assigned {
+        float: left;
+        padding-right: 2px;
+        color: red;
+    }
+
+    .btn-scale {
+        width: 40px;
+        height: 40px;
+        padding: unset;
+        text-align: center;
+        font-weight: bold;
+        color: black;
+        font-family: 'Lato', sans-serif;
+        border-radius: 50%;
+    }
+
+    a.cmPendingTimesheetColorChange {
+        background: #09796b;
+        color: #fff !important
+    }
+
+    a.cmPendingTimesheetColorChange:hover {
+        background: #09796b;
+        color: #fff !important
+    }
+
+    .btn-scale-desc-10 {
+        background-color: #33FF00;
+    }
+
+    .btn-scale-desc-10:hover {
+        background-color: #2CDE00;
+    }
+
+    .btn-scale-desc-9 {
+        background-color: #66FF00;
+    }
+
+    .btn-scale-desc-9:hover {
+        background-color: #59DE00;
+    }
+
+    .btn-scale-desc-8 {
+        background-color: #99FF00;
+    }
+
+    .btn-scale-desc-8:hover {
+        background-color: #85DE00;
+    }
+
+    .btn-scale-desc-7 {
+        background-color: #CCFF00;
+    }
+
+    .btn-scale-desc-7:hover {
+        background-color: #B1DE00;
+    }
+
+    .btn-scale-desc-6 {
+        background-color: #FFFF00;
+    }
+
+    .btn-scale-desc-6:hover {
+        background-color: #DEDE00;
+    }
+
+    .btn-scale-desc-5 {
+        background-color: #FFCC00;
+    }
+
+    .btn-scale-desc-5:hover {
+        background-color: #DEB100;
+    }
+
+    .btn-scale-desc-4 {
+        background-color: #FF9900;
+    }
+
+    .btn-scale-desc-4:hover {
+        background-color: #DE8500;
+    }
+
+    .btn-scale-desc-3 {
+        background-color: #FF6600;
+    }
+
+    .btn-scale-desc-3:hover {
+        background-color: #DE5900;
+    }
+
+    .btn-scale-desc-2 {
+        background-color: #FF3300;
+    }
+
+    .btn-scale-asc-9:hover,
+    .btn-scale-desc-2:hover {
+        background-color: #DE2C00;
+    }
+
+    .btn-scale-desc-1 {
+        background-color: #FF0000;
+    }
+
+    .btn-scale-desc-1:hover {
+        background-color: #DE0000;
+    }
+
+    .up-arrow-rating {
+        display: none;
+    }
+
+    #lbl {
+        /* position: absolute; */
+        margin-left: 8px;
+        font-weight: 700;
+    }
+
+    #comment1 {
+        margin-bottom: 2%;
+    }
+
+    .table th,
+    .table td {
+        text-align: center;
+        max-width: 215px;
+    }
+    #thstyle {
+        width: 7vw;
+    }
+
+    #thstyle p {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        /* max-width: 136px; */
+        text-align: left !important;
+        width: 90%;
+    }
+
+    .yesss td {
+        width: 100px;
+    }
+
+    .card-header .weekNo h4 {
+        font-weight: bold;
+        box-shadow: 0 5px 10px #09796b;
+        width: 100%;
+        padding: 6px;
+        border-radius: 15px;
+        position: relative;
+        top: -1.2vh;
+        right: 55px;
+    }
+
+    .card-header .weekNo h4 span {
+        font-size: 15px;
+        margin: 0 15px;
+    }
+
+    .card-header .weekNo h4 span b {
+        font-size: 20px;
+        color: #09796b;
+    }
+
+    .card-header.weekNo {
+        border-bottom: none;
+        margin-bottom: -20px;
+    }
+
+    .rectangle-img {
+        height: 78px;
+        width: 84px;
+        border-radius: 12px;
+        position: relative;
+        right: 80px;
+        bottom: 20px;
+    }
+
+    .emp-know {
+        position: relative;
+        right: 140px;
+        bottom: 30px;
+    }
+
+
+
+    .card.ctm-border-radius.shadow-sm.flex-fill.grow1 {
+        height: 95px;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.6rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .col-md-2.weekrep {
+        position: relative;
+        top: 10px;
+    }
+</style>
+<style>
+    .top-nav-search .btn {
+        top: 12%
+    }
+    @media only screen and (max-width: 1082px){
+        .card-title.mb-0 {
+            font-size: 11px;
+            font-weight: 600;
+        }
+    }
+    @media only screen and (max-width: 1269px){
+        .card-title.mb-0 {
+        font-size: 17px;
+        font-weight: 600;
+        }
+    }
+    @media only screen and (max-width: 1252px){
+        .card-title.mb-0 {
+            font-size: 14px;
+        }
+        .card-header .weekNo h4 span {
+            font-size: 13px;
+        }
+        .topdate {
+            font-size: 16px !important;
+        }
+    }
+
+    @media only screen and (max-width: 1199px) {
+        .employee-office-table .table input {
+            width: 100%;
+            min-width: 50px;
+            border: 1px solid #666;
+        }
+        .rectangle-img {
+            height: 65px;
+            width: 65px;
+            position: relative;
+            right: 50px;
+        }
+        .emp-know {
+            position: relative;
+            right: 80px;
+        }
+        .emp-know h6, .topdate {
+            font-size: 14px !important;
+        }
+        .card-header .weekNo h4 span {
+            font-size: 11px;
+        }
+        .card-title.mb-0 {
+            font-size: 13px;
+        }
+        #thstyle p, th {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .card-header .weekNo h4 span {
+            font-size: 13px;
+        }
+        .emp-know h6, .topdate, .card-title.mb-0 {
+            font-size: 16px !important;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .card-header .weekNo h4 {
+            position: relative;
+            top: -1.2vh;
+            left: 0px;
+        }
+        .btn {
+            font-size: 13px;
+        }
+    }
+    @media only screen and (max-width: 458px){
+        .emp-know h6 {
+            font-size: 14px !important;
+        }
+        .emp-know {
+            position: relative;
+            right: 10px;
+        }
+        .rectangle-img {
+            position: relative;
+            right: 20px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12 emptracker">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow1">
+                <div class="user-info card-body">
+                    <div style="width: 30%; float: left; height: 200px; margin: 10px">
+                        <div class="user-avatar  text-center mb-4">
+                            <img src="../{{img}}" alt="User Avatar" class="img-fluid rectangle-img" width="100">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="user-details emp-know">
+                            <h6>Name : <b>{{emp_name}}</b></h6>
+                            <h6>ID : <b>{{employee_id}}</b></h6>
+                            <h6>Designation : <b>{{designation}}</b></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-3  weekrep">
+                            <h5 class="card-title mb-0">Weekly Report</h5>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-header weekNo">
+                                <h4 class="card-title mb-0 text-center weekStartEndDate">
+                                    <span>Week Start Date : <b class="topdate">{{employee_start}}</b></span>
+                                    <span>Week End Date : <b class="topdate">{{employee_end}}</b></span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 data_drop1"></div>
+                        <div class="col-md-6 data_search1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="employee-office-table paginate-table1">
+                                <div class="table-responsive">
+                                    <table class="table custom-table mb-3" id="myTable1">
+                                        <tr>
+                                            <td></td>
+                                            <th scope="col">MON</th>
+                                            <th scope="col">TUE</th>
+                                            <th scope="col">WED</th>
+                                            <th scope="col">THU</th>
+                                            <th scope="col">FRI</th>
+                                            <th scope="col">SAT</th>
+                                            <th scope="col">SUN</th>
+                                            <th scope="col">TOTAL</th>
+                                        </tr>
+                                        {% for tasks in data %}
+                                        <tr class="yesss">
+                                            <!-- <th scope="row" id="thstyle"><p title="{{tasks.project_name}}">{{tasks.project_name}}</p></th> -->
+                                            <th scope="row" id="thstyle">
+                                                <div class="assigned">{{tasks.assigned}}</div>
+                                                <p style="text-align: center;" title="{{tasks.project_name}}">
+                                                    {{tasks.project_name}}</p>
+                                            </th>
+                                            <td>
+                                                <input id="pr1mon" autocomplete="off" value="{{tasks.mon}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1tue" autocomplete="off" value="{{tasks.tue}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1wed" autocomplete="off" value="{{tasks.wed}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1thu" autocomplete="off" value="{{tasks.thu}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1fri" autocomplete="off" value="{{tasks.fri}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1sat" autocomplete="off" value="{{tasks.sat}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1sun" autocomplete="off" value="{{tasks.sun}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                            <td>
+                                                <input id="pr1total" autocomplete="off" value="{{tasks.total}}" class=""
+                                                    type="text" readonly></input>
+                                            </td>
+                                        </tr>
+
+
+                                        {%endfor%}
+                                        <tr>
+                                            <th scope="row" id="thstyle">
+                                                <p style="margin-top:-10px;"><label for="comment1"
+                                                        id="lbl">Comment</label></p>
+                                            </th>
+                                            <td colspan="8">
+                                                <textarea style="width: 99% !important;" name="comment1" id="comment1"
+                                                    rows="2" placeholder="Add Commnet..."
+                                                    readonly>{{comments}}</textarea>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {%csrf_token%}
+                        <input type="hidden" name="empid" value="{{emp_id}}">
+                        <div class="text-center" style="margin-bottom: 1%;">
+                            <a class="btn btn-primary text-white ctm-border-radius mt-4" 
+                            data-toggle="modal" data-target="#add_Comment_event_first">View Tasks</a>
+                            <button class="btn btn-theme button-1 text-white ctm-border-radius mt-4" id="approve-btn"
+                                value='{{start_date}}' name="Approved">Approve</button>
+                            <button class="btn btn-danger text-white ctm-border-radius mt-4" value="{{start_date}}"
+                                name="Deny">Reject</button>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- <a class="taskbtn" data-toggle="modal"
+                                                data-target="#add_Comment_event_first">View Tasks</a> -->
+                                    </div>
+                                </div>
+                        </div>
+
+                        <div id="add_Comment_event_first" class="modal fade" role="dialog">
+                            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 850px;">
+                                <div class="modal-content datauses">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">View Tasks</h4>
+                                    </div>
+                                    <div class="modal-body" style="overflow-y: auto;">
+                                        <div class="card-body cardinfo" draggable="true" id="{{i.id}}">
+                                            {% for task in tasks %}
+                                            <div class="card-right2">
+                                                <div class="card dash-widget ctm-border-radius shadow-sm grow2">
+                                                    <div class="modal-header cardheader">
+                                                        <h6 class="projectname">{{task.project_id}}</h6>
+                                                    </div>
+                                                    <div class="card-body innercardbody" style="padding: 10px; ">
+                                                        <p class="fontfamily">{{task.description}}</p>
+                                                    </div>
+        
+                                                    <div class="row lowest">
+                                                        <div class="col-md-4 ">
+                                                            <p class="datefamily" title="Requirement Date">
+                                                                {{task.assigning_date}}</p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p class="datefamily" title="Target Date">
+                                                                {{task.target_date}}</p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p class="datefamily" title="Completed Date">
+                                                                {{task.complete_date}}</p>
+                                                        </div>
+        
+                                                    </div>
+        
+        
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+        
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer text-center">
+                                        <div class="row">
+                                            <button name="cancelEmp"
+                                                class="btn btn-danger text-white ctm-border-radius checkmovebtn"
+                                                data-dismiss="modal" aria-label="Close">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="add_event2" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reason For Rejection</h5>
+                    <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="usrform" class="form">
+                        <textarea name="comment" class="reason-form" placeholder="Additional Information..."></textarea>
+                    </div>
+                    <div class="text-center">
+                        <a href="javascript:void(0);"
+                            class="btn btn-theme button-1 text-white ctm-border-radius mt-4">Submit</a>
+                        <a href="javascript:void(0);" class="btn btn-danger text-white ctm-border-radius mt-4"
+                            data-dismiss="modal" aria-label="Close">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="star_ratings" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="min-height: unset;">
+            <div class="modal-header" style="background-color: #09796b; padding: 6px 14px;">
+                <h5 class="modal-title text-white">Ratings</h5>
+                <button type="button" class="close text-white" id="btn_close_modal" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row align-items-center">
+                    <div class="col-md-12 text-center" style="padding: 0 30px;">
+                        <div class="chart-scale">
+                            <div class="d-inline-flex flex-column">
+                                <button id="1" class="btn btn-scale btn-scale-desc-1" data-target="1">1</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-1"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="2" value="2" class="btn btn-scale btn-scale-desc-2"
+                                    data-target="2">2</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-2"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="3" class="btn btn-scale btn-scale-desc-3" data-target="3">3</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-3"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="4" class="btn btn-scale btn-scale-desc-4" data-target="4">4</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-4"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="5" class="btn btn-scale btn-scale-desc-5" data-target="5">5</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-5"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="6" class="btn btn-scale btn-scale-desc-6" data-target="6">6</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-6"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="7" class="btn btn-scale btn-scale-desc-7" data-target="7">7</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-7"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="8" class="btn btn-scale btn-scale-desc-8" data-target="8">8</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-8"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="9" class="btn btn-scale btn-scale-desc-9" data-target="9">9</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-9"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button id="10" class="btn btn-scale btn-scale-desc-10" data-target="10">10</button><br>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-10"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post">
+                        {%csrf_token%}
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="" style="font-weight: 600;">Write your comment</label>
+                            <textarea name="comment" id="comment" maxlength="200" cols="50" rows="4"
+                                placeholder="comment" class="form-control"></textarea>
+                            <div id="charCount" style="text-align: right;margin-right: 2%;font-weight: 700;"></div>
+                        </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="rating" name="rating" value="0">
+            <input type="hidden" name="empid" value="{{emp_id}}">
+            <div class="modal-footer text-right">
+                <button name="Approve" value="{{start_date}}" id=""
+                    class="btn btn-theme button-1 text-white ctm-border-radius">Submit</button>
+                <button id="btnclose" type="button" class="btn btn-danger text-white ctm-border-radius"
+                    data-dismiss="modal" aria-label="Close" value="close">Cancel</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% block paginate %}
+<script src="../static/js/jquery.dataTables.min.js"></script>
+<script src="../static/js/dataTables.bootstrap.min.js"></script>
+{% endblock paginate %}
+<script>
+    $(document).ready(function () {
+        $("#myTable1").DataTable({
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable1_paginate, #myTable1_info').appendTo('.paginate-table1');
+                $('#myTable1_length').appendTo('.data_drop1');
+                $('#myTable1_filter').appendTo('.data_search1');
+            },
+        });
+    });
+</script>
+<script>
+    $("#approve-btn").click(function (e) {
+        e.preventDefault();
+        $("#star_ratings").show();
+        $("#star_ratings").css("opacity", "1");
+    });
+    $("#btn_close_modal, #btnclose").click(function () {
+        $("#star_ratings").hide();
+        $("#star_ratings").css("opacity", "0");
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".btn-scale").click(function () {
+            // Hide all up-arrow-rating elements
+            $(".up-arrow-rating").hide();
+
+            // Show the corresponding up-arrow element
+            var target = $(this).data('target');
+            $(".up-arrow-" + target).show();
+        });
+    });
+</script>
+<script>
+    // buttons working
+    $(document).ready(function () {
+        $("#1").click(function () {
+            $("#rating").val(1);
+        });
+        $("#2").click(function () {
+            $("#rating").val(2);
+        });
+        $("#3").click(function () {
+            $("#rating").val(3);
+        });
+        $("#4").click(function () {
+            $("#rating").val(4);
+        });
+        $("#5").click(function () {
+            $("#rating").val(5);
+        });
+        $("#6").click(function () {
+            $("#rating").val(6);
+        });
+        $("#7").click(function () {
+            $("#rating").val(7);
+        });
+        $("#8").click(function () {
+            $("#rating").val(8);
+        });
+        $("#9").click(function () {
+            $("#rating").val(9);
+        });
+        $("#10").click(function () {
+            $("#rating").val(10);
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#comment').on('input', function () {
+            var maxLength = $(this).attr('maxlength');
+            var currentLength = $(this).val().length;
+            var remaining = maxLength - currentLength;
+
+            if (remaining >= 0) {
+                $('#charCount').text(remaining + ' characters remaining');
+            } else {
+                // You can choose what to do when the character limit is exceeded
+                $('#charCount').text('Character limit exceeded');
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".emptracker").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".emptracker").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".emptracker").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+{% endblock body %}

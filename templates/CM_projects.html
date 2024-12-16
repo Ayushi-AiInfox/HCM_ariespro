@@ -1,0 +1,578 @@
+{% extends 'CM_header.html' %}
+{% block addr %}Projects{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock user %}
+{% block style %}
+<title>WFM :: CM PROJECTS</title>
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+
+
+<style>
+    .white1 {
+        background-color: white !important;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #09796b !important;
+        color: white;
+    }
+
+    span.select2.select2-container.select2-container--default {
+        line-height: 1.5;
+        border: 1px solid #767676;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        width: 100% !important;
+        background-color: #fff;
+        display: -webkit-box;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: unset;
+        width: 100%;
+    }
+
+    .flexboxSpan {
+        display: block;
+        padding: 0 5px;
+        text-align: left;
+    }
+
+    select#managerName {
+        border-radius: 2px;
+        height: 32px;
+        font-size: 15px;
+        border: 1px solid #666;
+    }
+
+    .table-responsive.hrProjects {
+        height: 490px;
+    }
+
+    a.cmProjectsColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.cmProjectsColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .employee-office-table .table input {
+        width: 100%;
+    }
+
+    
+
+    label {
+        display: flex;
+        margin-bottom: .5rem;
+    }
+
+    table.dataTable {
+        clear: both;
+        margin-bottom: 6px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+        border-spacing: 0px;
+        width: 67vw;
+    }
+
+    .form-control {
+        border-color: #e3e3e3;
+        box-shadow: none;
+        font-size: 15px;
+        height: 33px;
+        color: #625b55;
+        width: 80px;
+    }
+
+    .nameclick {
+        background-color: white;
+        border-radius: 4px;
+        border-style: none;
+        color: black;
+        width: auto;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    .drkclick {
+        background-color: rgb(202, 178, 178) !important;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .card-title {
+        color: #333;
+        position: relative;
+        left: 17px;
+    }
+
+    .AddProject {
+        height: 35px;
+        font-size: 13px;
+        position: relative;
+        right: 10px;
+        border-bottom: none !important;
+    }
+
+    #v-pills-tabContent {
+        position: relative;
+        top: 0px;
+    }
+    @media only screen and (max-width: 1199px){
+        .thcolor {
+            font-size: 13px;
+        }
+        .tdcolor.odd, .tdcolor.even {
+            font-size: 12px;
+        }
+        .form-control {
+            font-size: 12px;
+            height: 31px;
+            width: 65px;
+        }
+        .modal-content {
+            position: relative;
+            width: 80%;
+            left: 10vw;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card {
+            margin-bottom: 15px;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .thcolor {
+            font-size: 16px;
+        }
+        .tdcolor.odd, .tdcolor.even {
+            font-size: 14px;
+        }
+        
+    }
+    @media only screen and (max-width: 767px){
+        .entrysearch{
+            display: flow-root;
+        }
+        .thcolor {
+            font-size: 13px;
+        }
+        .tdcolor.odd, .tdcolor.even {
+            font-size: 12px;
+        }
+        label {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 575px){
+        .dataTables_info, .pagination {
+            font-size: 13px;
+        }
+    }
+    @media only screen and (max-width: 465px){
+        .entrysearch{
+            display: inline-block;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12 dashboardbody">
+    <form method="post">
+        {%csrf_token%}
+        <div class="card shadow-sm ctm-border-radius grow">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h4 class="card-title mb-0 d-inline-block">Projects</h4>
+                <a href="javascript:void(0)"
+                    class="btn btn-theme button-1 ctm-border-radius text-white float-right AddProject"
+                    data-toggle="modal" data-target="#add_event"><span>
+                        <i class="fa fa-plus"></i></span>
+                    Add Project</a>
+            </div>
+            <div class="card-body align-center">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="row entrysearch">
+                        <div class="col-md-6 data_drop1"></div>
+                        <div class="col-md-6 data_search1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                                aria-labelledby="v-pills-home-tab">
+
+                                <div class="employee-office-table paginate-table1 ">
+                                    <div class="table-responsive  hrProjects">
+                                        <table class="table custom-table table-hover" id="myTable1">
+                                            <thead style="position: sticky; top: 0; z-index: 1;">
+                                                <tr class="thcolor">
+                                                    <th>Project Name</th>
+                                                    <th>Client Name</th>
+                                                    <th>Managed By</th>
+                                                    <th> Begin On</th>
+                                                    <th> End At</th>
+                                                    <th>Status</th>
+                                                    <th>Edit</th>
+                                                    <!-- <th>vijay</th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for pro in project %}
+                                                <tr class="tdcolor">
+                                                    <td><button name="project_id" class="nameclick"
+                                                            value="{{pro.project_name}}">{{pro.project_name}}</button>
+                                                    </td>
+                                                    <td>{{pro.client_name}}</td>
+                                                    <td>{{pro.manager}}</td>
+                                                    <td>{{pro.start_date}}</td>
+                                                    <td>{{pro.end_date}}</td>
+                                                    <td>{{pro.status}}</td>
+                                                    <td>
+                                                        <div class="table-action">
+                                                            <a href="javascript:void(0)"
+                                                                class="btn btn-sm btn-outline-success" id="vijay"
+                                                                data-toggle="modal" data-target="#edit_event{{pro.id}}"
+                                                                name="edit_project{{pro.id}}"><span
+                                                                    class="lnr lnr-pencil"></span>&nbsp;Edit</a>
+                                                            <div id="edit_event{{pro.id}}" class="modal fade"
+                                                                role="dialog">
+                                                                <div class="modal-dialog modal-dialog-centered"
+                                                                    role="document" style="max-width: 700px;">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">Edit Project</h5>
+                                                                            <button type="button" class="close"
+                                                                                data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="employee-office-table "
+                                                                                style="box-shadow: none;">
+                                                                                <div class="table-responsive">
+                                                                                    <table
+                                                                                        class="table custom-table table-hover"
+                                                                                        id="addevent">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th>Project Name <span
+                                                                                                        class="text-danger">*</span>
+                                                                                                </th>
+                                                                                                <th>Client Name <span
+                                                                                                        class="text-danger">*</span>
+                                                                                                </th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <tr
+                                                                                                style="background-color: white !important;">
+                                                                                                <td>
+                                                                                                    <input
+                                                                                                        id="projectName"
+                                                                                                        autocomplete="off"
+                                                                                                        name="project_edit{{pro.id}}"
+                                                                                                        value="{{pro.project_name}}"
+                                                                                                        placeholder="Project Name"
+                                                                                                        class="form-control2 "></input>
+                                                                                                    <span
+                                                                                                        class="text-danger flexboxSpan"
+                                                                                                        id="pro_name"></span>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input
+                                                                                                        id="clientName"
+                                                                                                        autocomplete="off"
+                                                                                                        value="{{pro.client_name}}"
+                                                                                                        placeholder="Client Name"
+                                                                                                        class="form-control2 "
+                                                                                                        name="client_edit{{pro.id}}"></input>
+                                                                                                    <span
+                                                                                                        class="text-danger flexboxSpan"
+                                                                                                        id="client_name"></span>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="text-center">
+
+                                                                                <button name="edit" value="{{pro.id}}"
+                                                                                    id="editProject"
+                                                                                    class="btn btn-theme button-1 text-white ctm-border-radius mt-4">Save</button>
+                                                                                <button href="javascript:void(0);"
+                                                                                    class="btn btn-danger text-white ctm-border-radius mt-4"
+                                                                                    data-dismiss="modal"
+                                                                                    aria-label="Close">Cancel</button>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- <button class="btn btn-sm btn-outline-success" id="vijay"
+                                                                data-toggle="modal" data-target="#edit_event"
+                                                                name="edit_project" value=""> <span
+                                                                    class="lnr lnr-pencil"></span>&nbsp;
+                                                                Edit</button> -->
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <form>
+
+            <form method="post">
+                {%csrf_token%}
+                <div id="add_event" class="modal fade" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 1000px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Project</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="employee-office-table " style="box-shadow: none;">
+                                    <div class="table-responsive">
+                                        <table class="table custom-table table-hover" id="addevent">
+                                            <thead>
+                                                <tr>
+                                                    <th>Project Name <span class="text-danger">*</span></th>
+                                                    <th>Client Name <span class="text-danger">*</span></th>
+                                                    <th>Begin On <span class="text-danger">*</span></th>
+                                                    <!-- <th>Managed By <span class="text-danger">*</span></th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="background-color: white !important;">
+                                                    <td>
+                                                        <input id="projectName" autocomplete="off" name="project"
+                                                            placeholder="Project Name" class="form-control2 "></input>
+                                                        <span class="text-danger flexboxSpan" id="pro_name"></span>
+                                                    </td>
+                                                    <td>
+                                                        <input id="clientName" autocomplete="off"
+                                                            placeholder="Client Name" class="form-control2 "
+                                                            name="client"></input>
+                                                        <span class="text-danger flexboxSpan" id="client_name"></span>
+                                                    </td>
+                                                    <td>
+                                                        <input id="projectDate" autocomplete="off" placeholder=""
+                                                            class="form-control2" type="date" name="date"></input>
+                                                        <span class="text-danger flexboxSpan" id="pro_date"></span>
+                                                    </td>
+                                                    <!-- <td>
+                                                        <select id="managerName" class="form-control2 select2"
+                                                            name="manager">
+                                                            <option value="0">-Select-</option>
+                                                            {% for i in managers %}
+                                                            <option value="{{i.emp_id}}">{{i.name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <span class="text-danger flexboxSpan" id="man_name"></span>
+                                                    </td> -->
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+
+                                    <button name="add" value="add" id="addProject"
+                                        class="btn btn-theme button-1 text-white ctm-border-radius mt-4">Add</button>
+                                    <button href="javascript:void(0);"
+                                        class="btn btn-danger text-white ctm-border-radius mt-4" data-dismiss="modal"
+                                        aria-label="Close">Cancel</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+            <!-- <form method="post">
+                {%csrf_token%} -->
+
+            <!-- </form> -->
+
+</div>
+
+<script src="../static/js/jquery-3.2.1.min.js"></script>
+<script src="../static/js/script.js"></script>
+<script src="../static/plugins/select2/select2.min.js"></script>
+<script src="../static/plugins/select2/moment.min.js"></script>
+<script src="../static/js/bootstrap-datetimepicker.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#addProject").click(function () {
+            var start_date = document.getElementById('projectDate');
+            if ($('#projectName').val() === '' || !start_date.value || $('#clientName').val() === '' || '0' === $('#managerName').val()) {
+                document.getElementById("pro_name").innerHTML = "Enter project name";
+                document.getElementById('client_name').innerHTML = "Enter client name";
+                document.getElementById('pro_date').innerHTML = "Select start date";
+                document.getElementById('man_name').innerHTML = "Select manager";
+                return false;
+            }
+        });
+
+        $("#projectName, #clientName").keyup(function () {
+
+            if ($('#projectName').val() !== '') {
+                $("#pro_name").hide();
+            } else {
+                $("#pro_name").show();
+            }
+            if ($('#clientName').val() != '') {
+                $("#client_name").hide();
+            } else {
+                $("#client_name").show();
+            }
+        });
+        $('#projectDate, #managerName').change(function () {
+
+            var start_date = document.getElementById('projectDate');
+            if (start_date.value) {
+                $("#pro_date").hide();
+            } else {
+                $("#pro_date").show();
+            }
+            if ('0' !== $('#managerName').val()) {
+                $("#man_name").hide();
+            } else {
+                $("#man_name").show();
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#managerName").select2();
+    });
+</script>
+{% block paginate %}
+<script src="../static/js/jquery.dataTables.min.js"></script>
+<script src="../static/js/dataTables.bootstrap.min.js"></script>
+{% endblock paginate %}
+<script>
+    $(document).ready(function () {
+        $("#myTable1").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable1_paginate, #myTable1_info').appendTo('.paginate-table1');
+                $('#myTable1_length').appendTo('.data_drop1');
+                $('#myTable1_filter').appendTo('.data_search1');
+            },
+        });
+    });
+</script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Handle row clicks
+        $("table").on("click", "tbody tr ", function () {
+            $(this).toggleClass("drkclick");
+        });
+        $("table").on("click", "tbody tr", function () {
+            $(this).toggleClass("tdcolor");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Handle row clicks
+        $("table #addevent").on("click", "tbody tr yess ", function () {
+            $(this).toggleClass("white1");
+        });
+        $("table #addevent").on("click", "tbody tr yess", function () {
+            $(this).toggleClass("white1");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".dashboardbody").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#fullscreen").click(function () {
+            $("table.dataTable").css({ "width": "91vw" });
+        });
+        $("#showsidebar").click(function () {
+            $("table.dataTable").css({ "width": "67vw" });
+        });
+    });
+</script>
+{% endblock body %}

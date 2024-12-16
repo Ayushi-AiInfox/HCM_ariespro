@@ -1,0 +1,986 @@
+{% extends 'Admin_header.html' %}
+{% block addr %}Dashboard{% endblock addr %}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: ADMIN DASHBOARD</title>
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
+    integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css"
+    integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+<script src="../static/js/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .form-control {
+        height: calc(1.2em + .75rem + 2px) !important;
+    }
+
+    .dataTables_wrapper .row:nth-child(2) {
+        width: 100%;
+    }
+
+    .dataTables_length label,
+    .dataTables_filter label {
+        display: flex;
+    }
+
+    .nav-item {
+        width: 100%;
+        max-width: 124px;
+        text-align: center;
+    }
+
+    .sub-tab-item {
+        width: 100%;
+        max-width: 178px;
+        text-align: center;
+    }
+
+    .chart-container {
+        max-width: 350px;
+        margin: auto;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    .HRupcomingLeaves hr {
+        margin: 0 0;
+    }
+
+    .dash-card-container {
+        justify-content: space-between;
+    }
+
+    h6.HRDateText {
+        color: #333;
+    }
+
+    .card-body.leavesHr-applied {
+        padding: 10px 20px;
+    }
+
+    span.statusBtn {
+        color: #333;
+    }
+
+    .upcomingLeavesHR {
+        padding: 10px 1.25rem;
+    }
+
+    .table-responsive {
+        height: 485px;
+    }
+
+    a.adminTimeSheet {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.adminTimeSheet:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    #apbtn {
+        background-color: #09796b;
+        border-radius: 12%;
+        font-weight: 600;
+        color: white;
+        width: 100px;
+        /* text-align: center; */
+        /* height: 100px; */
+        margin-left: 2%;
+    }
+
+    #apbtn1 {
+        background-color: #09796b;
+        border-radius: 12%;
+        font-weight: 600;
+        color: white;
+        width: 100px;
+        /* text-align: center; */
+        /* height: 100px; */
+        margin-left: -5%;
+    }
+
+    .rjbtn {
+        background-color: rgb(207, 29, 29);
+        border-radius: 12%;
+        font-weight: 600;
+        color: white;
+        width: 100px;
+    }
+
+    /* 
+    .pnbtn {
+        background-color: #09332e;
+        border-radius: 12%;
+        font-weight: 600;
+        color: white;
+        width: 100px;
+    } */
+
+    table.dataTable {
+        clear: both;
+        margin-top: 6px !important;
+        margin-bottom: 285px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+        border-spacing: 0;
+    }
+
+    .form-inline {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        height: 455px !important;
+    }
+
+
+    /* @media only screen and (max-width: 425px) {
+        h6.HRDateText {
+            font-size: 14px;
+            display: inline-block;
+            width: 100px;
+        }
+    } */
+
+    @media (min-width:535px) and (max-width:1300px) {
+        .top-count-columns {
+            -ms-flex: 0 0 33.333333%;
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+
+        .top-last-count-columns {
+            -ms-flex: 0 0 50%;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (min-width:1301px) and (max-width:1420px) {
+        .top-card-title {
+            font-size: 15px !important;
+        }
+
+        .card.ctm-border-radius.shadow-sm.flex-fill.grow.top-card-box {
+            height: 194px !important;
+        }
+    }
+</style>
+<style>
+    .star_icon {
+        font-size: 40px;
+        color: orange;
+        margin: 6px 10px;
+        cursor: pointer;
+    }
+
+    .lnr-icon {
+        /* background: rgba(9, 121, 107, 0.2);
+        padding: 6px; */
+        font-weight: 500;
+    }
+
+    .h2-top-title {
+        padding-top: 20px;
+        font-weight: 600;
+    }
+
+    .card.ctm-border-radius.shadow-sm.flex-fill.grow.top-card-box {
+        height: 177px;
+    }
+
+    .top5-name ul li {
+        list-style-type: disc;
+        font-weight: 500;
+    }
+
+    .top5-name ul {
+        list-style-type: disc;
+        padding-left: 12px;
+    }
+
+    .card-body.top-card-body {
+        text-align: center;
+        padding: 10px 15px;
+    }
+
+    .top5-name {
+        font-size: 12px;
+    }
+
+    .card-header.top-card-header {
+        padding: 12px;
+    }
+
+    .top-card-title {
+        font-size: 16px;
+        padding: 0px;
+        font-weight: 700;
+    }
+
+    .chart-labels {
+        padding: 6px 6px;
+        font-weight: 600;
+        max-width: 138px;
+        width: 100%;
+        margin-right: 10px;
+    }
+
+    .chart-label-1 {
+        background: rgb(227, 66, 52, 0.7);
+    }
+
+    .chart-label-2 {
+        background: rgb(250, 160, 160, 0.5);
+    }
+
+    .chart-label-3 {
+        background: rgb(218, 112, 214, 0.5);
+    }
+
+    .chart-label-4 {
+        background: rgb(135, 206, 235);
+    }
+
+    .chart-label-5 {
+        background: rgb(147, 197, 114, 0.7);
+    }
+
+    #preview {
+        /* background: #f5f5f5; */
+        position: relative;
+        color: #fff;
+        float: left;
+        /* width: 350px; */
+        height: 200px;
+        margin: 0;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+    }
+
+    #foo,
+    #chat_1 {
+        width: 350px !important;
+        height: 175px !important;
+        top: 10px;
+        position: relative;
+        left: 0px;
+    }
+
+    #preview-textfield {
+        position: absolute;
+        bottom: 31px;
+        left: calc(50% - 50px);
+        right: 0;
+        text-align: center;
+        color: #333;
+        font-weight: bold;
+        font-size: 22px;
+        font-family: Arial, Helvetica, sans-serif;
+        z-index: 9;
+        width: 100px;
+        height: 50px;
+        background: #ddd;
+        border-top-right-radius: 60px;
+        border-top-left-radius: 60px;
+    }
+
+    #preview-textfield span {
+        position: relative;
+        top: 15px !important;
+    }
+
+    .thcolor:hover {
+        background-color: white !important;
+    }
+
+    .tdcolor:hover {
+        background-color: rgb(219, 214, 214) !important;
+    }
+
+    b {
+        font-size: 20px;
+        color: #09796b;
+        font-weight: bolder !important;
+    }
+
+    #timsheet .weekNo h4 {
+        font-weight: bold;
+        box-shadow: 0px 5px 10px #09796b;
+        margin: -3vh auto;
+        margin-bottom: 0px;
+        padding: 6px;
+        border-radius: 15px;
+        font-size: initial;
+    }
+    .weekNo{
+        border-bottom: none !important;
+    }
+
+    #timsheet {
+        margin-bottom: -2%;
+
+    }
+    .card-header {
+        background: none;
+        padding: 0.7rem;
+        border-bottom: 1px solid #ededed;
+    }
+    .card-title {
+        color: #333;
+        position: relative;
+        left: 10px;
+    }
+    .pageinationAdj {
+        position: relative;
+        top: 0px;
+    }
+    .fc-prev-button.fc-button.fc-state-default.fc-corner-left,
+    .fc-next-button.fc-button.fc-state-default.fc-corner-right {
+        height: 2rem !important;
+    }
+    @media only screen and (max-width: 1273px){
+        .card-title.mb-0 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .card-body .weekNo h4 span {
+            font-size: 13px;
+        }
+        .card-body .weekNo h4 span b {
+            font-size: 17px;
+        }
+    }
+    @media only screen and (max-width: 1199px){
+        .card-body .weekNo h4 span b {
+            font-size: 14px;
+        }
+        .card-body .weekNo h4 span, .tdcolor.odd, .tdcolor.even, .pagination {
+            font-size: 12px;
+        }
+        .card-title.mb-0 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .fc-left {
+            font-size: 9px;
+            text-align: end;
+        }
+        label,.thcolor, #myTable3_info {
+            font-size: 13px;
+        }
+        .form-control {
+            height: calc(1.1em + .75rem + 2px) !important;
+            font-size: 12px;
+        }
+        .btn.btn-theme.button-1.text-white.ctm-border-radius.ApproveText {
+            font-size: 11px;
+        }
+        table.dataTable {
+            margin-top: 0px !important;
+            margin-bottom: 353px !important;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .card-title.mb-0 {
+            font-size: 17px;
+            position: relative;
+            bottom: 8px;
+        }
+        .card-header.weekNo {
+            position: relative;
+            top: 14px;
+        }
+        .fc-left {
+            position: relative;
+            bottom: 8vw;
+            height: 8px;
+        }
+        .pageinationAdj {
+            display: flow-root;
+        }
+    }
+    @media only screen and (max-width: 700px){
+        .fc-left {
+            position: relative;
+            bottom: 10.9vw;
+        }
+    }
+    @media only screen and (max-width: 675px){
+        .fc-left {
+            position: relative;
+            bottom: 11.3vw;
+        }    
+    }
+    @media only screen and (max-width: 647px){
+        .fc-left {
+            position: relative;
+            bottom: 12vw;
+        }    
+    }
+    @media only screen and (max-width: 647px){
+        .fc-left {
+            position: relative;
+            bottom: 13vw;
+        }    
+    }
+    @media only screen and (max-width: 573px){
+        .fc-left {
+            position: relative;
+            bottom: 14vw;
+        }    
+    }
+    @media only screen and (max-width: 530px){
+        .fc-left {
+            position: relative;
+            bottom: 15vw;
+        }    
+    }
+    @media only screen and (max-width: 495px){
+        .fc-left {
+            position: relative;
+            bottom: 16vw;
+        } 
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 10px;
+        }   
+    }
+
+    @media only screen and (max-width: 464px){
+        .fc-left {
+            position: relative;
+            bottom: 17vw;
+        }  
+        .pageinationAdj {
+            display: inline-block;
+        }  
+    }
+    @media only screen and (max-width: 440px){
+        .fc-left {
+            position: relative;
+            bottom: 18vw;
+        }    
+    }
+    @media only screen and (max-width: 410px){
+        .fc-left {
+            position: relative;
+            bottom: 20vw;
+        }    
+    }
+    @media only screen and (max-width: 385px){
+        .fc-left {
+            position: relative;
+            bottom: 22vw;
+        }    
+    }
+    @media only screen and (max-width: 349px){
+        .fc-left {
+            position: relative;
+            bottom: 24vw;
+        }    
+    }
+</style>
+{% endblock style %}
+{% block notify %}
+<div class="user-info align-right dropdown d-inline-block header-dropdown">
+    <a href="javascript:void(0)" data-toggle="dropdown" class=" menu-style dropdown-toggle">
+        <div class="user-avatar d-inline-block">
+            <i class="fa fa-comments notify"></i><span class="badge" id="badge">{{notify}}</span>
+        </div>
+    </a>
+    <div class="dropdown-menu notification-dropdown-menu shadow-lg border-0 m-0 dropdown-menu-right"
+        style="min-width: 23rem;">
+        <div class="cont">
+            {% for i in noti %}
+            <div class="sec new">
+                <div class="profCont">
+                    <img class="profile" src="../static/img/profiles/img-2.jpg">
+                </div>
+                <div class="txt messages messages{{forloop.counter}}" id="messages">{{i.message}}</div>
+            </div>
+            {%endfor%}
+
+            <div class="sec new" style="border-bottom: none;">
+                <div class="text-center sub"><a href="HR_notification">View All
+                        Notifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock notify %}
+{% block body %}
+<input type="hidden" id="pythn" name="pythn" value='{{pythn}}' />
+<div class="col-xl-9 col-lg-8  col-md-12 admintimesheet">
+
+    <div class="card-body align-center" style="padding: unset;">
+        <div class="tab-content">
+
+
+            <!-- Timesheet Section -->
+            <div class="" id="pills-timesheetReport" role="tabpanel" aria-labelledby="pills-home-tab">
+
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-pendingTimesheet" role="tabpanel"
+                        aria-labelledby="pills-home-tab">
+                        <div class="row">
+                            <div class="col-md-12 d-flex">
+                                <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                                    <div class="card-header">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-2">
+                                                <h5 class="card-title mb-0">Weekly Report</h5>
+                                            </div>
+                                            <div class="col-md-8" id="timsheet">
+                                                <div class="card-header weekNo">
+                                                    <h4 class="card-title mb-0 text-center weekStartEndDate">
+                                                        <span>Week Start Date : <b>{{request.session.start_date}}</b></span>
+                                                        <span>Week End Date : <b>{{request.session.end_date}}</b></span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2" style="text-align: center;">
+                                                <div class="fc-left">
+                                                    <div class="fc-button-group">
+                                                        <form method="post">
+                                                            {%csrf_token%}
+                                                            <button name='prev' value="prev"
+                                                                class="fc-prev-button fc-button fc-state-default fc-corner-left"
+                                                                title="previous">
+                                                                <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                                            </button>
+                                                            <button name='next' value="next"
+                                                                class="fc-next-button fc-button fc-state-default fc-corner-right"
+                                                                title="next">
+                                                                <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                       
+                                        <div class="row pageinationAdj">
+                                            <div class="col-md-6 data_drop3"></div>
+                                            <div class="col-md-6 data_search3"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="employee-office-table paginate-table3">
+                                                    <div class="table-responsive">
+                                                        <table class="table custom-table table1Pending" id="myTable3">
+                                                            <thead style="position: sticky; top: 0; z-index: 1;">
+                                                                <tr class="thcolor">
+                                                                    <th style="width: 11%;">Serial No.</th>
+                                                                    <th>Name</th>
+                                                                    <th>ID</th>
+                                                                    <th>Designation</th>
+                                                                    <th>Total Week Hours</th>
+                                                                    <th>Manager Status</th>
+                                                                    <th>HR Status</th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                {% for i in data %}
+                                                                <tr class="tdcolor">
+                                                                    <td>{{forloop.counter}}</td>
+                                                                    <td>{{i.F_NAME}}</td>
+                                                                    <td>{{i.EMP_ID}}</td>
+                                                                    <td>{{i.DESIGNATION}}</td>
+                                                                    <td>{{i.week_total}}</td>
+                                                                    <td>
+                                                                        <button {% if i.status == '1' %} class="btn btn-theme button-1 text-white ctm-border-radius ApproveText" > Approved {% elif i.status == '2' %} class=" btn btn-danger text-white ctm-border-radius DenyText">Rejected {% elif i.status == '4' %} class=" btn btn-danger text-white ctm-border-radius DenyText"  >Pending{% endif %} 
+                                                                        </button>
+                                                                    </td>
+                                                                    <td>{{i.statushr}}
+                                                                        <button  {% if i.status_hr == '1' %}class="btn btn-theme button-1 text-white ctm-border-radius ApproveText" > Approved {% elif i.status_hr == '2' %}class=" btn btn-danger text-white ctm-border-radius DenyText"   >Rejected {% elif i.status_hr == '0' %} class=" btn btn-danger text-white ctm-border-radius DenyText"  >Pending{% endif %}
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <div class="row">
+                            <div class="col-md-12 d-flex">
+                                <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                                    <div class="card-header">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <h4 class="card-title mb-0">Weekly Report</h4>
+                                            </div>
+                                            <div class="col-md-6" style="text-align: left;">
+                                                <div class="fc-left">
+                                                    <div class="fc-button-group">
+                                                        <form method="post">
+                                                            {%csrf_token%}
+                                                            <button type="submit" name='prev' value="prev"
+                                                                class="fc-prev-button fc-button fc-state-default fc-corner-left">
+                                                                <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                                            </button>
+                                                            <button type="submit" name='next' value="next"
+                                                                class="fc-next-button fc-button fc-state-default fc-corner-right">
+                                                                <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="card-header weekNo" style="border-bottom: unset; padding-top: 2px;">
+                                            <h4 class="card-title mb-0 text-center weekStartEndDate">
+                                                <span>Week Start Date : <b>{{start_date}}</b></span>
+                                                <span>Week End Date : <b>{{end_date}}</b></span>
+                                            </h4>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 data_drop4"></div>
+                                            <div class="col-md-6 data_search4"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="employee-office-table paginate-table4">
+                                                    <div class="table-responsive">
+                                                        <table class="table custom-table" id="myTable4">
+                                                            <thead style="position: sticky; top: 0; z-index: 1;">
+                                                                <tr>
+                                                                    <th style="width: 11%;">Serial No.</th>
+                                                                    <th>Name</th>
+                                                                    <th>ID</th>
+                                                                    <th>Designation</th>
+                                                                    <th style="width: 100px;">Total Week Hours</th>
+                                                                    <th>Report</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>{{i.name}}</td>
+                                                                    <td>{{i.id}}</td>
+                                                                    <td>{{i.designation}}</td>
+                                                                    <td>{{i.total}}</td>
+                                                                    <td><button id="pending1"
+                                                                            value="{{i.id}}|{{start_date}}|{{end_date}}"
+                                                                            class="btn btn-theme ctm-border-radius text-white btn-sm PendingtoAorD"
+                                                                            name="approve">Approved</button></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Change Password</h1>
+                <button type="button" style="font-size: 14px;" class="btn-close" id="closeModal"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="status" value="{{passwordstatus}}">
+<script>
+    $(document).ready(function () {
+        var input = document.getElementById('status').value;
+        // alert(input);
+        if (input == '0') {
+            $("#exampleModal").show();
+        } else if (input != '0') {
+            $("#exampleModal").hide();
+        }
+        $("#closeModal, #cancelModal").click(function () {
+            $("#exampleModal").hide();
+        });
+    });
+</script>
+<script>
+    $("#DataSave").click(function () {
+        var pass = document.getElementById('new_pwd').value;
+        var conpass = document.getElementById('confirm_pwd').value;
+        if (pass != conpass) {
+            $('#matchpass').show();
+            return false;
+        }
+    });
+    $("#confirm_pwd").keyup(function () {
+        var pass = document.getElementById('new_pwd').value;
+        var conpass = document.getElementById('confirm_pwd').value;
+        if (pass != conpass) {
+            $('#matchpass').show();
+            return false;
+        } else {
+            $('#matchpass').hide();
+        }
+    });
+</script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['one', 'two', 'three', 'four', 'five'],
+            datasets: [{
+                label: 'No of Employees',
+                data: [6, 9, 8, 3, 5],
+                backgroundColor: [
+                    'rgba(255, 103, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255,1)',
+                    'rgba(154, 200, 64, 1)',
+                    'rgba(154, 171, 154, 1)',
+                    'rgba(255, 156, 132, 1)',
+                    'rgba(110, 23, 65, 1)',
+                    'rgba(189, 568, 89, 1)',
+                    'rgba(175, 19, 0, 1)',
+                    'rgba(155, 153, 255,1)',
+                    'rgba(156, 206, 64, 1)',
+                    'rgba(153, 204, 255, 1)',
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+
+                    labels: {
+                        // This more specific font property overrides the global property
+                        font: {
+                            size: 14
+                        },
+                        boxWidth: 9,
+                        boxHeight: 9,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% block paginate %}
+<script src="../static/js/jquery.dataTables.min.js"></script>
+<script src="../static/js/dataTables.bootstrap.min.js"></script>
+{% endblock paginate %}
+<script>
+    $(document).ready(function () {
+        
+        $("#myTable3").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable3_paginate, #myTable3_info').appendTo('.paginate-table3');
+                $('#myTable3_length').appendTo('.data_drop3');
+                $('#myTable3_filter').appendTo('.data_search3');
+            },
+        });
+        $("#myTable4").DataTable({
+            "lengthMenu": [50, 100, 150, 200],
+            "pageLength": 50,
+            lengthChange: true,
+            info: true,
+            initComplete: (settings, json) => {
+                $('#myTable4_paginate, #myTable4_info').appendTo('.paginate-table4');
+                $('#myTable4_length').appendTo('.data_drop4');
+                $('#myTable4_filter').appendTo('.data_search4');
+            },
+        });
+        
+    });
+</script>
+<script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+<script>
+    var opts = {
+        angle: 0, // The span of the gauge arc// kiểu rẻ quạt: -0.5 <-> 0.5
+        lineWidth: 0.33, // The line thickness: độ dài kim
+        radiusScale: 1, // Relative radius
+        pointer: {
+            length: 0.68, // // Relative to gauge radius
+            strokeWidth: 0.026, // The thickness: độ dày kim
+            color: '#000' // Fill color: màu của kim
+        },
+        limitMax: false,     // If false, max value increases automatically if value > maxValue
+        limitMin: false,     // If true, the min value of the gauge will be fixed
+        colorStart: '#6FADCF',   // Colors
+        colorStop: '#8FC0DA',    // just experiment with them
+        strokeColor: '#E0E0E0',  // to see which ones work best for you
+        generateGradient: true,
+        highDpiSupport: false,     // High resolution support
+
+        staticZones: [
+            { strokeStyle: "rgb(227, 66, 52, 0.7)", min: 0, max: 20 }, // Red //height: 2.4 ->tạo sự nổi bậc
+            { strokeStyle: "rgb(250, 160, 160,0.5)", min: 20, max: 40 }, // Red light
+            { strokeStyle: "rgb(218, 112, 214, 0.5)", min: 40, max: 60 }, // Yellow
+            { strokeStyle: "rgb(135, 206, 235)", min: 60, max: 80 }, // Green light
+            { strokeStyle: "rgb(147, 197, 114,0.7)", min: 80, max: 100 }  // Green
+        ],
+        staticLabels: {
+            font: "12px sans-serif",  // Specifies font
+            labels: [0, 20, 40, 60, 80, 100],  // Print labels at these values
+            color: "#000000",  // Optional: Label text color
+            fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+        }
+    };
+
+    // draw chart 1
+    var target = document.getElementById('chat_1'); // your canvas element
+    var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+    gauge.maxValue = 100; // set max gauge value
+    gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+    gauge.animationSpeed = 32; // set animation speed (32 is default value)
+    gauge.set(65); // set actual value
+</script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['Task', 'Emp 1', 'Emp 2', 'Emp 3'],
+            ['January', 30, 67, 35],
+            ['February', 10, 26, 29],
+            ['March', 45, 35, 56],
+            ['April', 67, 48, 49],
+            ['May', 12, 58, 67],
+            ['June', 78, 73, 63],
+            ['July', 88, 78, 70],
+            ['August', 55, 87, 77],
+            ['September', 60, 93, 85],
+            ['Octomber', 67, 59, 90],
+            ['November', 83, 45, 94],
+            ['December', 90, 56, 97],
+        ]);
+
+        var options = {
+            legend: { position: 'top', maxLines: 3 },
+            bar: { groupWidth: '90%' },
+            height: 300,
+            chartArea: { left: 50, bottom: 60, top: 40, right: 25 },
+            vAxis: {
+                format: 'decimal'
+            },
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('lineChart'));
+
+        chart.draw(data, options);
+    }
+</script>
+<script>
+    // Get all star elements and add click event listeners
+    const stars = document.querySelectorAll('.star_icon');
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const rating = star.getAttribute('data-rating');
+
+            // Toggle star class (empty/filled) for the clicked star
+            if (star.classList.contains('fa-star-o')) {
+                star.classList.remove('fa-star-o');
+                star.classList.add('fa-star');
+            } else {
+                star.classList.remove('fa-star');
+                star.classList.add('fa-star-o');
+            }
+        });
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".admintimesheet").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if($(window).width() > 991 && $(window).width() < 1200){
+                $(".admintimesheet").css({ "max-width": "66.6%", "flex": "0 0 66.6%" });
+            }
+            else{
+                $(".admintimesheet").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+{% endblock body %}

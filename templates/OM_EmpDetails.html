@@ -1,0 +1,1066 @@
+{% extends 'OM_header.html' %}
+{% block addr%}Employee Details{% endblock addr%}
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: MANAGER EMPLOYEE DETAILS</title>
+<style>
+    .modal-content.datauses {
+        width: 60vw;
+        position: relative;
+        left: 100px;
+        height: 75vh;
+        overflow: hidden;
+    }
+    .card.dash-widget.ctm-border-radius.shadow-sm.grow2 {
+        background-color: #0caf9c;
+        border-style: none;
+        color: white;
+    }
+    .modal-header.cardheader {
+        background-color: #09796b;
+        height: 4vh;
+        color: white;
+    }
+    .datefamily {
+        text-align: center !important;
+        font-family: inherit;
+        font-size: 12px !important;
+        margin-bottom: 0px;
+        margin-left: 0px;
+    }
+
+    .datefamily:hover {
+        cursor: context-menu;
+    }
+    .fontfamily {
+        font-size: 15px !important;
+        text-align: left;
+        font-family: inherit;
+        line-height: 20px;
+        font-weight: 400 !important;
+    }
+    .projectname {
+        position: relative;
+        bottom: 10px;
+    }
+    .checkmovebtn {
+        position: relative;
+        right: 2vw;
+    }
+
+    .btn-scale {
+        width: 35px;
+        height: 35px;
+        padding: unset;
+        text-align: center;
+        font-weight: bold;
+        color: black;
+        font-family: 'Lato', sans-serif;
+    }
+
+    .btn-scale-desc-10 {
+        background-color: #33FF00;
+    }
+
+    .btn-scale-desc-10:hover {
+        background-color: #2CDE00;
+    }
+
+    .btn-scale-desc-9 {
+        background-color: #66FF00;
+    }
+
+    .btn-scale-desc-9:hover {
+        background-color: #59DE00;
+    }
+
+    .btn-scale-desc-8 {
+        background-color: #99FF00;
+    }
+
+    .btn-scale-desc-8:hover {
+        background-color: #85DE00;
+    }
+
+    .btn-scale-desc-7 {
+        background-color: #CCFF00;
+    }
+
+    .btn-scale-desc-7:hover {
+        background-color: #B1DE00;
+    }
+
+    .btn-scale-desc-6 {
+        background-color: #FFFF00;
+    }
+
+    .btn-scale-desc-6:hover {
+        background-color: #DEDE00;
+    }
+
+    .btn-scale-desc-5 {
+        background-color: #FFCC00;
+    }
+
+    .btn-scale-desc-5:hover {
+        background-color: #DEB100;
+    }
+
+    .btn-scale-desc-4 {
+        background-color: #FF9900;
+    }
+
+    .btn-scale-desc-4:hover {
+        background-color: #DE8500;
+    }
+
+    .btn-scale-desc-3 {
+        background-color: #FF6600;
+    }
+
+    .btn-scale-desc-3:hover {
+        background-color: #DE5900;
+    }
+
+    .btn-scale-desc-2 {
+        background-color: #FF3300;
+    }
+
+    .btn-scale-asc-9:hover,
+    .btn-scale-desc-2:hover {
+        background-color: #DE2C00;
+    }
+
+    .btn-scale-desc-1 {
+        background-color: #FF0000;
+    }
+
+    .btn-scale-desc-1:hover {
+        background-color: #DE0000;
+    }
+
+    .up-arrow-rating {
+        display: none;
+        text-align: center;
+    }
+</style>
+<style>
+    .fc-state-default {
+        background-color: #7393B3;
+        background-image: linear-gradient(to bottom, #A7C7E7, #7393B3);
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .comments_div {
+        background: #fff;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        padding: 5px 10px;
+    }
+
+    .absences {
+        background: rgba(215, 0, 64, 0.1) !important;
+    }
+
+    .comment_input_view {
+        background-color: transparent !important;
+        height: 34px;
+    }
+
+    .comment-label-modal {
+        display: block;
+        padding: 2px 6px;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .total_week_dt {
+        background: skyblue;
+        border-radius: 20px;
+        padding: 4px 8px;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .view_action {
+        /* background: #AFE1AF; */
+        text-decoration: none !important;
+        padding: 4px 7px;
+        color: #444;
+        font-size: 12px;
+    }
+
+    tbody tr td:not(:first-child) {
+        /* background: rgb(115, 147, 179, 0.1); */
+        border-bottom: 1px solid #fff;
+        background: rgba(245, 245, 245, 0.5);
+        /* background: rgba(195, 177, 225, 0.1); */
+        padding: 4px 6px !important;
+    }
+
+    .week_day {
+        font-weight: 600;
+        /* border-left: 6px solid #0096FF; */
+    }
+
+    .employee-office-table {
+        padding: 0 10px;
+    }
+
+    td:first-child,
+    th:first-child {
+        padding: unset !important;
+    }
+
+    #myTable1 td .lefi-line {
+        border-right: 6px solid #0096FF;
+        height: 38px;
+    }
+
+    #myTable1 th .lefi-line {
+        border-right: 6px solid #0061a7;
+        height: 43px;
+
+    }
+
+    table tr:last-child td {
+        background-color: transparent !important;
+    }
+
+    #myTable2 td .lefi-line {
+        border-right: 6px solid #DA70D6;
+        height: 30px;
+    }
+
+    table td,
+    table td {
+        font-size: 12px;
+        text-transform: capitalize;
+    }
+
+    table th {
+        font-size: 13px;
+    }
+
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .tooltip {
+        visibility: hidden;
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 82%;
+        left: 20%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+
+    .tooltip-container:hover .tooltip1 {
+        visibility: visible;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .totalrow {
+        background-color: rgb(120, 182, 226) !important;
+    }
+
+    #myTable1 tr {
+        height: 12px !important;
+    }
+
+    .rectangle-img {
+        height: 78px;
+        width: 84px;
+        border-radius: 12px;
+        position: relative;
+        bottom: 10px;
+    }
+
+
+    .emp-know {
+        position: relative;
+        bottom: 40px;
+        left: 30px;
+    }
+
+    #topset {
+
+        height: 94px;
+    }
+    .taskbtn {
+        background-color: dodgerblue;
+        color: white !important;
+        display: block ruby;
+        padding: 2px;
+        position: absolute;
+        border-radius: 7px;
+        font-size: 13px;
+        right: 20px;
+        width: 6vw;
+        text-align: center;
+    }
+
+    .taskbtn:hover {
+        background-color: rgb(24, 100, 175);
+        color: white;
+    }
+    @media only screen and (max-width: 1600px){
+        .taskbtn {
+            width: 5.5vw;
+        }
+        .midcomment {
+            position: relative;
+            left: 3vw;
+        }
+    }
+    @media only screen and (max-width: 1560px){
+        .taskbtn {
+            width: 5vw;
+        }
+    }
+    @media only screen and (max-width: 1526px){
+        .taskbtn {
+            position: absolute;
+            font-size: 12px;
+            right: 7px;
+            top: 1px;
+        }
+    }
+    @media only screen and (max-width: 1500px){
+        /* .taskbtn {
+            position: absolute;
+            font-size: 12px;
+            right: 7px;
+            top: 1px;
+        } */
+        .taskbtn {
+            width: 5.5vw;
+        }
+        .mb-0.font-weight-bold {
+            font-size: 11px !important;
+        }
+    }
+    @media only screen and (max-width: 1320px){
+        .commentset {
+            position: relative;
+            right: 80px;
+        }
+        .taskbtn {
+            width: 7vw;
+        }
+        .midcomment {
+            position: relative;
+            left: -2vw;
+        }
+    }
+    @media only screen and (max-width: 1199px) {
+        .employee-office-table .table input {
+            width: 100%;
+            min-width: 50px;
+            border: 1px solid #666;
+        }
+        .mb-0.font-weight-bold {
+            font-size: 9px !important;
+        }
+        .rectangle-img {
+            height: 70px;
+            width: 72px;
+        }
+        .emp-know {
+            position: relative;
+            bottom: 40px;
+        }
+        h6 {
+            font-size: 14px;
+        }
+        .taskbtn {
+            position: absolute;
+            font-size: 11px;
+            top: 3px;
+        }
+        table th {
+            font-size: 12px;
+        }
+        table td {
+            font-size: 11px;
+        }
+        .midcomment {
+            position: relative;
+            left: -4vw;
+        }
+    }
+    @media only screen and (max-width: 1080px){
+        .commentset {
+            position: relative;
+            right: 54px;
+        }
+        .emp-know {
+            position: relative;
+            left: 10px;
+        }
+    }
+    @media only screen and (max-width: 991px){
+        #showsidebar,
+        #fullscreen {
+            display: none;
+        }
+        .card.ctm-border-radius.shadow-sm {
+            position: relative;
+            top: 30px;
+        }
+        .card {
+            border: 1px solid #ededed;
+            margin-bottom: 13px;
+            border-radius: 10px;
+        }
+        .lowerfooter {
+            position: relative;
+            top: 25px;
+            margin-bottom: 35px !important;
+        }
+        .taskbtn {
+            width: 10vw;
+        }
+        .midcomment {
+            position: relative;
+            left: 1vw;
+        }
+    }
+    @media only screen and (max-width: 767px){
+        .commentset {
+            position: relative;
+            left: 33%;
+            bottom: 90%;
+            font-size: 10px !important;
+        }
+        .lastcomment {
+            position: relative;
+            left: 70%;
+            bottom: 160%;
+            font-size: 10px !important;
+        }
+        .taskbtn {
+            position: absolute;
+            right: 30px;
+            top: -15px;
+            width: 11vw;
+            text-align: center;
+            height: 30px;
+            font-size: 14px;
+        }
+        .fc-left {
+            position: relative;
+            bottom: 30px;
+        }
+        .card-header {
+            height: 60px;
+        }
+        /* .innerdate {
+            width: 33%;
+        } */
+        .lowest.innerdate {
+            display: flex;
+        }
+
+        .lowest .col-md-4 {
+            flex: 1;
+            margin-right: 10px; 
+        }
+
+        .lowest .col-md-4:last-child {
+            margin-right: 0;
+        }
+        .midcomment {
+            position: relative;
+            left: 0vw !important;
+            top: 2vw;
+        }
+    }
+    @media only screen and (max-width: 700px){
+        /* .commentset {
+            position: relative;
+            left: 21vw;
+            bottom: 4.3vw;
+        } */
+        .lastcomment {
+            position: relative;
+            left: 66%;
+            /* bottom: 9vw; */
+        }
+        .taskbtn {
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 643px){
+        .firstcomment {
+            position: relative;
+            top: 5px;
+        }
+        h6 {
+            font-size: 11px;
+        }
+        .fontfamily {
+            font-size: 11px !important;
+            text-align: justify;
+        }
+        .datefamily {
+            text-align: center !important;
+            font-family: inherit;
+            font-size: 10px !important;
+        }
+    }
+    @media only screen and (max-width: 616px){
+        .lastcomment {
+            position: relative;
+            left: 59%;
+        }
+        /* .commentset {
+            position: relative;
+            left: 49vw;
+            bottom: 5.2vw;
+        } */
+        .taskbtn {
+            position: absolute;
+            height: 30px;
+            width: 16vw;
+            top: -30%;
+        }
+    }
+    @media only screen and (max-width: 575px){
+        .fc-left {
+            position: relative;
+            bottom: 22px;
+            font-size: 12px;
+        }
+    }
+    @media only screen and (max-width: 519px){
+        /* .commentset {
+            position: relative;
+            left: 41vw;
+            bottom: 6.4vw;
+        } */
+        .lastcomment {
+            position: relative;
+            left: 53% !important;
+            /* bottom: 9vw; */
+        }
+    }
+    @media only screen and (max-width: 453px){
+        .lastcomment {
+            position: relative;
+            left: 43% !important;
+            /* bottom: 9vw; */
+        }
+        .taskbtn {
+            width: 19vw;
+        }
+    }
+    @media only screen and (max-width: 430px){
+        /* .commentset {
+            position: relative;
+            left: 31vw;
+            bottom: 7.4vw;
+        } */
+        .emp-know {
+            position: relative;
+            left: 30px;
+        }
+        h6 {
+            font-size: 13px;
+        }
+    }
+    @media only screen and (max-width: 399px){
+        .lastcomment {
+            position: relative;
+            left: 33% !important;
+            /* bottom: 9vw; */
+        }
+    }
+    @media only screen and (max-width: 373px){
+        .taskbtn {
+            position: absolute;
+            right: 16px;
+            width: 16vw;
+            height: 25px;
+            font-size: 10px;
+        }
+        .mb-0.font-weight-bold {
+            font-size: 7px !important;
+        }
+        .fc-left {
+            position: relative;
+            bottom: 20px;
+            font-size: 9px;
+        }
+        .card-title.mb-0 {
+            font-size: 14px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+
+<div class="col-xl-9 col-lg-8  col-md-12 admindetail">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow" id="topset">
+                <div class="user-info card-body">
+                    <!-- <div style="width: 30%; float: left; height: 200px; margin: 10px"></div> -->
+                    <div style="float: left; margin: 0px">
+                        <div class="user-avatar  text-center mb-4">
+                            <img src="../static/img/Cloud_bg.jpg" alt="User Avatar" class="img-fluid rectangle-img"
+                                width="100">
+                        </div>
+                    </div>
+                    <div style="float: left; margin: 10px">
+                        <div class="user-details emp-know">
+                            <h6 class="">Name : <b>{{empdetails.f_name}}</b></h6>
+                            <h6 class="">ID : <b>{{empdetails.login_id}}</b></h6>
+                            <h6 class="">Designation : <b>{{empdetails.designation}}</b></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 d-flex">
+            <div class="card ctm-border-radius shadow-sm flex-fill grow">
+                <div class="card-header" style="padding: 1rem 1.25rem;">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h4 class="card-title mb-0">Weekly Report</h4>
+                        </div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <div class="fc-left">
+                                <div class="fc-button-group">
+                                    <form method="post">
+                                        {%csrf_token%}
+                                        <button name='prev' value="prev"
+                                            class="fc-prev-button fc-button fc-state-default fc-corner-left">
+                                            <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                        </button>
+                                        <button name='month' value="{{month}}-{{year}}"
+                                            style="width: 91px; margin: unset !important;"
+                                            class="fc-button fc-state-default fc-corner-right">
+                                            <span class="fc-icon">{{month}}-{{year}}</span>
+                                        </button>
+
+                                        <button name='next' value="next"
+                                            class="fc-next-button fc-button fc-state-default fc-corner-right">
+                                            <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {%csrf_token%}
+                        <div class="employee-office-table">
+                            {% for i,k,tasks in weekly_data %}
+                            <div class="table-responsive">
+                                <table class="table custom-table" id="myTable1">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <i class="fa fa-chevron-up top-arrow-1"
+                                                    style="background-color: #0096FF;color: #fff;padding: 3px;border-radius: 50%;font-size: 12px;cursor:pointer"
+                                                    data-toggle="collapse" data-target="#multiCollapseExample1"></i>
+                                            </th>
+                                            <!-- <th scope="col" style="color: #0096FF; font-size: 16px; text-align: left;">
+                                                WEEK 1</th> -->
+                                            <th scope="col">DATE</th>
+                                            <th scope="col">PROJECT</th>
+                                            <th scope="col">MON</th>
+                                            <th scope="col">TUE</th>
+                                            <th scope="col">WED</th>
+                                            <th scope="col">THU</th>
+                                            <th scope="col">FRI</th>
+                                            <th scope="col">SAT</th>
+                                            <th scope="col">SUN</th>
+
+                                            <!-- <th scope="col">ABSENCES</th> -->
+                                            <th scope="col">TOTAL HOURS</th>
+                                            <!-- <th scope="col">ACTION</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody class="multi-collapse collapse show" id="multiCollapseExample1">
+                                        {% for j in i %}
+                                        <tr>
+                                            <td>
+                                                <div class="lefi-line"></div>
+                                            </td>
+                                            <td class="week_day">{{j.start}} to {{j.end}}</td>
+                                            <td> {{j.assigned}}  {{j.project_name}} </td>
+                                            <td>{{j.mon}}</td>
+                                            <td>{{j.tue}}</td>
+                                            <td>{{j.wed}}</td>
+                                            <td>{{j.thu}}</td>
+                                            <td>{{j.fri}}</td>
+                                            <td>{{j.sat}}</td>
+                                            <td>{{j.sun}}</td>
+                                            <td>{{j.total}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        <tr>
+                                        </tr>
+                                        <tr class="totalrow">
+                                            <th style="background-color: white;">
+                                                <div class="lefi-line"></div>
+                                            </th>
+                                            <th>Total</th>
+                                            <td>-</td>
+                                            <td class="totalCell{{forloop.counter}}" style="font-weight: 750;"></td>
+                                            <td class="totalCell1{{forloop.counter}}" style="font-weight: 750;"></td>
+                                            <td class="totalCell2{{forloop.counter}}" style="font-weight: 750;"></td>
+                                            <td class="totalCell3{{forloop.counter}}" style="font-weight: 750;"></td>
+                                            <td class="totalCell4{{forloop.counter}}" style="font-weight: 750;"></td>
+                                            <td class="totalCell5{{forloop.counter}}" style="font-weight: 750;"></td>
+                                            <td class="totalCell6{{forloop.counter}}" style="font-weight: 750;"></td>
+                                            <td class="totalCell7{{forloop.counter}}" style="font-weight: 750;"></td>
+                                        </tr>
+                                        <script>
+                                            var totalmonday = 0, totaltuesday = 0, totalwednesday = 0, totalthursday = 0,
+                                                totalfriday = 0, totalsaturday = 0, totalsunday = 0, totalt = 0;
+                                            {% for j in i %}
+                                            var monday = {{ j.mon }};
+                                            monday = parseInt(monday);
+                                            totalmonday += monday;
+
+                                            var tuesday = {{ j.tue }};
+                                            tuesday = parseInt(tuesday);
+                                            totaltuesday += tuesday;
+
+                                            var wednesday = {{ j.wed }};
+                                            wednesday = parseInt(wednesday);
+                                            totalwednesday += wednesday;
+
+                                            var thursday = {{ j.thu }};
+                                            thursday = parseInt(thursday);
+                                            totalthursday += thursday;
+
+                                            var friday = {{ j.fri }};
+                                            friday = parseInt(friday);
+                                            totalfriday += friday;
+
+                                            var saturday = {{ j.sat }};
+                                            saturday = parseInt(saturday);
+                                            totalsaturday += saturday;
+
+                                            var sunday = {{ j.sun }};
+                                            sunday = parseInt(sunday);
+                                            totalsunday += sunday;
+
+                                            var tot = {{ j.total }};
+                                            tot = parseInt(tot);
+                                            totalt += tot;
+
+                                            {% endfor %}
+
+                                            console.log(totalmonday);
+
+                                            $('.totalCell{{forloop.counter}}').text(totalmonday);
+                                            $('.totalCell1{{forloop.counter}}').text(totaltuesday);
+                                            $('.totalCell2{{forloop.counter}}').text(totalwednesday);
+                                            $('.totalCell3{{forloop.counter}}').text(totalthursday);
+                                            $('.totalCell4{{forloop.counter}}').text(totalfriday);
+                                            $('.totalCell5{{forloop.counter}}').text(totalsaturday);
+                                            $('.totalCell6{{forloop.counter}}').text(totalsunday);
+                                            $('.totalCell7{{forloop.counter}}').text(totalt);
+
+                                        </script>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <div class="row">
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label for="" class="mb-0 font-weight-bold firstcomment" style="font-size: 13px;">Comment by
+                                            Emp: &nbsp;</label>
+                                        <div class="emp_comment comments_div firstcomment" style="font-size: 12px;">
+                                            {{k.employee_comment}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label for="" class="mb-0 font-weight-bold commentset midcomment" style="font-size: 13px;">Comment by
+                                            Manager: &nbsp;</label>
+                                        <div class="manager_comment comments_div commentset midcomment" style="font-size: 12px;">
+                                            {{k.manager_comment}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label for="" class="mb-0 font-weight-bold commentset lastcomment" style="font-size: 13px;">Weekly
+                                            Performance Rating
+                                            : &nbsp;</label>
+                                        <div class="manager_comment comments_div commentset lastcomment" style="font-size: 12px;">
+                                            {{k.rating}}/10
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a class="taskbtn" data-toggle="modal" data-target="#add_Comment_event_first">View Tasks</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="add_Comment_event_first" class="modal fade" role="dialog">
+                                <div class="modal-dialog modal-dialog-centered" role="document"
+                                    style="max-width: 850px;">
+                                    <div class="modal-content datauses">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">View Tasks</h4>
+                                        </div>
+                                        <div class="modal-body" style="overflow-y: auto;">
+                                            <div class="card-body cardinfo" draggable="true" id="{{i.id}}">
+                                                {% for task in tasks %}
+                                                <div class="card-right2">
+                                                    <div class="card dash-widget ctm-border-radius shadow-sm grow2">
+                                                        <div class="modal-header cardheader">
+                                                           <h6 class="projectname">{{task.project_id}}</h6>
+                                                        </div>
+                                                        <div class="card-body innercardbody" style="padding: 10px; ">
+                                                            <p class="fontfamily">{{task.description}}</p>
+                                                        </div>
+
+                                                        <div class="row lowest innerdate">
+                                                            <div class="col-md-4 ">
+                                                                <p class="datefamily" title="Requirement Date">
+                                                                    {{task.assigning_date}}</p>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <p class="datefamily" title="Target Date">
+                                                                    {{task.target_date}}</p>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <p class="datefamily" title="Completed Date">
+                                                                    {{task.complete_date}}</p>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer text-center">
+                                            <div class="row">
+                                                <button name="cancelEmp"
+                                                    class="btn btn-danger text-white ctm-border-radius checkmovebtn"
+                                                    data-dismiss="modal" aria-label="Close">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="view_timesheet" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 800px;">
+        <div class="modal-content" style="min-height: unset;">
+            <div class="modal-header" style="background-color: #09796b; padding: 6px 14px;">
+                <h5 class="modal-title text-white">Employee Timesheet</h5>
+                <button type="button" class="close text-white" id="btn_close_modal_view" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 1.45rem 1rem;">
+                <div class="row align-items-center">
+                    <div class="col-md-12 d-flex align-items-baseline mb-2">
+                        <label for="" class="font-weight-bold mb-0">Employee Rating: &nbsp;&nbsp;</label>
+                        <div class="chart-scale">
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-1" data-target="1">1</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-1"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-2" data-target="2">2</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-2"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-3" data-target="3">3</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-3"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-4" data-target="4">4</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-4"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-5" data-target="5">5</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-5"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-6" data-target="6">6</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-6"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-7" data-target="7">7</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-7"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-8" data-target="8">8</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-8"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-9" data-target="9">9</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-9"></i>
+                            </div>
+                            <div class="d-inline-flex flex-column">
+                                <button class="btn btn-scale btn-scale-desc-10" data-target="10">10</button>
+                                <i class="fa fa-arrow-up up-arrow-rating up-arrow-10"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table custom-table mb-3">
+                                <tr>
+                                    <th scope="col">PROJECT NAME</th>
+                                    <th scope="col">MON333</th>
+                                    <th scope="col">TUE</th>
+                                    <th scope="col">WED</th>
+                                    <th scope="col">THU</th>
+                                    <th scope="col">FRI</th>
+                                    <th scope="col">SAT</th>
+                                    <th scope="col">SUN</th>
+                                    <th scope="col">TOTAL</th>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="padding: 10px 8px !important;">CCPOEM</th>
+                                    <td>
+                                        <input id="pr1mon" autocomplete="off" value="8" class="" type="text"
+                                            readonly></input>
+                                    </td>
+                                    <td>
+                                        <input id="pr1tue" autocomplete="off" value="8" class="" type="text"
+                                            readonly></input>
+                                    </td>
+                                    <td>
+                                        <input id="pr1wed" autocomplete="off" value="7" class="" type="text"
+                                            readonly></input>
+                                    </td>
+                                    <td>
+                                        <input id="pr1thu" autocomplete="off" value="7" class="" type="text"
+                                            readonly></input>
+                                    </td>
+                                    <td>
+                                        <input id="pr1fri" autocomplete="off" value="8" class="" type="text"
+                                            readonly></input>
+                                    </td>
+                                    <td>
+                                        <input id="pr1sat" autocomplete="off" value="8" class="" type="text"
+                                            readonly></input>
+                                    </td>
+                                    <td>
+                                        <input id="pr1sun" autocomplete="off" value="7" class="" type="text"
+                                            readonly></input>
+                                    </td>
+                                    <td>
+                                        <input id="pr1total" autocomplete="off" value="54" class="" type="text"
+                                            readonly></input>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="" class="comment-label-modal" style="background: orange;">Employees Comment</label>
+                        <input type="text" class="form-control2" style="border-color: #ccc; padding-left: 10px;"
+                            value="In progress project">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="" class="comment-label-modal" style="background: grey;">Managers Comment</label>
+                        <input type="text" class="form-control2" style="border-color: #ccc; padding-left: 10px;"
+                            value="In progress project">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.top-arrow-2').click(function () {
+            $(this).toggleClass('fa-chevron-up fa-chevron-down');
+        });
+        $('.top-arrow-1').click(function () {
+            $(this).toggleClass('fa-chevron-up fa-chevron-down');
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#btn_close_modal_view").click(function () {
+            $("#view_timesheet").hide();
+            $("#view_timesheet").css("opacity", "0");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".up-arrow-8").show();
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".admindetail").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+            // $(".taskbtn").css({ "position": "relative", "left": "1330px" });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if ($(window).width() > 991 && $(window).width() < 1200) {
+                $(".admindetail").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else{
+                $(".admindetail").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+            // $(".taskbtn").css({ "position": "relative", "left": "990px" });
+        });
+    });
+</script>
+
+
+{% endblock body %}

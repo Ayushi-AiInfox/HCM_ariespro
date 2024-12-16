@@ -1,0 +1,233 @@
+{% extends 'HR_header.html' %}
+{% block addr %}Projects{% endblock addr %}
+{% block user %}Welcome, {{name}}{% endblock user %}
+{% block style %}
+<title>WFM :: HR PROJECTS</title>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<style>
+    .top-nav-search .btn{
+        top: 12%
+    }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #09796b !important;
+        color: white;
+    }
+
+    span.select2.select2-container.select2-container--default {
+        line-height: 1.5;
+        border: 1px solid #767676;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        width: 100% !important;
+        background-color: #fff;
+        display: -webkit-box;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: unset;
+        width: 100%;
+    }
+    .flexboxSpan {
+        display: block;
+        padding: 0 5px;
+        text-align: left;
+    }
+
+    select#managerName {
+        border-radius: 2px;
+        height: 32px;
+        font-size: 15px;
+        border: 1px solid #666;
+    }
+
+    .table-responsive.hrProjects {
+        height: 440px;
+    }
+
+    a.hrProjectsColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.hrProjectsColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .employee-office-table .table input {
+        width: 100%;
+    }
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8  col-md-12">
+    <div class="card shadow-sm ctm-border-radius grow">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h4 class="card-title mb-0 d-inline-block">Projects</h4>
+            <a href="javascript:void(0)" class="btn btn-theme button-1 ctm-border-radius text-white float-right"
+                data-toggle="modal" data-target="#add_event"><span>
+                    <i class="fa fa-plus"></i></span>
+                Add Project</a>
+        </div>
+        <div class="card-body align-center">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                    aria-labelledby="v-pills-home-tab">
+                    <div class="employee-office-table">
+                        <div class="table-responsive hrProjects">
+                            <table class="table custom-table table-hover">
+                                <thead style="position: sticky;
+                                top: 0;
+                                z-index: 1;">
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>Client Name</th>
+                                        <th>Managed By</th>
+                                        <th>Begin On</th>
+                                        <th>End At</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pro in project %}
+                                    <tr>
+                                        <td>{{pro.project_name}}</td>
+                                        <td>{{pro.client_name}}</td>
+                                        <td>{{pro.manager}}</td>
+                                        <td>{{pro.start_date}}</td>
+                                        <td>{{pro.end_date}}</td>
+                                        <td>{{pro.status}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post">
+        {%csrf_token%}
+        <div id="add_event" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 1000px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Project</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="employee-office-table" style="box-shadow: none;">
+                            <div class="table-responsive">
+                                <table class="table custom-table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Project Name</th>
+                                            <th>Client Name</th>
+                                            <th>Begin On</th>
+                                            <th>Managed By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input id="projectName" autocomplete="off" name="project"
+                                                    placeholder="Project Name" class="form-control2 "></input>
+                                                <span class="text-danger flexboxSpan" id="pro_name"></span>
+                                            </td>
+                                            <td>
+                                                <input id="clientName" autocomplete="off" placeholder="Client Name"
+                                                    class="form-control2 " name="client"></input>
+                                                <span class="text-danger flexboxSpan" id="client_name"></span>
+                                            </td>
+                                            <td>
+                                                <input id="projectDate" autocomplete="off" placeholder="" class="form-control2"
+                                                    type="date" name="date"></input>
+                                                <span class="text-danger flexboxSpan" id="pro_date"></span>
+                                            </td>
+                                            <td>
+                                                <select id="managerName" class="form-control2 select2" name="manager">
+                                                    <option value="0">-Select-</option>
+                                                    {% for i in managers %}
+                                                    <option value="{{i.emp_id}}">{{i.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <span class="text-danger flexboxSpan" id="man_name"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+
+                            <button name="add" value="add" id="addProject"
+                                class="btn btn-theme button-1 text-white ctm-border-radius mt-4">Add</button>
+                            <button href="javascript:void(0);" class="btn btn-danger text-white ctm-border-radius mt-4"
+                                data-dismiss="modal" aria-label="Close">Cancel</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="../static/js/jquery-3.2.1.min.js"></script>
+<script src="../static/js/script.js"></script>
+<script src="../static/plugins/select2/select2.min.js"></script>
+<script src="../static/plugins/select2/moment.min.js"></script>
+<script src="../static/js/bootstrap-datetimepicker.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#addProject").click(function () {
+            var start_date = document.getElementById('projectDate');
+            if ($('#projectName').val() === '' || !start_date.value || $('#clientName').val() === '' || '0' === $('#managerName').val()) {
+                document.getElementById("pro_name").innerHTML = "Enter project name";
+                document.getElementById('client_name').innerHTML = "Enter client name";
+                document.getElementById('pro_date').innerHTML = "Select start date";
+                document.getElementById('man_name').innerHTML = "Select manager";
+                return false;
+            }
+        });
+        
+        $("#projectName, #clientName").keyup(function () {
+
+            if ($('#projectName').val() !== '') {
+                $("#pro_name").hide();
+            } else {
+                $("#pro_name").show();
+            }
+            if ($('#clientName').val() != '') {
+                $("#client_name").hide();
+            } else {
+                $("#client_name").show();
+            }
+        });
+        $('#projectDate, #managerName').change(function () {
+
+            var start_date = document.getElementById('projectDate');
+            if (start_date.value) {
+                $("#pro_date").hide();
+            } else {
+                $("#pro_date").show();
+            }
+            if ('0' !== $('#managerName').val()) {
+                $("#man_name").hide();
+            } else {
+                $("#man_name").show();
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#managerName").select2();
+    });
+</script>
+{% endblock body %}

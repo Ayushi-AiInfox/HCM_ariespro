@@ -1,0 +1,1763 @@
+{% extends 'OM_header.html' %}
+{% block addr %}Phase{% endblock addr %}
+
+{% block user %}Welcome, {{request.session.name}}{% endblock user %}
+{% block style %}
+<title>WFM :: CM PROJECTS</title>
+<link rel="stylesheet" href="../static/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+
+
+<style>
+.popup_icons_user, .popup_icons_attach {
+  font-size: 25px;
+  font-weight: 700;
+  text-align: center;
+  margin-left: 35%;
+  height: 30px;
+}
+
+
+
+
+    .white1 {
+        background-color: white !important;
+    }
+
+    .top-nav-search .btn {
+        top: 12%
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #09796b !important;
+        color: white;
+    }
+
+    span.select2.select2-container.select2-container--default {
+        line-height: 1.5;
+        border: 1px solid #767676;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        width: 100% !important;
+        background-color: #fff;
+        display: -webkit-box;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: unset;
+        width: 100%;
+    }
+
+    .flexboxSpan {
+        display: block;
+        padding: 0 5px;
+        text-align: left;
+    }
+
+    select#managerName {
+        border-radius: 2px;
+        height: 32px;
+        font-size: 15px;
+        border: 1px solid #666;
+    }
+
+    .table-responsive.hrProjects {
+        height: 610px;
+    }
+
+    a.cmProjectsColor {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    a.cmProjectsColor:hover {
+        background: #09796b;
+        color: #fff !important;
+    }
+
+    .employee-office-table .table input {
+        width: 100%;
+    }
+
+
+
+    label {
+        display: flex;
+        margin-bottom: .5rem;
+    }
+
+    .drkclick {
+        background-color: rgb(202, 178, 178) !important;
+    }
+
+    .card-header {
+        background: none;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    .card-title {
+        color: #333;
+        position: relative;
+        left: 17px;
+    }
+
+    .AddVersion,
+    .AddTask,
+    .AddPhase {
+        border-bottom: none !important;
+    }
+
+    #v-pills-tabContent {
+        position: relative;
+        top: 0px;
+    }
+
+    .firstTable tr td {
+        text-align: left;
+    }
+
+    .scrollable-table {
+        border: 2px solid darkseagreen;
+        border-radius: 0px 20px 20px 0px;
+        box-shadow: 4px 3px 12px 0px darkcyan;
+        background-color: #09796b;
+    }
+
+    .firstTable {
+        width: 100%;
+        border: 2px solid darkseagreen;
+        border-radius: 20px 0px 0px 20px;
+        margin-left: 0%;
+        background-color: #09796b;
+        box-shadow: 4px 3px 12px 0px darkcyan;
+        border-right: none;
+    }
+
+    .serialcol {
+        width: 0.1%;
+    }
+
+    .taskcol {
+        width: 100%;
+        max-width: 10px;
+        text-align: left !important;
+        line-height: 17px;
+    }
+    .taskcol p {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .serialcol2 {
+        background-color: coral;
+        display: table;
+        width: 35px !important;
+        height: 32px !important;
+        border-radius: 22px;
+        margin-left: -10px;
+        box-shadow: 2px 4px 13px 4px black;
+    }
+
+    .serialcol3 {
+        background-color: olive;
+        display: table;
+        width: 35px !important;
+        height: 32px !important;
+        border-radius: 22px;
+        margin-left: -10px;
+        box-shadow: 2px 4px 13px 4px black;
+    }
+
+    .serialcol4 {
+        background-color: blue;
+        display: table;
+        width: 35px !important;
+        height: 32px !important;
+        border-radius: 22px;
+        margin-left: -10px;
+        box-shadow: 2px 4px 13px 4px black;
+
+    }
+
+    .serialcol1 {
+       
+        display: table;
+        width: 35px !important;
+        height: 32px !important;
+        border-radius: 22px;
+        margin-left: -10px;
+        /* box-shadow: 2px 4px 13px 4px black; */
+    }
+
+    .teamcol {
+        width: 1%;
+    }
+
+    .taskspan {
+        font-weight: 700;
+    }
+
+    .teamcol.lnr.lnr-users,
+    .lnr.lnr-paperclip {
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .lnr.lnr-users,
+    .lnr.lnr-paperclip {
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    #tableone,
+    #tabletwo {
+        color: #fff;
+        font-weight: 600;
+        height: 201px;
+
+    }
+
+    .table.secondTable {
+        color: white;
+        background-color: #09796b;
+
+    }
+
+    .nextTd {
+        padding-left: 0px !important;
+    }
+
+    .tdcolor .scrollable-table {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        height: 205px;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .button-group {
+        display: flex;
+    }
+
+    .button-group button {
+        margin-left: 10px;
+        min-width: 100px;
+    }
+
+    .secondTable tr:hover {
+        background-color: darkseagreen;
+    }
+
+    .firstTable:hover {
+        background-color: darkseagreen;
+    }
+
+    .TeamDiv {
+        display: inline-block;
+        position: absolute;
+       
+        width: 45%;
+        text-align: center;
+        border-radius: 10px;
+        right: 10%;
+        z-index: 1;
+    }
+    .TeamDiv_second {
+        display: inline-block;
+        position: absolute;
+        top: 30%;
+        width: 45%;
+        text-align: center;
+        border-radius: 10px;
+        right: 10%;
+        z-index: 1;
+    }
+
+    .teamMember {
+        border: 3px solid darkgray;
+        font-size: 13px;
+    }
+    .teamMember_second {
+        border: 3px solid darkgray;
+        font-size: 13px;
+    }
+
+    .table.secondTable tr {
+        margin: auto;
+        display: block;
+    }
+
+    .serialcol {
+        background-color: darkslategray;
+        border-radius: 25px;
+        width: 7%;
+        box-shadow: 4px 4px 10px 2px cadetblue;
+    }
+
+    .attachmnet {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .modal-body .row>div {
+        border-right: 1px solid #ccc;
+        /* Add vertical border */
+        padding-right: 15px;
+        /* Add padding to space out the content from the border */
+    }
+
+    /* Remove right border from last column */
+    .modal-body .row>div:last-child {
+        border-right: none;
+        /* padding-right: 0; */
+    }
+
+    /* .modal-content.contentdesk {
+        width: 130%;
+        height: 500px;
+        margin: 0% auto;
+    } */
+    .col-md-2.icons {
+  border-right: none !important;
+}
+
+.chat_icon {
+  height: 30px;
+}
+.log_icon {
+  height: 30px;
+}
+.row.mainicons {
+  margin-top: 0%;
+}
+
+.all_items {
+  min-width: 100%;
+  text-align: center;
+  border: 2px solid darkgray;
+  margin: 10px auto;
+  background-color: antiquewhite;
+  box-shadow: 0px 0px 38px 0px darkcyan;
+  max-width: 300px;
+  margin-left: -50%;
+}
+.file_name_images:hover {
+  background-color: darkcyan;
+  color: white;
+  
+       /* overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 10px;
+        text-align: left !important; */
+}
+.file_name_images {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+}
+.largerdis {
+  height: 165px;
+  overflow: auto;
+}
+.modal-content.teamMemberModal {
+  margin-top: 40%;
+  width: 120%;
+  min-height: auto;
+}
+/* #dropdownMenuButton:hover:hover {
+  box-shadow: 3px 5px 14px 5px darkcyan;
+  margin: 0% auto;
+  height: 30px;
+  width: 100%;
+  border-radius: 13px;
+  text-align: center;
+} */
+.modal-content.commentbox {
+  -ms-flex-direction: column;
+        flex-direction: column;
+        pointer-events: auto;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, .2);
+        border-radius: .3rem;
+        outline: 0;
+        height: 80vh !important;
+        overflow: hidden;
+        margin: 0% auto !important;
+    }
+    #modalEmail {
+        overflow-y: scroll;
+        display: flex;
+    }
+    .notification-details {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .profCont5 {
+        padding-right: 10px;
+        margin-bottom: 6px;
+    }
+    .my-chat {
+        order: 2;
+        margin-left: auto;
+    }
+    .profile5 {
+        -webkit-clip-path: circle(50% at 50% 50%);
+        clip-path: circle(50% at 50% 50%);
+        width: 35px;
+        float: right;
+        padding: 2px;
+        border-radius: 50px;
+    }
+    .txt5 {
+        padding: 4px 0px 10px 20px;
+        font-size: 12px;
+        font-weight: 500;
+        color: black;
+        text-align: initial;
+        line-height: normal;
+        /* max-width: 38vw; */
+        background-color: rgb(174, 217, 235);
+        /* margin-right: 70px !important; */
+        border-radius: 20px 0px 22px 0px;
+        margin-left: 85px;
+        display: flow-root;
+        margin-right: 15px;
+    }
+    .mycomment {
+        background-color: rgb(50, 112, 228);
+        color: white;
+        border-radius: 20px 0px 0px 0px;
+        margin: -3px 0px 2px -20px;
+    }
+    .profCont {
+        padding-left: 15px;
+        margin-bottom: 6px;
+    }
+    .team-chat {
+        order: 1;
+        margin-right: auto;
+    }
+    .profile {
+        -webkit-clip-path: circle(50% at 50% 50%);
+        clip-path: circle(50% at 50% 50%);
+        width: 35px;
+        float: left;
+        padding: 2px;
+        border-radius: 50px;
+    }
+    .txt2 {
+        padding: 4px 3px 10px 20px;
+        font-size: 12px;
+        font-weight: 500;
+        color: black;
+        text-align: initial;
+        line-height: normal;
+        max-width: 85%;
+        background-color: rgb(241, 227, 207);
+        margin-left: 35px;
+        border-radius: 0px 30px 0px 30px;
+        display: flow-root;
+    }
+    .commentername {
+        background-color: rgb(241, 129, 64);
+        color: white;
+        border-radius: 2px 18px 0px 0px;
+        margin: -3px 0px 2px -20px;
+    }
+    .modal_dialog {
+  max-width: 800px;
+}
+
+.empty {
+  overflow: auto;
+  resize: vertical;
+  width: 90% !important;
+  float: left;
+}
+.modal-dialog.modal-lg.modal-dialog-centered.dialogdesk.chat_dialog {
+  max-width: 1100px;
+}
+.card-body.chat_classs {
+  height: 220px !important;
+  overflow: auto;
+  background-color: beige;
+}
+.card.text-center.completechat, .card.chat_chat_details {
+  margin-top: 1% !important;
+  margin-bottom: 0%;
+}
+.showdatas {
+  /* margin-left: 10%; */
+  margin: 10% auto;
+}   
+.card-body.chat_details {
+  height: 290px;
+  overflow: auto;
+  background: lavender;
+}
+.send_image {
+  width: 20px;
+}
+
+.modal-body.teampopup {
+  background: lavender;
+  box-shadow: 0px 5px 25px 15px #09796b;
+}
+.teamMember_second thead tr, .log_table thead tr {
+  background: bisque;
+}
+.teamMember_second tbody tr:hover, .log_table tbody tr:hover, .hover_table_teammember thead tr, .hover_table_teammember tbody tr:hover {
+  background: bisque;
+}
+.savechangesbtn, .phase_btn_save {
+  border-radius: 20px;
+  border-bottom: 3px solid black;
+  background-color: teal;
+}
+.savechangesbtn:hover, .phase_btn_save:hover {
+  background-color: lightseagreen;
+  border: none;
+}
+.col-md-12.popuptable {
+  /* height: 220px; */
+  overflow: auto;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+/* .chat_icon {
+  height: 30px;
+  background: blanchedalmond;
+  border-radius: 5px;
+  box-shadow: 0px 0px 3px 10px cadetblue;
+} */
+.hover_table, .phase_btn {
+  margin-top: 10%;
+}
+.hover_table_popup, .phase_btn_hover{
+    min-height:auto;
+    background: lavender;
+    
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    margin-top: 5%;
+    margin-left: 5%;
+
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+.phase_btn_save {
+  border-radius: 20px;
+  border-bottom: 3px solid black;
+}
+.file_name_images a:hover {
+  color: #fff !important;
+  padding: 10px;
+}
+.close.teamclose {
+  margin-top: -3%;
+  position: relative;
+  bottom: 10px;
+}
+.modal-footer.teampopup {
+  padding-bottom: 0px;
+  padding-top: 10px;
+}
+hr.horizontal_fir {
+  margin-top: 5px !important;
+  width: 40px;
+  font-weight: bold !important;
+  height: 5px !important;
+  background-color: brown;
+  margin-bottom: 0vh !important;
+}
+hr.horizontal_sec {
+    margin-top: 3px !important;
+  width: 40px;
+  font-weight: bold !important;
+  height: 5px !important;
+  background-color: brown;
+  margin-bottom: 0vh !important;
+  margin-left: -5px;
+}
+
+.col-md-12.popuptable {
+  max-height: 300px;
+}
+
+.rowpopup td {
+  padding: 5px 5px 5px 15px;
+}
+#tableone tr{
+    line-height: 15px;
+}
+
+@media only screen and (max-width: 1199px) {
+    .tdcolor .scrollable-table {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        height: 205px;
+        margin-left: 0px;
+    }
+    
+}
+@media only screen and (max-width: 991px){
+    #showsidebar,#fullscreen {
+        display: none;
+    }
+    .card.ctm-border-radius.shadow-sm {
+        position: relative;
+        top: 30px;
+    }
+    .lowerfooter {
+        position: relative;
+        top: 25px;
+        margin-bottom: 35px !important;
+    }
+    .teamList{
+        display: none;
+    }
+    .completechat{
+        position: relative;
+        top: 10px;
+    }
+}
+@media only screen and (max-width: 865px){
+    .empty{
+        width: 80% !important;
+    }
+    .chat_icon {
+        max-width: auto;
+        width: 25px;
+    }
+}
+@media only screen and (max-width: 767px){
+    .card-title.mb-0.d-inline-block {
+        font-size: 16px;
+    }
+    .txt5, .txt2{
+        font-size: 13px;
+    }
+    .AddTask, .AddPhase, .AddVersion, .secondTable tr td, .table_redirect tr td  {
+        font-size: 12px;
+    }
+    .button-group button {
+        min-width: 80px;
+    }
+    .inner_list{
+        width: auto !important;
+    }
+    hr.horizontal_fir{
+        width: 55px;
+    }
+    hr.horizontal_sec{
+        width: 55px !important;
+        margin-left: 0px !important;
+    }
+    .modal-content.teamMemberModal {
+        margin-top: 30%;
+        width: 100%;
+    }
+    
+} 
+@media only screen and (max-width: 660px){
+    .button-group button {
+        min-width: 85px;
+    }
+}  
+@media only screen and (max-width: 575px){
+    .tdcolor .scrollable-table {
+        margin-left: -20px;
+    }
+    .row.w-100.align-items-center {
+        display: contents;
+    }
+    .row.mainicons {
+        width: 15%;
+        display: block ruby;
+    }
+    .table.custom-table.table-hover.log_table tr th, .table.custom-table.table-hover.log_table tr td {
+        font-size: 10px !important;
+    }
+    .inner_list{
+        margin-top: 5%;
+    }
+}
+</style>
+{% endblock style %}
+{% block body %}
+<div class="col-xl-9 col-lg-8 col-md-12 dashboardbody">
+    <form method="post" enctype="multipart/form-data">
+        {%csrf_token%}
+        <div class="card shadow-sm ctm-border-radius grow">
+           <div class="card-header d-flex align-items-center justify-content-between">
+                <h4 class="card-title mb-0 d-inline-block">{{request.session.project_name}}</h4>
+                <div class="button-group">
+                    <button type="button" class="btn btn-theme button-1 ctm-border-radius text-white AddTask" data-toggle="modal"  data-target="#add_task_event" >
+                        <span><i class="fa fa-plus"></i></span> Task
+                    </button>
+                    
+                    <!-- <button href="javascript:void(0)" name="phase"
+                        class="btn btn-theme button-1 ctm-border-radius text-white AddPhase" data-toggle="modal"
+                        data-target="#">
+                        <span><i class="fa fa-plus"></i></span> Phase
+                    </button> -->
+                    <button id="phaseButton" name="phase" class="btn btn-theme button-1 ctm-border-radius text-white AddPhase" data-toggle="modal"  data-target="#phase_btn">
+                        <span><i class="fa fa-plus"></i></span> Phase
+                    </button>
+                   
+                    <button type="button"  name="version1"
+                        class="btn btn-theme button-1 ctm-border-radius text-white AddVersion" data-toggle="modal"
+                        data-target="#add_version">
+                        <span><i class="fa fa-plus"></i></span> Version
+                    </button>
+                </div>
+                
+             
+            </div>
+            <div class="row phasemsg" > 
+                <div  class="col-md-12 col-sm-12 col-lg-12 col-xl-12 ml-4">
+                    <h4 style="color: #db2424;">{{message}}</h4>
+                </div>
+            </div>
+            
+            
+
+            <div class="card-body align-center">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                                aria-labelledby="v-pills-home-tab">
+                                <div class="employee-office-table paginate-table1 ">
+                                    <div class="table-responsive  hrProjects">
+                                        <table class="table " id="myTable1">
+                                            <tbody>
+                                                {% for phases in version %}
+                                                {% for phase,tasks,end_period,start_period in phases %}
+                                                <tr class="tdcolor">
+                                                    
+                                                    <td style="width: 10% !important; padding-right: 0px;">
+                                                        <div class="row firstTable">
+                                                            <div class="col-md-12">
+                                                                <table class="table_redirect table" id="tableone">
+                                                                    <tr><td>Phase: {{phase.phase}}</td></tr>
+                                                                    <tr><td>Version: v{{phase.version}}</td></tr>
+                                                                    <tr><td>Time Period: {{phase.time_period}} {% if phase.time_period == '1' %} Week {% else %} Weeks {% endif %}</td></tr>
+                                                                    <tr><td>Start Date: {{start_period}}</td></tr>
+                                                                    <tr><td>End Date: {{end_period}}</td></tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="nextTd" style="width: 90% !important;">
+                                                        <div class="scrollable-table">
+                                                            <table class="table  secondTable">
+                                                                <tbody>
+
+                                                                    {% for task,crews,chats,logs,attachments,all_crew in tasks %}
+                                                                    
+                                                                    <tr class="rowpopup">
+                                                                        <td><span {% if task.status == 'Task List' %} style=" background-color: rosybrown;"
+                                                                            {% elif task.status == 'Development'  %} style=" background-color: rgb(253, 114, 21);"
+                                                                            {% elif task.status == 'Completed'  %} style=" background-color: yellowgreen;"
+                                                                            {% else %} style=" background-color: rgb(207, 91, 13);"
+                                                                            {% endif %}
+                                                                             class="serialcol1"> {{task.projec_task_id}}. </span></td>
+                                                                        <td class="taskcol" id="task_refresh{{task.id}}"  data-toggle="modal"
+                                                                            data-target="#taskModal{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                                                            <span class="taskspan" style="font-weight: bold;">{{task.task_heading}} :</span>
+                                                                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-height: 19px;">{{task.description|safe}}</p>
+                                                                        </td>
+                                                                        <td class="teamcol lnr lnr-users teamList" id="teamList{{ forloop.parentloop.counter }}{{ forloop.counter }}"
+                                                                         data-toggle="modal"  data-target="#hover_table{{ forloop.parentloop.counter }}{{ forloop.counter }}"></td>
+                                                                    </tr>
+                                                                   
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                             
+                                                {%  endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade phase_btn" id="phase_btn" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content phase_btn_hover">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 popuptable">
+                            <h4 class="modal-title">Phase : <b>{{current_phase}}</b>&nbsp;&nbsp;&nbsp;&nbsp;Version : <b>v{{current_version}}</b></h4>
+                            <button type="button" class="close teamclose" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            <hr>
+                            <div class="form-group row">
+                                <label for="type" class="col-sm-4 col-form-label"><b style="font-weight:600;">Time Period</b><span class="text-danger">*</span></label>
+                                <div class="col-sm-8">
+                                    <select id="type" class="form-control" name="time_period" required>
+                                        <option value="2">2 Weeks</option>
+                                        <option value="1">1 Week</option>
+                                        <option value="3">3 Weeks</option>
+                                        <option value="4">4 Weeks</option>
+                                        <option value="5">5 Weeks</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="modal-footer teampopup">
+                                <button name="phase" class="btn btn-primary phase_btn_save" >Create Phase</button>
+                                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                                </div>
+                        </div>
+                        
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        
+
+        <div class="modal fade phase_btn" id="add_version" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content phase_btn_hover">
+                
+                <div class="modal-body">
+                   
+                        <div class="form-group">
+                            <label for="type"><b style="font-weight:600;">"Are you sure you want to create a new version?"</b></label>
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="type"><b style="font-weight:600;">Current Version : v{{current_version}}</b> </label>
+                            
+                        </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> -->
+                  <button style="background-color: #09796b;" name="version" class="btn btn-primary phase_btn_save col-sm-6" >Yes</button>
+                  <button type="button" style="background-color: #e72f2f;" name="" class="btn btn-primary phase_btn_save col-sm-6" data-dismiss="modal" >No</button>
+                  <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          
+    </form>
+    <form method="post" enctype="multipart/form-data">
+        {%csrf_token%}
+        <div id="add_task_event" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 850px;">
+                <div class="modal-content addtask">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Task</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="employee-office-form">
+                                <div class="form-group row">
+                                    <label for="type" class="col-sm-2 col-form-label"><b>Task Type</b><span class="text-danger">*</span></label>
+                                    <div class="col-sm-4">
+                                        <select id="type" class="form-control" name="type" required>
+                                            <option value="New Task">New Task</option>
+                                            <option value="Bug">Bug</option>
+                                        </select>
+                                    </div>
+                                    <label for="task_heading" class="col-sm-2 col-form-label"><b>Task Title</b><span class="text-danger">*</span></label>
+                                    <div class="col-sm-4">
+                                        <input id="task_heading" title="Task Heading" name="task_heading" autocomplete="off" type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="task" class="col-form-label"><b>Task Description</b><span class="text-danger">*</span></label>
+                                    <textarea name="task" id="task" cols="1" rows="3" title="Description About the task" class="form-control" placeholder="Add Task Description..." required></textarea>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="addEmployeeName" class="col-sm-2 col-form-label"><b>Assign To</b><span class="text-danger">*</span></label>
+                                    <div class="col-sm-4">
+                                        <select id="addEmployeeName" name="task_crew" class="select form-control" multiple required>
+                                            <!-- <option value="0">-Select-</option> -->
+                                            
+                                            {% for employee in employees %}
+                                            <!-- {% if employee in project_team %} selected {%endif%} -->
+                                            <option {% if employee.email in project_team_task %} selected {%endif%}  value="{{employee.email}}"> {{employee.f_name}} {{employee.l_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <label for="priority" class="col-sm-2 col-form-label"><b>Priority</b><span class="text-danger">*</span></label>
+                                    <div class="col-sm-4">
+                                        <select id="priority" class="form-control" name="priority" required>
+                                            <option value="Medium">Medium</option>
+                                            <option value="Highest">Highest</option>
+                                            <option value="High">High</option>
+                                            <option value="Low">Low</option>
+                                            <option value="Lowest">Lowest</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="taskdate" class="col-sm-2 col-form-label"><b>Target Date</b><span class="text-danger">*</span></label>
+                                    <div class="col-sm-4">
+                                        <input id="taskdate" title="Add task Completion date" name="date" autocomplete="off" type="date" class="form-control" required>
+                                    </div>
+                                    <label for="attachments" class="col-sm-2 col-form-label"><b>Attachments</b></label>
+                                    <div class="col-sm-4">
+                                        <!-- <input name="attachments" type="file" id="fileInput" multiple accept="*"> -->
+                                        <input name="attachments" type="file" id="attachments" multiple accept="*" >
+                                    </div>
+                                </div>
+                                
+                            </div>
+                       
+                        
+                        <div class="text-center">
+                            <button name="add_Task" id="addEmp"
+                                class="btn btn-theme button-1 text-white ctm-border-radius mt-4 taskbtn">Add</button>
+                            <button name="cancelEmp"
+                                class="btn btn-danger text-white ctm-border-radius mt-4 taskbtn"
+                                data-dismiss="modal" aria-label="Close">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </form>
+</div>
+        
+{% for phases in version %}
+{% for phase,tasks,end_period,start_period in phases %}
+{% for task,crews,chats,logs,attachments,all_crew in tasks %}
+  
+<div class="modal fade deskmodal" id="taskModal{{ forloop.parentloop.counter }}{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered dialogdesk chat_dialog" role="document">
+        <div class="modal-content contentdesk">
+            <div class="modal-header" style="padding: 0.5rem 1rem;">
+                <div class="row w-100 align-items-center">
+                    <div class="col-md-9 col-sm-7 task_details_head">
+                        <h4 class="modal-title">Task Details</h4>
+                    </div>
+                    <div class="col-md-1 col-sm-2 text-right">
+                        <div class="lnr lnr-paperclip popup_icons_attach" id="dropdownMenuButton{{task.id}}"></div>
+                            <div class="dropdown-menu attch{{task.id}} all_items" aria-labelledby="dropdownMenuButton{{task.id}}">
+                                <ul>
+                                    {% for i in attachments %}
+                                    <li class="file_name_images text-left" title="{{ i.file_name }}">
+                                        <a style="color: black; padding: 10px;" href="/static/uploads/task_files/{{ i.file_name }}" target="_blank">
+                                            {% if i.file_name|lower|slice:'-4:' == '.pdf' %}
+                                                <img src="../static/img/pdf_icon.png" alt="PDF Icon" width="20" height="20">
+                                            {% elif i.file_name|lower|slice:'-4:' == '.doc' or i.file_name|lower|slice:'-5:' == '.docx' %}
+                                                <img src="../static/img/doc-icon.png" alt="Word Icon" width="20" height="20">
+                                            {% elif i.file_name|lower|slice:'-4:' == '.xls' or i.file_name|lower|slice:'-5:' == '.xlsx' %}
+                                                <img src="../static/img/xls_icon.png" alt="Excel Icon" width="20" height="20">
+                                            {% elif i.file_name|lower|slice:'-4:' == '.jpg' or i.file_name|lower|slice:'-5:' == '.jpeg' or i.file_name|lower|slice:'-4:' == '.png' %}
+                                                <img src="../static/img/jpg_icon.png" alt="Image Icon" width="20" height="20">
+                                            {% else %}
+                                                <img src="../static/img/Default_icon.png" alt="Default Icon" width="20" height="20">
+                                            {% endif %}
+                                            {{ i.file_name }} 
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+ 
+                                    <!-- <li>Andrew</li>
+                                    <li>Roy</li>
+                                    <li>Sam</li>
+                                    <li>Johnson</li>
+                                    <li>Ponting</li>
+                                    <li>Ricky</li> -->
+                                    
+                                </ul>
+                            </div>
+                        
+                    </div>
+                    
+                    <div class="col-md-1 col-sm-2 text-right">
+                        <div class="lnr lnr-users teamList_second popup_icons_user" id="teamList_second{{ forloop.parentloop.counter }}{{ forloop.counter }}"
+                         data-toggle="modal"  data-target="#tablemodal{{ forloop.parentloop.counter }}{{ forloop.counter }}"></div>
+                    </div>
+                    <div class="col-md-1 col-sm-1 text-right">
+                        <button type="button" id="close_chat{{task.id}}" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body modalbodydesk" style="height: 540px; overflow-y: hidden; padding-top: 0px;">
+                <div class="row">
+                    <div class="col-md-8 ">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="largerdis">
+                                    <h5 class="text-left">{{task.task_heading}}:</h5>
+                                    <p class="text-left">
+                                       {{task.description|safe}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mainicons">
+                            <div class="col-md-1 col-sm-2 icons text-center">
+                                <img src="../static/img/double-chat-icon.svg" class="chat_icon" id="chat_icon{{ forloop.parentloop.counter }}{{ forloop.counter }}" value="task.id" alt="Icon Description">
+                                <hr class="horizontal_fir">
+                            </div>
+                            <div class="col-md-1 col-sm-2 icons text-center">
+                                <img src="../static/img/file-log-color-red-icon.svg" class="log_icon" id="log_icon{{ forloop.parentloop.counter }}{{ forloop.counter }}" alt="Icon Description">
+                                <hr class="horizontal_sec text-left">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                               <div class="card text-center completechat" id="completechat{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                    <div class="card-body chat_classs" id="modalEmail{{task.id}}">
+                                        <div class="notification-details"
+                                        id="notificationdetails{{task.id}}">
+                                        {% for chat in chats %}
+                                        {% if chat.user_name == request.session.name %}
+                                        <div class="row">
+                                            <div class="profCont5 my-chat">
+                                                <img class="profile5"
+                                                    src="../{{request.session.profile_pic}}">
+                                                <div class="txt5">
+                                                    <div class="row mycomment">
+                                                        <div class="col-md-12">
+                                                             {{chat.user_name}}
+                                                        </div>
+                                                    </div>
+                                                   {{chat.description}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                        {% else %}
+                                        
+                                        <div class="row">
+                                            <div class="profCont team-chat">
+                                                <img class="profile"
+                                                    src="../static/img/profiles/img-2.jpg">
+                                                <div class="txt2">
+                                                    <div class="row commentername">
+                                                        <div class="col-md-12 ">
+                                                            <p> {{chat.user_name}}</p>
+                                                        </div>
+                                                    </div>
+                                                    {{chat.description}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                       
+                                       {% endfor %}
+                                    </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <label for="comnt" style="font-weight: 600; display: none;"></label>
+                                        <textarea name="commentsemphr" class="empty"
+                                            id="comnt{{task.id}}" cols="10" rows="2"
+                                            placeholder="Write Your Comments here...."></textarea>
+                                        <button name="chat_send" id="chat_send{{ task.id }}"
+                                            value="{{task.id}}"
+                                            class="chat_send btn btn-theme button-1 text-white ctm-border-radius mt-3">
+                                            <img src="../static/img/send-paper-svgrepo-com.svg" alt="Send" class="send_image">
+                                        </button>
+                                    </div>
+                                  </div>
+                                  <div class="card chat_chat_details" id="chat_chat_details{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                    <!-- <h5 class="card-header">Status Log</h5> -->
+                                    <div class="card-body chat_details">
+                                        <div class="employee-office-table"
+                                        style="box-shadow: none;">
+                                        <div class="table-responsive">
+                                            <table class="table custom-table table-hover log_table">
+                                                <thead id="checkmove">
+                                                    <tr class="statics">
+                                                        <th>Sr.No.</th>
+                                                        <th>From</th>
+                                                        <th>To</th>
+                                                        <th>Performed By</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="position: relative;">
+                                                    {% for log in logs %}
+                                                    <tr>
+                                                        <td>{{forloop.counter}}</td>
+                                                        <td>{{log.from_status}}</td>
+                                                        <td>{{log.to_status}}</td>
+                                                        <td>{{log.name}}</td>
+                                                        <td>{{log.dates}}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                    
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="showdatas">
+                            <div class="card inner_list" style="width: auto;">
+                                <ul class="list-group list-group-flush text-left">
+                                  <li class="list-group-item">Assignee: {{task.assignee}}</li>
+                                  <li class="list-group-item">Phase: Phase-{{phase.phase}}</li>
+                                  <li class="list-group-item">Versio: v{{phase.version}}</li>
+                                  <li class="list-group-item">Priority: {{task.priority}}</li>
+                                  <select class="list-group-item status_dropdown">
+                                        
+                                    <option {% if task.status == 'Task List' %} selected {% endif %} value="{{task.id}}/Task List">Status: Task</option>
+                                    <option {% if task.status == 'Development' %} selected {% endif %} value="{{task.id}}/Development">Status: Development</option>
+                                    <option {% if task.status == 'Completed' %} selected {% endif %} value="{{task.id}}/Completed">Status: Completed</option>
+
+                                </select>
+                                </ul>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+<!-- <div class="modal" id="tablemodal{{ forloop.parentloop.counter }}{{ forloop.counter }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog tablemodal123" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body teampopup">
+            <div class="row">
+                <div class="col-md-12 popuptable">
+                    <table class="table custom-table teamMember_second">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Name</th>
+                             
+                                <th>Select</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for i in crews%}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{i.employee_name}}</td>
+                               
+                                <td>
+                                    <input type="checkbox" name="selectedNames{{task.id}}" value="{{i.employee_name}}" checked/>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary savechangesbtn" id="cheked_team{{ task.id }}">Save changes</button>
+          
+        </div>
+      </div>
+    </div>
+  </div> -->
+<div class="modal fade tableModalcheck inner_modal" id="tablemodal{{ forloop.parentloop.counter }}{{ forloop.counter }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog " role="document">
+      <div class="modal-content teamMemberModal">
+        <div class="modal-body teampopup" id="teampopup_table" style="overflow-y: auto; height: auto;">
+            <div class="row">
+                
+                <div class="col-md-12 popuptable">
+                    <h4 class="modal-title inner_modal_body">Team Members</h4>
+                    <button type="button" class="close teamclose" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <table class="table custom-table teamMember_second inner_modal_body">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Name</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for employee in all_crew %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{employee}}</td>
+                                    
+                                    <td>
+                                        <input type="checkbox" name="selectedNames{{task.id}}" value="{{employee}}"
+                                        
+                                        {%for i in crews%}
+                                        {% if i.employee_name == employee %} checked {% endif %}
+                                        {%endfor%} 
+                                        />
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            
+                                
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- <div class="row text-right">
+                <div class="col-md-12 text-right">
+                <button type="button" class="btn btn-primary " id="cheked_team{{ forloop.parentloop.counter }}{{ forloop.counter }}"data-dismiss="modal" style="margin-top: 2%; margin-right: 2%;">Save changes</button>
+            </div>  -->
+            <div class="modal-footer teampopup">
+                <button type="button" class="btn text-white savechangesbtn " id="cheked_team{{ task.id }}" data-dismiss="modal">Save changes</button>
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+              </div>
+        </div>
+
+        </div>
+       
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade hover_table" id="hover_table{{ forloop.parentloop.counter }}{{ forloop.counter }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content hover_table_popup">
+        <div class="modal-body">
+            <table class="table custom-table teamMember hover_table_teammember" id="teamMember{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                <thead>
+                    
+                    <tr>
+                        <th>S.No</th>
+                        <th>Name</th>
+                        <!-- <th>Designation</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in crews %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{i.employee_name}}</td>
+                        <!-- <td>Sql Developer</td> -->
+                    </tr>
+                    {% endfor %}
+                    <!-- <tr>
+                        <td>1</td>
+                        <td>Andrew</td>
+                        <td>Sql Developer</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Andrew</td>
+                        <td>Sql Developer</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Andrew</td>
+                        <td>Sql Developer</td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+        $(".table_redirect").click(function() {
+            window.location.href = "CM_Project_task"; // Replace "https://example.com" with the URL you want to redirect to
+        });
+    });
+</script>
+
+
+
+  <script>
+    $(document).ready(function(){
+        // $("#teamList_second{{ forloop.parentloop.counter }}{{ forloop.counter }}").click(function(){
+        //     $("#taskModal{{ forloop.parentloop.counter }}{{ forloop.counter }}").hide();
+        // });
+        // $("#cheked_team{{ task.id }}").click(function(){
+        //     $("#taskModal{{ forloop.parentloop.counter }}{{ forloop.counter }}").show();
+        // });
+        // $("#chat_icon{{ forloop.parentloop.counter }}{{ forloop.counter }}").click(function(){
+        //     $("#taskModal{{ forloop.parentloop.counter }}{{ forloop.counter }}").hide();
+        // });
+
+    });
+</script> 
+<script>
+    $(document).ready(function(){
+        $("#chat_chat_details{{ forloop.parentloop.counter }}{{ forloop.counter }}").hide();
+        $("#chat_icon{{ forloop.parentloop.counter }}{{ forloop.counter }}").click(function(){
+            $("#completechat{{ forloop.parentloop.counter }}{{ forloop.counter }}").show();
+            $("#chat_chat_details{{ forloop.parentloop.counter }}{{ forloop.counter }}").hide();
+        });
+        $("#log_icon{{ forloop.parentloop.counter }}{{ forloop.counter }}").click(function(){
+            $("#chat_chat_details{{ forloop.parentloop.counter }}{{ forloop.counter }}").show();
+            $("#completechat{{ forloop.parentloop.counter }}{{ forloop.counter }}").hide();
+        });
+        
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $(".horizontal_sec").hide();
+        $("#chat_icon{{ forloop.parentloop.counter }}{{ forloop.counter }}").click(function(){
+            $(".horizontal_fir").show();
+            $(".horizontal_sec").hide();
+        });
+        $("#log_icon{{ forloop.parentloop.counter }}{{ forloop.counter }}").click(function(){
+            $(".horizontal_fir").hide();
+            $(".horizontal_sec").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).on('click', '#chat_send{{ task.id }}', function (e) {                     
+        // alert("chat_send successfully clicked");
+        e.preventDefault();
+        // Get the CSRF token from the cookie
+
+        var csrftoken = getCookie('csrftoken');
+
+        var buttonValue1 = $(this).val();
+        //  alert( buttonValue1 )  ;
+        $.ajax({
+            type: 'POST',
+            url: '../clientmanager/task_chat',
+            
+            data: {
+                task_id: buttonValue1,
+                chat: $('#comnt' + buttonValue1).val(),
+                csrfmiddlewaretoken: csrftoken,
+            },
+            success: function (data) {
+                // alert('success')
+                // console.log(data);
+                // if(data.length != 0){
+
+                // }
+                var show_data = `
+                    <div class="row">
+                        <div class="profCont5 my-chat">
+                            <img class="profile5" src="../{{request.session.profile_pic}}">
+                            <div class="txt5">
+                                <div class="row mycomment">
+                                    <div class="col-md-12"> {{request.session.name}} </div>
+                                </div>
+                                ${data.data}
+                            </div>
+                        </div>
+                    </div>`;
+                $("#notificationdetails" + buttonValue1).append(show_data);
+                // sendReq(csrftoken, buttonValue)
+                // document.getElementById("notificationdetails").append(abc)
+                // Handle the success response
+                $(".empty").val('').empty();                                      // empty the textarea
+                var modalEmail = $("#modalEmail" + buttonValue1);
+                modalEmail.scrollTop(modalEmail.prop("scrollHeight"));                //  set scrollbar at bottom
+            }
+
+        });
+
+        // setInterval(sendReq, 750);
+    });
+
+    // Function to retrieve the CSRF token from the cookie
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+<!-- <script>
+    $(document).on('click', '#task_refresh{{task.id}}', function (e) {
+        e.preventDefault();
+        var flag = 0;
+        var buttonValue = {{task.id}};
+        var csrftoken = getCookie('csrftoken');
+
+        sendReq(buttonValue,flag)
+
+        var Interval = setInterval(function () { sendReq(buttonValue,1); }, 750);
+        $('.stopInterval').on('click', () => {
+            clearInterval(Interval);
+        });
+    });
+    function sendReq(buttonValue,flag) {
+
+        $.ajax({
+            type: 'POST',
+            url: '../clientmanager/task_chat_refresh',
+            data: {
+                task_id: buttonValue,
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+            },
+            success: function (x) {
+                for (var i = 0; i < x.data.length; i++) {
+                    var show_data = `
+                    <div class="row">
+                    <div class="profCont team-chat" >
+                        <img class="profile" src="../static/img/profiles/img-2.jpg">
+                       <div class="txt2">
+                        <div class="row commentername" >
+                            <div class="col-md-12 ">
+                                <p> ${x.name} </p>
+                            </div>
+                        </div>
+                        ${x.data}</div>
+                     </div>
+                    </div>`;
+                    $("#notificationdetails" + buttonValue).append(show_data);
+                }
+                if(flag == 0){
+                    
+                    var modalEmail = $("#modalEmail" + buttonValue);
+                    modalEmail.scrollTop(modalEmail.prop("scrollHeight"));
+                }
+            }
+
+        });
+
+    }
+
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script> -->
+
+
+<script>
+    $(document).on('click', '#task_refresh{{task.id}}', function (e) {
+        e.preventDefault();
+        var flag = 0;
+        var buttonValue = {{task.id}};
+        
+        var csrftoken = getCookie('csrftoken');
+
+        sendReq(buttonValue, flag);
+
+        var Interval = setInterval(function () { sendReq(buttonValue, 1); }, 750);
+       
+        $('#close_chat{{task.id}}').on('click', () => {
+            clearInterval(Interval);
+        });
+
+       
+       
+    });
+
+    function sendReq(buttonValue, flag) {
+        console.log(buttonValue)
+        $.ajax({
+            type: 'POST',
+            url: '../clientmanager/task_chat_refresh',
+            data: {
+                task_id: buttonValue,
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+            },
+            success: function (x) {
+                console.log(x.data)
+                for (var i = 0; i < x.data.length; i++) {
+                    var show_data = `
+                    <div class="row">
+                        <div class="profCont team-chat">
+                            <img class="profile" src="../static/img/profiles/img-2.jpg">
+                            <div class="txt2">
+                                <div class="row commentername">
+                                    <div class="col-md-12">
+                                        <p>${x.name}</p>
+                                    </div>
+                                </div>
+                                ${x.data}
+                            </div>
+                        </div>
+                    </div>`;
+                    $("#notificationdetails" + buttonValue).append(show_data);
+                }
+
+                // Scroll to bottom if flag is 0
+                if (flag == 0) {
+                    var modalEmail = $("#modalEmail" + buttonValue);
+                    modalEmail.scrollTop(modalEmail.prop("scrollHeight"));
+                }
+            }
+        });
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.popup_icons_attach').click(function () {
+            $('.attch{{task.id}}').show();
+        });
+        $('.modalbodydesk,.task_details_head').click(function () {
+            $('.attch{{task.id}}').hide();
+        });
+        $(".popup_icons_user").click(function(){
+            $('.attch{{task.id}}').hide();
+        });     
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $("#cheked_team{{ task.id }}").on("click", function() {
+            var selectedNames = [];
+            var csrftoken = getCookie('csrftoken');
+            $("input[name='selectedNames{{task.id}}']:checked").each(function() {
+                selectedNames.push($(this).val());
+            });
+            console.log(selectedNames);
+            // Perform AJAX request
+            $.ajax({
+                url: "../clientmanager/change_task_crew",
+                type: "POST",
+                data: { selectedNames: selectedNames,
+                        task_id: {{task.id}},
+                        csrfmiddlewaretoken: getCookie('csrftoken'),
+    
+                    
+                },
+                success: function(response) {
+                    console.log(response);
+                    // $("#cheked_team{{ task.id }}").on("click", function(){
+                    //     $("#tablemodal{{ forloop.parentloop.counter }}{{ forloop.counter }}").hide();
+                    // });
+      
+                $("#tablemodal{{ forloop.parentloop.counter }}{{ forloop.counter }}").hide();
+                    
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                    console.error(xhr.responseText);
+                }
+            });
+            
+
+        });
+    });
+    function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <script>
+        $(document).ready(function(){
+            $(".popup_icons_user").click(function(){
+                $(this).css({"border-bottom":"3px solid black","width":"100%","border-radius":"10px","background":"#09796b","color":"white"});
+            });
+            $("#cheked_team{{ task.id }}, .teamclose, .inner_modal").click(function(){
+                $(".popup_icons_user").css({"border-bottom":"none","width":"auto","border-radius":"none","background":"none","color":"black"});
+            });
+            $(".inner_modal_body").click(function(event){
+                event.stopPropagation();
+                $(".popup_icons_user").css({"border-bottom":"3px solid black","width":"100%","border-radius":"10px","background":"#09796b","color":"white"});
+            });
+        });
+    </script>
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+<script src="../static/js/jquery-3.2.1.min.js"></script>
+<script src="../static/js/script.js"></script>
+<script src="../static/plugins/select2/select2.min.js"></script>
+<script src="../static/plugins/select2/moment.min.js"></script>
+<script src="../static/js/bootstrap-datetimepicker.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="script.js"></script>
+<script>
+  $(document).ready(function() {
+    $("#phaseButton").click(function(event) {
+        event.preventDefault(); // Prevent the default action  
+    });
+});
+</script>
+<script>
+    $(document).ready(function () {
+        // $("vj1").hide();
+        $("#fullscreen").click(function () {
+            $("#sidebarid").hide();
+            $(".dashboardbody").css({ "max-width": "100%", "flex": "0 0 100%" });
+            $(this).hide();
+            $("#showsidebar").show();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#showsidebar").hide();
+        $("#showsidebar").click(function () {
+            $("#sidebarid").show();
+            if ($(window).width() > 991 && $(window).width() < 1200) {
+                $(".dashboardbody").css({ "max-width": "66%", "flex": "0 0 66%" });
+            }
+            else {
+                $(".dashboardbody").css({ "max-width": "75%", "flex": "0 0 75%" });
+            }
+            $(this).hide();
+            $("#fullscreen").show();
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function(){
+        $('.status_dropdown').change(function(){
+            var task_status = $(this).val();
+            var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                url: '../clientmanager/change_task_status',
+                method: 'POST', 
+                data: {
+                    task:task_status,
+                    csrfmiddlewaretoken: csrftoken,
+                }, 
+
+                success: function(response){
+                    console.log(response);
+                },
+                error: function(xhr, status, error){
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<script>
+    $(document).ready(function(){
+        $(".popup_icons_attach").click(function(){
+                $(this).css({"border-bottom":"3px solid black","width":"100%","border-radius":"10px","background":"#09796b","color":"white"});
+        });
+        $(".modalbodydesk,.task_details_head, .popup_icons_user").click(function(){
+            $(".popup_icons_attach").css({"border-bottom":"none","width":"auto","border-radius":"none","background":"none","color":"black"});
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        $(".phasemsg").fadeIn().delay(15000).fadeOut();
+    });
+</script>
+{% endblock body %}
