@@ -53,6 +53,7 @@ def weekdates():
     # request.session['prev_date']=str(starts)
     # request.session['last_date']=str(end_dts)
     return(start_date,end_date)
+
 def weekdates_2(request):
     start_date=datetime.now().date()
     end_date=datetime.now().date()
@@ -109,8 +110,15 @@ def home(request):
         # request.session['start_dates']=start_dates
         # request.session['end_dates']=end_dates
         
-        login=Login.objects.filter(id=request.session['id'])
-        login=login[0]
+        # login=Login.objects.filter(id=request.session['id'])
+        # login=login[0]
+
+        login = Login.objects.filter(id=request.session['id']).first()
+        if not login:
+            return HttpResponseRedirect('../../')  # Redirect if no user is found
+        passwordstatus = login.passwordstatus
+        
+
         passwordstatus=login.passwordstatus
         if request.method=='POST':
             pass
@@ -147,13 +155,19 @@ def home(request):
         employee=EmpLeaves.objects.filter(emp_id=str(request.session['id']))
         notifs = []
         noti = []
-        notif = Notifications.objects.filter(emp_id=str(request.session['id']),emp='1',date=start_dates)
-        for i in notif:
-            notifs.append(i)
-        try:
-            noti.append(notifs[-1])
-        except:
-            pass
+        # notif = Notifications.objects.filter(emp_id=str(request.session['id']),emp='1',date=start_dates)
+        # for i in notif:
+        #     notifs.append(i)
+        # try:
+        #     noti.append(notifs[-1])
+        # except:
+        #     pass
+
+        notif = Notifications.objects.filter(emp_id=str(request.session['id']), emp='1', date=start_dates)
+        notifs = list(notif)  # Convert queryset to a list
+        noti = notifs[-3:] 
+
+
         try:
             noti.append(notifs[-2])
         except:
@@ -170,9 +184,9 @@ def home(request):
         
         diff = []
         activity = Activities.objects.filter(emp_id = request.session['id'], date=start_dates)
+        
         for i in activity:
             time = i.currentdate
-            
             diff.append(time)
         activities = zip(activity,diff)    
         emp_id=request.session['id']
@@ -183,10 +197,15 @@ def home(request):
             bar.append({'project':dash.project_name,'mon':dash.mon,'tue':dash.tue,'wed':dash.wed,'thu':dash.thu,'fri':dash.fri,'sat':dash.sat,'sun':dash.sun})
         leave_details=LeaveDetails.objects.filter(emp_id=request.session['id'])
         print(bar,'bar')
+        remaining = 0
+        taken = 0
         for i in bar:
-            i
-        remaining=leave_details[0].days_allowed
-        taken=leave_details[0].taken
+            try:
+                remaining=leave_details[0].days_allowed
+                taken=leave_details[0].taken
+            except:
+                remaining = 0
+                taken = 0
         name=request.session['name']
         current_month=date.today().month
         print(current_month,'current_month')
@@ -232,8 +251,16 @@ def home(request):
                     except:
                         datas[f"{keys}{i}"]=0
         verify=LeaveDetails.objects.filter(emp_id=request.session['id'])
-        verify=verify[0]
-        reset_date=verify.reset_date
+        print("VERIFY",verify)
+        try:
+            verify=verify[0]
+            reset_date=verify.reset_date
+        except:
+            verify=0
+            reset_date= '2012-11-14 14:32:30'
+            
+
+        
         reset_date = datetime.strptime(reset_date, "%Y-%m-%d %H:%M:%S")
         today = datetime.now()
         print(today,reset_date)
@@ -243,34 +270,38 @@ def home(request):
         except:
               deltas=0   
         print(deltas)
-        projectdetails=Project_team.objects.filter(employee_id=request.session['id'])
-        hr_id=EmpDesk.objects.get(login_id=request.session['id']).hr_id
-        manager_id=EmpDesk.objects.get(login_id=request.session['id']).manager_id
-        # print(projectdetails)
-        for i in projectdetails:
-            projectdata=Empdata.objects.filter(emp_id=request.session['id'],project_name=i.project,start=start_dates)
-            if len(projectdata)>0:
-                pass #print('projects alreaddy present in database')
-            else:
-                employeedata=Empdata(emp_id=request.session['id'],status=0,mon=0,tue=0,wed=0,thu=0,fri=0,sat=0,sun=0,total=0,totals=0,hr_id=hr_id, manager_id=manager_id, start=start_dates,end=end_dates,project_name=i.project,
-                                     name=i.employee_name,statushr=0,date_created=datetime.now(),assigned='*')
-                employeedata.save()
-                # print('projects added to database')
-        start_date,end_date=weekdates()
-        # print(start_date,end_date,weekdates(),'weeklydatetimes')
+        try:
         
-        if deltas>=0:
-            verify.reset_date=reset_date+timedelta(days=365)
-            verify.save(update_fields=['reset_date'])
-            verify.days_allowed=10
-            verify.save(update_fields=['days_allowed'])
-            verify.sick_day=3
-            verify.save(update_fields=['sick_day'])
+            projectdetails=Project_team.objects.filter(employee_id=request.session['id'])
+            hr_id=EmpDesk.objects.get(login_id=request.session['id']).hr_id
+            manager_id=EmpDesk.objects.get(login_id=request.session['id']).manager_id
+            # print(projectdetails)
+            for i in projectdetails:
+                projectdata=Empdata.objects.filter(emp_id=request.session['id'],project_name=i.project,start=start_dates)
+                if len(projectdata)>0:
+                    pass #print('projects alreaddy present in database')
+                else:
+                    employeedata=Empdata(emp_id=request.session['id'],status=0,mon=0,tue=0,wed=0,thu=0,fri=0,sat=0,sun=0,total=0,totals=0,hr_id=hr_id, manager_id=manager_id, start=start_dates,end=end_dates,project_name=i.project,
+                                        name=i.employee_name,statushr=0,date_created=datetime.now(),assigned='*')
+                    employeedata.save()
+                    # print('projects added to database')
+            start_date,end_date=weekdates()
+            # print(start_date,end_date,weekdates(),'weeklydatetimes')
             
-            verify.taken=0
-            verify.save(update_fields=['taken'])
-            verify.remaining=13
-            verify.save(update_fields=['remaining'])
+            if deltas>=0:
+                verify.reset_date=reset_date+timedelta(days=365)
+                verify.save(update_fields=['reset_date'])
+                verify.days_allowed=10
+                verify.save(update_fields=['days_allowed'])
+                verify.sick_day=3
+                verify.save(update_fields=['sick_day'])
+                
+                verify.taken=0
+                verify.save(update_fields=['taken'])
+                verify.remaining=13
+                verify.save(update_fields=['remaining'])
+        except:
+            pass
             
         return render(request,'Emp_dashboard.html',datas)
     
@@ -279,6 +310,7 @@ def home(request):
         response=HttpResponseRedirect('../../')
 
         return response
+
 # except:
 #     s='enter credentials for Employee login '
 #     response=HttpResponseRedirect('../../')
@@ -290,9 +322,12 @@ def Emp_tracker(request):
             if request.method=='GET':
                 weekdates_2(request)
             dates_for_filter = weekdates()
-            manager_id = EmpDesk.objects.get(login_id=request.session['id']).manager_id
-            hr_id = EmpDesk.objects.get(login_id=request.session['id']).hr_id
-            print(manager_id,hr_id)
+            try:
+                manager_id = EmpDesk.objects.get(login_id=request.session['id']).manager_id
+                hr_id = EmpDesk.objects.get(login_id=request.session['id']).hr_id
+            except:
+                pass    
+            # print(manager_id,hr_id)
             # request.session['prev_date'] = 
 
             start_dates=request.session['start_date']
@@ -942,8 +977,13 @@ def Emp_tracker(request):
                     day='day'+str(i)
                     dats[f"{day}"]=days[i]
             projects=Project_team.objects.filter(employee_name=name)
-            hr_id=EmpDesk.objects.get(login_id=request.session['id']).hr_id
-            manager_id=EmpDesk.objects.get(login_id=request.session['id']).manager_id
+
+            manager_id = None
+            try:
+                hr_id=EmpDesk.objects.get(login_id=request.session['id']).hr_id
+                manager_id=EmpDesk.objects.get(login_id=request.session['id']).manager_id
+            except:
+                pass    
             
             for i in projects:
                 emp=Empdata.objects.filter(emp_id=request.session['id'],project_name=i.project,start=start_dates,)
@@ -956,17 +996,24 @@ def Emp_tracker(request):
                     a.save()
             obj=Empdata.objects.filter(emp_id=request.session['id'],start=start_dates)
             email_data=EmpDesk.objects.filter(login_id=request.session['id'])
-            email_data=email_data[0].email
-            name=request.session['name'] 
-            projects=Project_team.objects.filter(employee_name=email_data)
-            if manager_id == Login.objects.get(id=request.session['id']).office_manager:
-                managersall=Login.objects.filter(user_type=3,office_manager=Login.objects.get(id=request.session['id']).office_manager)
-                managersall=[x.id for x in managersall]
-                projectss=ProjectDetails.objects.filter(manager_id__in=managersall)
-                print(managersall,';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',projectss)
-            else:
-                projectss=ProjectDetails.objects.filter(manager_id=manager_id)
+            try:
+                email_data=email_data[0].email
+            except:
+                email= "abc@gmail.com"      
+            try:
+                name=request.session['name'] 
+                projects=Project_team.objects.filter(employee_name=email_data)
+            except:
+                pass
             
+             
+            if manager_id == Login.objects.get(id=request.session['id']).office_manager:
+                    managersall=Login.objects.filter(user_type=3,office_manager=Login.objects.get(id=request.session['id']).office_manager)
+                    managersall=[x.id for x in managersall]
+                    projectss=ProjectDetails.objects.filter(manager_id__in=managersall)
+                    print(managersall,';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',projectss)
+            else:
+                projectss = ProjectDetails.objects.filter(manager_id=manager_id)   
 
             try :
                 print(start_dates,'|||||||||||||||||||------start_dates-----------||||||||||||||||')
@@ -1123,10 +1170,15 @@ def Emp_EditProfile(request):
             return response
 
 def Emp_leave(request):
+    print(request,'request')
     try:
         if request.session['user']=="3":
             remaining_leaves=LeaveDetails.objects.filter(emp_id=request.session['id'])
-            remaining_leaves=remaining_leaves[0]
+            try:
+                remaining_leaves=remaining_leaves[0]
+            except:
+                remaining_leaves =0
+
             if request.method=="POST":
                 manager_id = EmpDesk.objects.get(login_id=request.session['id']).manager_id
                 hr_id = EmpDesk.objects.get(login_id=request.session['id']).hr_id
@@ -1228,8 +1280,10 @@ def Emp_leave(request):
             # return response
     except:
             s='enter credentials for Employee login '
-            response=HttpResponseRedirect('../../')
+            return render(request,'Emp_leave.html',{'emp_leaves':emp_leaves,'remaining_leaves':remaining_leaves,"name":name,'remaining':remaining,'taken':taken})   
+            # response=HttpResponseRedirect('../../')
             return response
+
 def Emp_notification(request):
     try:
         if request.session['user']=="3":
@@ -1257,6 +1311,7 @@ def Emp_notification(request):
             s='enter credentials for Employee login '
             response=HttpResponseRedirect('../../')
             return response
+
 def Emp_profile(request):
     try:
         if request.session['user']=="3":
@@ -1274,6 +1329,7 @@ def Emp_profile(request):
             s='enter credentials for Employee login '
             response=HttpResponseRedirect('../../')
             return response
+
 def Emp_report(request):
     try:
         if request.session['user']=="3":
@@ -1299,7 +1355,6 @@ def Emp_report(request):
             dlist = zip(label, data)
                 
                 
-            
 
             global start_dates
             global end_dates
@@ -1321,8 +1376,14 @@ def Emp_report(request):
             bar=[]
             dash_data=Empdata.objects.filter(emp_id=emp_id,start=start_dates)
             current_month=date.today().month
-            emp_dash_data=Empdata.objects.annotate(start_month=Cast('start', output_field=DateTimeField())).filter(emp_id=request.session['id'])
+            # emp_dash_data=Empdata.objects.annotate(start_month=Cast('start', output_field=DateTimeField())).filter(emp_id=request.session['id'])
             # emp_dash_data = Empdata.objects.annotate(start_month=Cast('start', output_field=DateTimeField())).filter(emp_id=request.session['id'], start_month__month=current_month).values('project_name').annotate(total_hours=Sum('mon') + Sum('tue') + Sum('wed') + Sum('thu') + Sum('fri') + Sum('sat'))
+            emp_dash_data = Empdata.objects.annotate(start_month=Cast('start', output_field=DateTimeField()))\
+                .filter(emp_id=request.session['id'], start_month__month=current_month, status='1', statushr=1)
+            if not emp_dash_data:
+                emp_dash_aggregated = []  
+
+
             emp_dash_= []
             for i in emp_dash_data:
                 data1= []
@@ -1379,6 +1440,7 @@ def Emp_report(request):
             s='enter credentials for Employee login '
             response=HttpResponseRedirect('../../')
             return response
+
 def Emp_Project_List(request):
     try:
         if request.session['user']=="3":
@@ -1632,11 +1694,6 @@ def Emp_Project_task(request):
 
     return render(request, "Emp_Project_task.html",{ 'project_team':project_team,'tasks_list':tasks_list, 'development':development, 'completed':completed,'chats':chats})
 
-        
-
-
-
-
 def mon_data(request):
     emp_id = request.session['id']
     start_dates=request.session['start_date']
@@ -1716,7 +1773,6 @@ def mon_data(request):
     else:
         pass   
     return JsonResponse({'message':'success'})
-
 
 def tue_data(request):
     emp_id = request.session['id']
@@ -1862,6 +1918,7 @@ def wed_data(request):
                 employeedata.save()
         
     return JsonResponse({'message':'success'})
+
 def thu_data(request):
     emp_id = request.session['id']
     start_dates=request.session['start_date']
@@ -1935,6 +1992,7 @@ def thu_data(request):
     else:
         pass    
     return JsonResponse({'message':'success'})
+
 def fri_data(request):
     emp_id = request.session['id']
     start_dates=request.session['start_date']
@@ -2010,6 +2068,7 @@ def fri_data(request):
     else:
         pass    
     return JsonResponse({'message':'success'})
+
 def sat_data(request):
     emp_id = request.session['id']
     start_dates=request.session['start_date']
@@ -2079,9 +2138,3 @@ def sat_data(request):
                 employeedata.save()
         
     return JsonResponse({'message':'success'})
-
-
-
-
-
-

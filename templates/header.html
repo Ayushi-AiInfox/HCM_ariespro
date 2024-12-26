@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -192,9 +194,9 @@
 					<div class="row align-items-center">
 						<div class="col-lg-3 col-md-3 col-sm-3 col-6">
 							<div class="logo my-3 my-sm-0">
-								<a href="Emp_dashboard">
+								<!-- <a href="Emp_dashboard">
 									<img src="../static/img/logo2.jpg" alt="logo image" class="img-fluid" width="100">
-								</a>
+								</a> -->
 								<div class="row topset">
 									<div class="col-md-6 ">
 										<!-- <button id="fullscreen" class="hideshow1">Full Screen</button> -->
@@ -218,9 +220,15 @@
 											<a href="Emp_profile" data-toggle="dropdown"
 												class=" menu-style dropdown-toggle">
 												<div class="user-avatar d-inline-block">
-													<img src="../{{request.session.profile_pic}}" alt="user avatar"
+													<img src=../static/img/profiles/pic.jpg alt="user avatar2"
+                                                      class="rounded-circle img-fluid" width="55" style="height: 55px;">
+
+
+
+
+													<!-- <img src="../{{request.session.profile_pic}}" alt="user avatar2"
 														class="rounded-circle img-fluid" width="55"
-														style="height: 55px;">
+														style="height: 55px;"> -->
 												</div>
 											</a>
 											<div
@@ -262,7 +270,7 @@
 									<div class="user-info align-center bg-theme text-center">
 										<a href="javascript:void(0)" class="d-block menu-style text-white">
 											<div class="user-avatar d-inline-block mr-3">
-												<img src="../{{request.session.profile_pic}}" alt="user avatar"
+												<img src="../{{request.session.profile_pic}}" alt="user avatar1"
 													class="rounded-circle img-fluid" width="55" style="height: 55px;">
 											</div>
 										</a>
@@ -387,7 +395,7 @@
 							<div class="user-card card shadow-sm bg-white text-center ctm-border-radius">					<!--grow -->
 								<div class="user-info card-body">
 									<div class="user-avatar mb-4">
-										<img src="../{{request.session.profile_pic}}" alt="User Avatar"
+										<img src="../static/img/profiles/pic.jpg" alt="User Avatar"
 											class="img-fluid rounded-circle" width="100" style="height: 100px;">
 									</div>
 									<div class="user-details">
